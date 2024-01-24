@@ -20,4 +20,7 @@ public class Brand extends BaseEntity{
     private String logo;
     @Column(name = "website_url")
     private String websiteUrl;
+    @Column(name = "code")
+    private String code;
+
 }
