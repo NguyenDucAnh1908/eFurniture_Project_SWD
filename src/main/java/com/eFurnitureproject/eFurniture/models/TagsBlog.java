@@ -16,4 +16,5 @@ public class TagsBlog  extends BaseEntity{
     private Long id;
     @Column(name = "tag_name")
     private String tagName;
+    private String code;
 }

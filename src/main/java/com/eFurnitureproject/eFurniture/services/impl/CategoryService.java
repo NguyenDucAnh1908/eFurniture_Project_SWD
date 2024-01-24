@@ -8,6 +8,8 @@ import com.eFurnitureproject.eFurniture.services.ICategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,6 +39,20 @@ public class CategoryService implements ICategoryService {
         category = categoryRepository.save(category);
         return CategoryConverter.toDto(category);
     }
+
+    @Override
+    public List<CategoryDto> getAllCategories() {
+        List<CategoryDto> result = new ArrayList<>();
+        List<Category> categories = categoryRepository.findAll();
+        for (Category item :categories
+             ) {
+            CategoryDto dto =CategoryConverter.toDto(item);
+            result.add(dto);
+        }
+        return result;
+    }
+
+
     private String generateCodeFromName(String name) {
         // Thực hiện logic tạo mã của bạn ở đây
         // Đơn giản, bạn có thể sử dụng một logic cơ bản như loại bỏ khoảng trắng và chuyển đổi thành chữ in hoa

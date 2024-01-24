@@ -62,4 +62,10 @@ public class BrandController {
         brandResponse.setBrand(brand);
         return ResponseEntity.ok(brandResponse);
     }
+
+    @GetMapping("")
+    public ResponseEntity<List<Brand>> getAllBrand() {
+        List<Brand> brands = brandService.getAllBrand();
+        return ResponseEntity.ok(brands);
+    }
 }

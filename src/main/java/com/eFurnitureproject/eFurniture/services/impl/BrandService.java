@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class BrandService implements IBrandService {
@@ -43,10 +45,16 @@ public class BrandService implements IBrandService {
         existingBrand = brandRepository.save(existingBrand);
         return existingBrand;
     }
+    @Override
+    public List<Brand> getAllBrand() {
+        return brandRepository.findAll();
+    }
 
     @Override
     public Brand getBrandById(long id) {
         return brandRepository.findById(id)
                 .orElseThrow(()-> new RuntimeException("Brand not found"));
     }
+
+
 }

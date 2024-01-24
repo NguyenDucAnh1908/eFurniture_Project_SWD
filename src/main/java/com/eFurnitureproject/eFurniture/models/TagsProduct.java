@@ -16,4 +16,5 @@ public class TagsProduct extends BaseEntity{
     private Long id;
     @Column(name = "name")
     private String name;
+    private String code;
 }

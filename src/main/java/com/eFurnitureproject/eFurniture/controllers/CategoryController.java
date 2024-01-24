@@ -47,4 +47,9 @@ public class CategoryController {
         }
         return ResponseEntity.ok(categoryService.updateCategory(id, categoryDTO));
     }
+
+    @GetMapping("")
+    public List<CategoryDto> getAllCategory() {
+        return categoryService.getAllCategories();
+    }
 }
