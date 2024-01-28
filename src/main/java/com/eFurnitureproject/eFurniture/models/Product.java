@@ -1,7 +1,10 @@
 package com.eFurnitureproject.eFurniture.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -56,13 +59,20 @@ public class Product extends BaseEntity{
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "product_category",nullable = false)
+    @JsonManagedReference
     private Category category;
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "product_brand",nullable = false)
+    @JsonManagedReference
     private Brand brand;
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "product_tags",nullable = false)
+    @JsonManagedReference
     private TagsProduct tagsProduct;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ProductImages> productImages;
+
 }

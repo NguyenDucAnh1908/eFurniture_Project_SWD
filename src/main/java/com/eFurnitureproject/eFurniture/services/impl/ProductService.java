@@ -1,5 +1,6 @@
 package com.eFurnitureproject.eFurniture.services.impl;
 
+import com.eFurnitureproject.eFurniture.Responses.ProductResponse;
 import com.eFurnitureproject.eFurniture.converter.ProductConverter;
 import com.eFurnitureproject.eFurniture.dtos.ProductDto;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
@@ -13,10 +14,14 @@ import com.eFurnitureproject.eFurniture.repositories.ProductRepository;
 import com.eFurnitureproject.eFurniture.repositories.TagProductRepository;
 import com.eFurnitureproject.eFurniture.services.IProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -94,6 +99,19 @@ public class ProductService implements IProductService {
             return existingProduct;
         }
         return null;
+    }
+
+    public Page<ProductResponse> getAllProducts(String keyword, PageRequest pageRequest,
+                                           Double minPrice, Double maxPrice,
+                                           Long brandId, Long tagsProductId, Long categoryId) {
+        Page<Product> products;
+        products = productRepository.searchProducts(
+                keyword, pageRequest, minPrice, maxPrice, brandId, tagsProductId, categoryId);
+
+//        return products
+//                .map(ProductConverter::toDto);
+        // Assuming you have a ProductMapper class with a toDto method
+        return products.map(ProductConverter::toResponse);
     }
 
     private String generateCodeFromName(String codeProduct) {

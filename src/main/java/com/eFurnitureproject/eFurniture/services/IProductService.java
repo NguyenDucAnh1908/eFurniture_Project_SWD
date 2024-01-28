@@ -8,4 +8,5 @@ public interface IProductService {
     Product getProductById(long id) throws Exception;
     Product createProduct(ProductDto productDto) throws DataNotFoundException;
     Product updateProduct(Long id, ProductDto productDto) throws Exception;
+
 }

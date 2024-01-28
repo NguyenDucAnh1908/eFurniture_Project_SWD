@@ -1,7 +1,10 @@
 package com.eFurnitureproject.eFurniture.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "category")
@@ -18,4 +21,7 @@ public class Category extends BaseEntity{
     private String name;
     @Column(name = "code")
     private String code;
+//    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JsonManagedReference
+//    private List<Product> products;
 }

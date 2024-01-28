@@ -1,11 +1,15 @@
 package com.eFurnitureproject.eFurniture.Responses;
 
+import com.eFurnitureproject.eFurniture.models.ProductImages;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -36,4 +40,6 @@ public class ProductResponse extends BaseResponse{
     private Long brandId;     // Field to represent Brand ID
     @JsonProperty("tags_product_id")
     private Long tagsProductId; // Field to represent TagsProduct ID
+    @JsonProperty("product_images")
+    private List<ProductImages> productImages = new ArrayList<>();
 }

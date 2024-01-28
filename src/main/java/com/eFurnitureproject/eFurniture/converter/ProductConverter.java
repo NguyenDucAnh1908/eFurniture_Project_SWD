@@ -1,5 +1,6 @@
 package com.eFurnitureproject.eFurniture.converter;
 
+import com.eFurnitureproject.eFurniture.Responses.ProductResponse;
 import com.eFurnitureproject.eFurniture.dtos.ProductDto;
 import com.eFurnitureproject.eFurniture.models.Product;
 import org.springframework.stereotype.Component;
@@ -24,6 +25,7 @@ public class ProductConverter {
         return dto;
     }
 
+
     public static Product toEntity(ProductDto dto) {
         Product entity = new Product();
         //entity.setId(dto.getId());
@@ -31,6 +33,7 @@ public class ProductConverter {
         entity.setDescription(dto.getDescription());
         entity.setThumbnail(dto.getThumbnail());
         entity.setPrice(dto.getPrice());
+        entity.setQuantity(dto.getQuantity());
         entity.setPriceSale(dto.getPriceSale());
         entity.setMaterial(dto.getMaterial());
         entity.setSize(dto.getSize());
@@ -51,6 +54,7 @@ public class ProductConverter {
         entity.setDescription(dto.getDescription());
         entity.setThumbnail(dto.getThumbnail());
         entity.setPrice(dto.getPrice());
+        entity.setQuantity(dto.getQuantity());
         entity.setPriceSale(dto.getPriceSale());
         entity.setMaterial(dto.getMaterial());
         entity.setSize(dto.getSize());
@@ -60,5 +64,31 @@ public class ProductConverter {
         entity.setStatus(dto.getStatus());
         entity.setDiscount(dto.getDiscount());
         return entity;
+    }
+
+    public static ProductResponse toResponse(Product product){
+        ProductResponse productResponse = ProductResponse.builder()
+                .id(product.getId())
+                .name(product.getName())
+                .price(product.getPrice())
+                .thumbnail(product.getThumbnail())
+                .description(product.getDescription())
+                .priceSale(product.getPriceSale())
+                .quantity(product.getQuantity())
+                .material(product.getMaterial())
+                .size(product.getSize())
+                .color(product.getColor())
+                .codeProduct(product.getCodeProduct())
+                .quantitySold(product.getQuantitySold())
+                .status(product.getStatus())
+                .discount(product.getDiscount())
+                .brandId(product.getBrand().getId())
+                .tagsProductId(product.getTagsProduct().getId())
+                .categoryId(product.getCategory().getId())
+                .productImages(product.getProductImages())
+                .build();
+        productResponse.setCreatedAt(product.getCreatedAt());
+        productResponse.setUpdatedAt(product.getUpdatedAt());
+        return productResponse;
     }
 }

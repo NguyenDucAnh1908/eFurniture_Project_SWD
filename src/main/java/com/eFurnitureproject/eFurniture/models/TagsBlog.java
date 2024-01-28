@@ -1,10 +1,13 @@
 package com.eFurnitureproject.eFurniture.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
-@Table(name = "tags_Blog")
+@Table(name = "tags_blog")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -17,4 +20,8 @@ public class TagsBlog  extends BaseEntity{
     @Column(name = "tag_name")
     private String tagName;
     private String code;
+
+//    @OneToMany(mappedBy = "tagsBlog", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JsonManagedReference
+//    private List<Blog> blogs;
 }

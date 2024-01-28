@@ -18,5 +18,5 @@ public class FeedbackImages extends BaseEntity{
     private String imageUrl;
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "feedback_id",nullable = false)
-    private Feedback feedback;
+    private Feedback feedbacks;
 }

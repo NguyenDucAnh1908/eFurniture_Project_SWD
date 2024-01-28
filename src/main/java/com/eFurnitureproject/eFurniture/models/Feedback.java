@@ -1,9 +1,11 @@
 package com.eFurnitureproject.eFurniture.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "feedbacks")
@@ -37,4 +39,8 @@ public class Feedback extends  BaseEntity{
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "product_id",nullable = false)
     private Product product;
+
+//    @OneToMany(mappedBy = "feedbacks", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JsonManagedReference
+//    private List<FeedbackImages> feedbackImages;
 }
