@@ -43,7 +43,7 @@ public class OrderDto {
     @Size(min = 5, message = "Phone number must be at least 5 characters")
     private String phoneNumber;
     private String address;
-    private int active;
+    private Boolean active;
     @JsonProperty("cart_items")
     private List<CartItemDto> cartItems;
     //private int orderDetails;

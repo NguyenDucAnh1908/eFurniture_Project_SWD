@@ -7,6 +7,7 @@ import com.eFurnitureproject.eFurniture.converter.OrderConverter;
 import com.eFurnitureproject.eFurniture.dtos.OrderDto;
 import com.eFurnitureproject.eFurniture.models.Order;
 import com.eFurnitureproject.eFurniture.services.IOrderService;
+import com.eFurnitureproject.eFurniture.utils.MessageKeys;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -69,6 +70,45 @@ public class OrderController {
                 .orders(orderResponses)
                 .totalPages(totalPages)
                 .build());
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateOrder(
+            @Valid @PathVariable long id,
+            @Valid @RequestBody OrderDto orderDTO) {
+
+        try {
+            Order order = orderService.updateOrder(id, orderDTO);
+            return ResponseEntity.ok(order);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/user/{user_id}") // Thêm biến đường dẫn "user_id"
+    //GET http://localhost:8088/api/v1/orders/user/4
+    public ResponseEntity<?> getOrders(@Valid @PathVariable("user_id") Long userId) {
+        try {
+            List<Order> orders = orderService.findByUserId(userId);
+            return ResponseEntity.ok(orders);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getOrder(@Valid @PathVariable("id") Long orderId) {
+        try {
+            Order existingOrder = orderService.getOrder(orderId);
+            OrderResponse orderResponse = OrderConverter.fromOrder(existingOrder);
+            return ResponseEntity.ok(orderResponse);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteOrder(@Valid @PathVariable Long id) {
+        //xóa mềm => cập nhật trường active = false
+        orderService.deleteOrder(id);
+        return ResponseEntity.ok(localizationUtils.getLocalizedMessage(MessageKeys.DELETE_ORDER_SUCCESSFULLY));
     }
 
 }

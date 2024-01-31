@@ -49,7 +49,7 @@ public class OrderService implements IOrderService {
             throw new DataNotFoundException("Date must be at least today !");
         }
         order.setShippingDate(shippingDate);
-        //order.setActive(true);
+        order.setActive(true);
         order.setTotalAmount(orderDto.getTotalAmount());
         orderRepository.save(order);
         List<OrderDetail> orderDetails = new ArrayList<>();
@@ -81,12 +81,33 @@ public class OrderService implements IOrderService {
     public Order updateOrder(Long id, OrderDto orderDTO) throws DataNotFoundException {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Cannot find order with id: " + id));
-        User existingUser = userRepository.findById(orderDTO.getId())
+        User existingUser = userRepository.findById(orderDTO.getUserId())
                 .orElseThrow(()-> new DataNotFoundException("Cannot find user with id: " + id));
         modelMapper.typeMap(OrderDto.class, Order.class)
                 .addMappings(mapper -> mapper.skip(Order::setId));
         modelMapper.map(orderDTO, order);
         order.setUser(existingUser);
         return orderRepository.save(order);
+    }
+
+    @Override
+    public Order getOrder(Long id) {
+        Order selectedOrder = orderRepository.findById(id).orElse(null);
+        return selectedOrder;
+    }
+
+    @Override
+    @Transactional
+    public void deleteOrder(Long id) {
+        Order order = orderRepository.findById(id).orElse(null);
+        if (order != null) {
+            order.setActive(false);
+            orderRepository.save(order);
+        }
+    }
+
+    @Override
+    public List<Order> findByUserId(Long userId) {
+        return orderRepository.findByUserId(userId);
     }
 }

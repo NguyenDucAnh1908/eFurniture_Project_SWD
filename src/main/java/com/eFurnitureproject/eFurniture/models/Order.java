@@ -62,7 +62,7 @@ public class Order extends BaseEntity {
     private String address;
 
     @Column(name = "active")
-    private int active;
+    private Boolean active;
 
     @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
