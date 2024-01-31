@@ -1,5 +1,6 @@
 package com.eFurnitureproject.eFurniture.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,10 +30,12 @@ public class OrderDetail extends BaseEntity{
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "product_id",nullable = false)
+    @JsonBackReference
     private Product product;
 
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "order_id",nullable = false)
+    @JsonBackReference
     private Order orders;
 }

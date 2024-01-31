@@ -29,4 +29,18 @@ public class ProductImageController {
                     .body(Collections.emptyList()); // or handle the error response as needed
         }
     }
+
+//    @PutMapping("/update/{id}")
+//    public ResponseEntity<List<ProductImageDto>> updateProductImages(
+//            //@RequestParam("productId") Long productId,
+//            @PathVariable("id") Long productId,
+//            @RequestParam("files") List<MultipartFile> files) {
+//        try {
+//            List<ProductImageDto> updatedImages = productImageService.updateFiles(files, productId);
+//            return ResponseEntity.ok(updatedImages);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body(Collections.emptyList()); // hoặc xử lý phản hồi lỗi theo nhu cầu
+//        }
+//    }
 }

@@ -42,6 +42,7 @@ public class User {
     @Column(name = "google_account_id")
     private int googleAccountId;
 
+
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    @JsonManagedReference
 //    private List<Address> addresses;

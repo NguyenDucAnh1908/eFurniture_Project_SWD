@@ -40,6 +40,9 @@ public class Order extends BaseEntity {
     @Column(name = "shipping_method", length = 255)
     private String shippingMethod;
 
+    @Column(name = "shipping_date")
+    private LocalDate shippingDate;
+
     @Column(name = "notes", length = 255)
     private String notes;
 
@@ -64,4 +67,9 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "orders", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<OrderDetail> orderDetails;
+
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "user_order",nullable = false)
+    @JsonManagedReference
+    private User user;
 }
