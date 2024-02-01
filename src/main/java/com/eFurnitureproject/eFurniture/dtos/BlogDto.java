@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BlogDto extends BaseDto {
+public class BlogDto {
 
     private Long id;
 
