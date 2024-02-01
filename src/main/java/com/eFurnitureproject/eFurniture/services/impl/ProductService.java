@@ -37,7 +37,7 @@ public class ProductService implements IProductService {
         if(optionalProduct.isPresent()) {
             return optionalProduct.get();
         }
-        throw new DataNotFoundException("Cannot find product with id =" + 5);
+        throw new DataNotFoundException("Cannot find product with id =" + id);
     }
 
     @Override
