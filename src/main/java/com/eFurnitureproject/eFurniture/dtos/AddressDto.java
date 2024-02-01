@@ -36,5 +36,5 @@ public class AddressDto{
 
     private int defaultAddress;
 
-    private Long userAddressId; // Assuming you want to use userAddressId instead of User object directly
+    private String userAddressId; // Assuming you want to use userAddressId instead of User object directly
 }
