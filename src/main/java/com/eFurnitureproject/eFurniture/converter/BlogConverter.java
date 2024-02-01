@@ -56,7 +56,7 @@ public class BlogConverter {
                 .dateCreate(blog.getCreatedAt())
                 .userBlogId(blog.getUser().getId())
                 .tagBlogId(blog.getTagsBlog().getId())
-//                .categoryBlogId(blog.getCategoryBlog().getId())
+                .categoryBlogId(blog.getCategoryBlog().getId())
                 .build();
         return blogResponse;
     }
