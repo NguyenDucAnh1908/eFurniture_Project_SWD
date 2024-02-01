@@ -24,7 +24,7 @@ public class OrderDetailController {
     private final LocalizationUtils localizationUtils;
 
     @PostMapping("")
-    public ResponseEntity<?> createOrder(
+    public ResponseEntity<?> createOrderDetail(
             @Valid @RequestBody OrderDetailDto orderDetailDto,
             BindingResult result
     ) {
