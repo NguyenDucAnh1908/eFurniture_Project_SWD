@@ -18,6 +18,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class BlogService implements IBlogService {
@@ -61,6 +63,7 @@ public class BlogService implements IBlogService {
                 .categoryBlog(existingCategory)
                 .user(existingUser)
                 .tagsBlog(existingTagsBlog)
+                .active(true)
                 .build();
 
         Blog savedBlog = blogRepository.save(newBlog);
@@ -111,6 +114,23 @@ public class BlogService implements IBlogService {
             existingBlog.setTagsBlog(existingTagsBlog);
         }
 
+    //    Optional.ofNullable(updatedBlogDto.isActive()).ifPresent(active -> existingBlog.setActive(active));
+
         return blogRepository.save(existingBlog);
     }
+
+
+
+    @Override
+    public BlogResponse DeactivateBlog(Long blogId) throws EntityNotFoundException {
+        Blog existingBlog = blogRepository.findById(blogId)
+                .orElseThrow(() -> new EntityNotFoundException("Cannot find blog with id: " + blogId));
+
+        existingBlog.setActive(false);
+        Blog deletedBlog = blogRepository.save(existingBlog);
+
+        return BlogConverter.toResponse(deletedBlog);
+    }
+
+
 }

@@ -14,7 +14,6 @@ public class BlogConverter {
         dto.setTitle(entity.getTitle());
         dto.setContent(entity.getContent());
         dto.setThumbnail(entity.getThumbnail());
-        dto.setDateCreate(entity.getCreatedAt());
         dto.setUserBlogId(entity.getUser().getId());
         dto.setTagBlogId(entity.getTagsBlog().getId());
 //        dto.setCategoryBlogId(entity.getCategoryBlog().getId());
@@ -26,7 +25,6 @@ public class BlogConverter {
         entity.setTitle(dto.getTitle());
         entity.setContent(dto.getContent());
         entity.setThumbnail(dto.getThumbnail());
-        entity.setUpdatedAt(dto.getDateCreate());
         // Trong thực tế, bạn sẽ cần thêm logic để lấy và thiết lập các đối tượng User, TagsBlog và CategoryBlog dựa trên các ID từ DTO.
         // entity.setUser(userRepository.findById(dto.getUserBlogId()).orElse(null));
         // entity.setTagsBlog(tagsBlogRepository.findById(dto.getTagBlogId()).orElse(null));
@@ -53,10 +51,10 @@ public class BlogConverter {
                 .title(blog.getTitle())
                 .content(blog.getContent())
                 .thumbnail(blog.getThumbnail())
-                .dateCreate(blog.getCreatedAt())
                 .userBlogId(blog.getUser().getId())
                 .tagBlogId(blog.getTagsBlog().getId())
                 .categoryBlogId(blog.getCategoryBlog().getId())
+                .active(blog.isActive())
                 .build();
         return blogResponse;
     }

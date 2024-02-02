@@ -60,4 +60,11 @@
             }
         }
 
+        @DeleteMapping("/delete_blog/{blogId}")
+        public ResponseEntity<BlogResponse> deleteBlog(@PathVariable Long blogId) throws EntityNotFoundException {
+            BlogResponse deletedBlog = blogService.DeactivateBlog(blogId);
+            return new ResponseEntity<>(deletedBlog, HttpStatus.OK);
+        }
+
+
     }
