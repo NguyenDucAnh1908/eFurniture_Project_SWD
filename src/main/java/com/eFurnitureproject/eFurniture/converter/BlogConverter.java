@@ -54,7 +54,7 @@ public class BlogConverter {
                 .userBlogId(blog.getUser().getId())
                 .tagBlogId(blog.getTagsBlog().getId())
                 .categoryBlogId(blog.getCategoryBlog().getId())
-                .active(blog.isActive())
+//                .active(blog.isActive())
                 .build();
         return blogResponse;
     }
