@@ -12,4 +12,6 @@ public interface IBlogService {
                                           Long userBlogId, Long tagsBlogId);
 
      Blog createBlog(BlogDto blogDto) throws EntityNotFoundException;
+
+     Blog updateBlog(Long blogId, BlogDto updatedBlogDto) throws EntityNotFoundException;
 }
