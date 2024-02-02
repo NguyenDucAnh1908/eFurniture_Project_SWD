@@ -35,6 +35,7 @@ public class Blog extends BaseEntity{
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "user_blog_id",nullable = false)
     private User user;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "tag_blog_id",nullable = false)
     private TagsBlog tagsBlog;
