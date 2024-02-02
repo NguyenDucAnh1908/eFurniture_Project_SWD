@@ -22,4 +22,5 @@ public class BlogResponse {
 
     private Long categoryBlogId; // Assuming you want to use categoryBlogId instead of CategoryBlog object directly
     private boolean active;
+
 }

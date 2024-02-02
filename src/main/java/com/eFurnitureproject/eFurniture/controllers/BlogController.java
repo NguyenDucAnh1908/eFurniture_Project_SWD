@@ -48,17 +48,19 @@
         }
 
         @PutMapping("/update_blog/{blogId}")
-        public ResponseEntity<BlogResponse> updateBlog(
+        public ResponseEntity<?> updateBlog(
                 @PathVariable Long blogId,
                 @RequestBody @Valid BlogDto updatedBlogDto) {
             try {
                 Blog updatedBlog = blogService.updateBlog(blogId, updatedBlogDto);
                 BlogResponse blogResponse = BlogConverter.toResponse(updatedBlog);
                 return ResponseEntity.ok(blogResponse);
-            } catch (EntityNotFoundException e) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            } catch (RuntimeException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Blog is deactivated.");
             }
         }
+
+
 
         @DeleteMapping("/delete_blog/{blogId}")
         public ResponseEntity<BlogResponse> deleteBlog(@PathVariable Long blogId) throws EntityNotFoundException {

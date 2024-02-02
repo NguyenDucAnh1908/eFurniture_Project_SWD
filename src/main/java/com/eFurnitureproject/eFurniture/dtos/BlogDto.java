@@ -18,11 +18,11 @@ public class BlogDto {
     private Long id;
 
     @NotBlank(message = "Title is required")
-    @Size(min = 3, max = 255, message = "Title must be between 3 and 255 characters")
+    @Size(min = 0, max = 5000, message = "Title must be between 0 and 5000 characters")
     private String title;
 
     @NotBlank(message = "Content is required")
-    @Size(min = 3, max = 255, message = "Content must be between 3 and 255 characters")
+    @Size(min = 0, max = 1000000, message = "Content must be between 0 and 1000000 characters")
     private String content;
 
     private String thumbnail;
