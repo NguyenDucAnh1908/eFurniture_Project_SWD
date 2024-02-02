@@ -28,6 +28,9 @@ public class Blog extends BaseEntity{
     @Column(name = "thumbnail", length = 255)
     private String thumbnail;
 
+    @Column(name = "is_active")
+    private boolean active;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "category_blog",nullable = false)
     private CategoryBlog categoryBlog;

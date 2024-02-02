@@ -26,9 +26,7 @@ public class BlogDto {
     private String content;
 
     private String thumbnail;
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime dateCreate;
+    private boolean active;
 
     private Long userBlogId; // Assuming you want to use userBlogId instead of User object directly
 

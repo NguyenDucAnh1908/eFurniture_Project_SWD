@@ -10,8 +10,7 @@ import org.springframework.data.domain.Pageable;
 public interface IBlogService {
      Page<BlogResponse> getAllBlogs(String keyword, Pageable pageable,
                                           Long userBlogId, Long tagsBlogId);
-
      Blog createBlog(BlogDto blogDto) throws EntityNotFoundException;
-
      Blog updateBlog(Long blogId, BlogDto updatedBlogDto) throws EntityNotFoundException;
+     BlogResponse DeactivateBlog(Long blogId) throws EntityNotFoundException;
 }
