@@ -7,10 +7,12 @@
     import com.eFurnitureproject.eFurniture.models.Blog;
     import com.eFurnitureproject.eFurniture.repositories.BlogRepository;
     import com.eFurnitureproject.eFurniture.services.impl.BlogService;
+    import jakarta.persistence.EntityNotFoundException;
     import jakarta.validation.Valid;
     import lombok.RequiredArgsConstructor;
     import org.springframework.data.domain.Page;
     import org.springframework.data.domain.PageRequest;
+    import org.springframework.http.HttpStatus;
     import org.springframework.http.ResponseEntity;
     import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +47,17 @@
             return ResponseEntity.ok(blogResponse);
         }
 
-
+        @PutMapping("/update_blog/{blogId}")
+        public ResponseEntity<BlogResponse> updateBlog(
+                @PathVariable Long blogId,
+                @RequestBody @Valid BlogDto updatedBlogDto) {
+            try {
+                Blog updatedBlog = blogService.updateBlog(blogId, updatedBlogDto);
+                BlogResponse blogResponse = BlogConverter.toResponse(updatedBlog);
+                return ResponseEntity.ok(blogResponse);
+            } catch (EntityNotFoundException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+        }
 
     }
