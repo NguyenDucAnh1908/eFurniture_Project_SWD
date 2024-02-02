@@ -14,9 +14,15 @@ public class FeedbackImages extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "image_url", length = 255)
+
+    @Column(name = "image_url")
     private String imageUrl;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "feedback_id",nullable = false)
     private Feedback feedbacks;
+
+    public void setFeedback(Feedback feedback) {
+        this.feedbacks = feedback;
+    }
 }
