@@ -77,47 +77,53 @@ public class BlogService implements IBlogService {
         Blog existingBlog = blogRepository.findById(blogId)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find blog with id: " + blogId));
 
-        if (updatedBlogDto.getTitle() != null) {
-            existingBlog.setTitle(updatedBlogDto.getTitle());
-        }
-        if (updatedBlogDto.getContent() != null) {
-            existingBlog.setContent(updatedBlogDto.getContent());
-        }
-        if (updatedBlogDto.getThumbnail() != null) {
-            existingBlog.setThumbnail(updatedBlogDto.getThumbnail());
-        }
+        Optional<Blog> blog = blogRepository.findByIdAndActive(blogId, true);
 
-        if (!existingBlog.getCategoryBlog().getId().equals(updatedBlogDto.getCategoryBlogId())) {
-            CategoryBlog existingCategory = categoryBlogRepository
-                    .findById(updatedBlogDto.getCategoryBlogId())
-                    .orElseThrow(() ->
-                            new EntityNotFoundException(
-                                    "Cannot find category with id: " + updatedBlogDto.getCategoryBlogId()));
-            existingBlog.setCategoryBlog(existingCategory);
+        if(blog.isPresent()) {
+            if (updatedBlogDto.getTitle() != null) {
+                existingBlog.setTitle(updatedBlogDto.getTitle());
+            }
+            if (updatedBlogDto.getContent() != null) {
+                existingBlog.setContent(updatedBlogDto.getContent());
+            }
+            if (updatedBlogDto.getThumbnail() != null) {
+                existingBlog.setThumbnail(updatedBlogDto.getThumbnail());
+            }
+
+            if (!existingBlog.getCategoryBlog().getId().equals(updatedBlogDto.getCategoryBlogId())) {
+                CategoryBlog existingCategory = categoryBlogRepository
+                        .findById(updatedBlogDto.getCategoryBlogId())
+                        .orElseThrow(() ->
+                                new EntityNotFoundException(
+                                        "Cannot find category with id: " + updatedBlogDto.getCategoryBlogId()));
+                existingBlog.setCategoryBlog(existingCategory);
+            }
+
+            if (!existingBlog.getUser().getId().equals(updatedBlogDto.getUserBlogId())) {
+                User existingUser = userRepository
+                        .findById(updatedBlogDto.getUserBlogId())
+                        .orElseThrow(() ->
+                                new EntityNotFoundException(
+                                        "Cannot find user with id: " + updatedBlogDto.getUserBlogId()));
+                existingBlog.setUser(existingUser);
+            }
+
+            if (!existingBlog.getTagsBlog().getId().equals(updatedBlogDto.getTagBlogId())) {
+                TagsBlog existingTagsBlog = tagsBlogRepository
+                        .findById(updatedBlogDto.getTagBlogId())
+                        .orElseThrow(() ->
+                                new EntityNotFoundException(
+                                        "Cannot find tagsBlog with id: " + updatedBlogDto.getTagBlogId()));
+                existingBlog.setTagsBlog(existingTagsBlog);
+            }
+//            updatedBlogDto.setActive(true);
+            return blogRepository.save(existingBlog);
         }
-
-        if (!existingBlog.getUser().getId().equals(updatedBlogDto.getUserBlogId())) {
-            User existingUser = userRepository
-                    .findById(updatedBlogDto.getUserBlogId())
-                    .orElseThrow(() ->
-                            new EntityNotFoundException(
-                                    "Cannot find user with id: " + updatedBlogDto.getUserBlogId()));
-            existingBlog.setUser(existingUser);
+        else{
+            return null;
         }
-
-        if (!existingBlog.getTagsBlog().getId().equals(updatedBlogDto.getTagBlogId())) {
-            TagsBlog existingTagsBlog = tagsBlogRepository
-                    .findById(updatedBlogDto.getTagBlogId())
-                    .orElseThrow(() ->
-                            new EntityNotFoundException(
-                                    "Cannot find tagsBlog with id: " + updatedBlogDto.getTagBlogId()));
-            existingBlog.setTagsBlog(existingTagsBlog);
-        }
-
-    //    Optional.ofNullable(updatedBlogDto.isActive()).ifPresent(active -> existingBlog.setActive(active));
-
-        return blogRepository.save(existingBlog);
     }
+
 
 
 
