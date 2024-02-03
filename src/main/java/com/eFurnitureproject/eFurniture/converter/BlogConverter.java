@@ -55,6 +55,7 @@ public class BlogConverter {
                 .tagBlogId(blog.getTagsBlog().getId())
                 .categoryBlogId(blog.getCategoryBlog().getId())
                 .active(blog.isActive())
+                .thumbnail(blog.getThumbnail())
                 .build();
         return blogResponse;
     }

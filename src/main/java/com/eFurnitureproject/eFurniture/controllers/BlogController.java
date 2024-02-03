@@ -15,7 +15,9 @@
     import org.springframework.http.HttpStatus;
     import org.springframework.http.ResponseEntity;
     import org.springframework.web.bind.annotation.*;
+    import org.springframework.web.multipart.MultipartFile;
 
+    import java.io.IOException;
     import java.util.List;
 
     @RestController
@@ -61,7 +63,16 @@
         }
 
 
-
+        @PostMapping("/{blogId}/upload_thumbnail")
+        public ResponseEntity<String> uploadImageToCloudinary(@PathVariable Long blogId, @RequestParam("thumbnail") MultipartFile thumbnail) {
+            try {
+                String thumbnailUrl = blogService.uploadThumbnailToCloudinary(blogId, thumbnail);
+                return ResponseEntity.ok("Upload_Thumbnail successful!!" + thumbnailUrl);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image");
+            }
+        }
         @DeleteMapping("/delete_blog/{blogId}")
         public ResponseEntity<BlogResponse> deleteBlog(@PathVariable Long blogId) throws EntityNotFoundException {
             BlogResponse deletedBlog = blogService.DeactivateBlog(blogId);
