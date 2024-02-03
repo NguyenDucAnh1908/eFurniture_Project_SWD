@@ -3,6 +3,7 @@ package com.eFurnitureproject.eFurniture.services.impl;
 import com.eFurnitureproject.eFurniture.dtos.CartItemDto;
 import com.eFurnitureproject.eFurniture.dtos.OrderDto;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
+import com.eFurnitureproject.eFurniture.exceptions.InsufficientQuantityException;
 import com.eFurnitureproject.eFurniture.models.Order;
 import com.eFurnitureproject.eFurniture.models.OrderDetail;
 import com.eFurnitureproject.eFurniture.models.Product;
@@ -51,6 +52,9 @@ public class OrderService implements IOrderService {
         order.setShippingDate(shippingDate);
         order.setActive(true);
         order.setTotalAmount(orderDto.getTotalAmount());
+        if (order.getStatus() == 5) {
+            updateProductQuantities(orderDto.getCartItems());
+        }
         orderRepository.save(order);
         List<OrderDetail> orderDetails = new ArrayList<>();
         OrderDetail orderDetail = null;
@@ -72,10 +76,6 @@ public class OrderService implements IOrderService {
         orderDetailRepository.saveAll(orderDetails);
         return order;
     }
-    @Override
-    public Page<Order> getOrdersByKeyword(String keyword, Pageable pageable) {
-        return orderRepository.findByKeyword(keyword, pageable);
-    }
 
     @Override
     public Order updateOrder(Long id, OrderDto orderDTO) throws DataNotFoundException {
@@ -88,6 +88,11 @@ public class OrderService implements IOrderService {
         modelMapper.map(orderDTO, order);
         order.setUser(existingUser);
         return orderRepository.save(order);
+    }
+
+    @Override
+    public Page<Order> getOrdersByKeyword(String keyword, Pageable pageable) {
+        return orderRepository.findByKeyword(keyword, pageable);
     }
 
     @Override
@@ -110,4 +115,23 @@ public class OrderService implements IOrderService {
     public List<Order> findByUserId(Long userId) {
         return orderRepository.findByUserId(userId);
     }
+    private void updateProductQuantities(List<CartItemDto> cartItems) throws DataNotFoundException {
+        for (CartItemDto cartItemDto : cartItems) {
+            Long productId = cartItemDto.getProductId();
+            int quantity = cartItemDto.getQuantity();
+
+            Product product = productRepository.findById(productId)
+                    .orElseThrow(() -> new DataNotFoundException("Product not found with id: " + productId));
+
+            // Ensure that the quantity to be deducted is not greater than the available quantity
+            if (quantity > product.getQuantity()) {
+                throw new InsufficientQuantityException("Not enough quantity available for product with id: " + productId);
+            }
+
+            int updatedQuantity = product.getQuantity() - quantity;
+            product.setQuantity(updatedQuantity);
+            productRepository.save(product);
+        }
+    }
+
 }
