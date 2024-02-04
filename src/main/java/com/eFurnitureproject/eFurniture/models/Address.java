@@ -1,5 +1,6 @@
 package com.eFurnitureproject.eFurniture.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -42,6 +43,7 @@ public class Address extends BaseEntity{
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "user_address",nullable = false)
+    @JsonBackReference
     private User user;
 
     // Getters and setters

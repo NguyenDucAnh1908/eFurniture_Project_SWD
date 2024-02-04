@@ -1,5 +1,6 @@
 package com.eFurnitureproject.eFurniture.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -22,6 +23,6 @@ public class ProductImages extends BaseEntity{
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "product_id", nullable = false)
     @JsonIgnore
-    @JsonManagedReference
+    @JsonBackReference
     private Product product;
 }
