@@ -1,5 +1,6 @@
 package com.eFurnitureproject.eFurniture.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -59,20 +60,21 @@ public class Product extends BaseEntity{
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "product_category",nullable = false)
-    @JsonManagedReference
+    @JsonBackReference
     private Category category;
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "product_brand",nullable = false)
-    @JsonManagedReference
+    @JsonBackReference
     private Brand brand;
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "product_tags",nullable = false)
-    @JsonManagedReference
+    @JsonBackReference
     private TagsProduct tagsProduct;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<ProductImages> productImages;
 
 }

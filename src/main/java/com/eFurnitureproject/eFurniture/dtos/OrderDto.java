@@ -50,4 +50,6 @@ public class OrderDto {
     @JsonProperty("user_id")
     @Min(value = 1, message = "User's ID must be > 0")
     private Long userId;
+    @JsonProperty("coupon_id")
+    private Long couponId;
 }
