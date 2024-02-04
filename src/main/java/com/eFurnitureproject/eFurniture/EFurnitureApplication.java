@@ -23,5 +23,10 @@ public class EFurnitureApplication {
 		config.put("api_secret", "lFJj6FmcE2owKBgm_1UGvb4-m6M");
 		cloudinary = new Cloudinary(config);
 		return cloudinary;
+
+		//DucAnh
+//		config.put("cloud_name", "dbzzkebfm");
+//		config.put("api_key", "491474858821112");
+//		config.put("api_secret", "FRYILcI0JEt7BcVnrr2BecTBlak");
 	}
 }
