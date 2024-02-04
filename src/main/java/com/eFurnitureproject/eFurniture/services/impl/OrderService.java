@@ -78,7 +78,9 @@ public class OrderService implements IOrderService {
     }
 
     @Override
+    @Transactional
     public Order updateOrder(Long id, OrderDto orderDTO) throws DataNotFoundException {
+        //try {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("Cannot find order with id: " + id));
         User existingUser = userRepository.findById(orderDTO.getUserId())
@@ -87,7 +89,35 @@ public class OrderService implements IOrderService {
                 .addMappings(mapper -> mapper.skip(Order::setId));
         modelMapper.map(orderDTO, order);
         order.setUser(existingUser);
-        return orderRepository.save(order);
+
+            orderRepository.save(order);
+            List<OrderDetail> orderDetails = new ArrayList<>();
+            OrderDetail orderDetail = null;
+            for (CartItemDto cartItemDto : orderDTO.getCartItems()) {
+                orderDetail = new OrderDetail();
+                orderDetail.setOrders(order);
+                Long productId = cartItemDto.getProductId();
+                int quantity = cartItemDto.getQuantity();
+                OrderDetail orderDetailExisting = orderDetailRepository.findById(cartItemDto.getId())
+                        .orElseThrow(() -> new DataNotFoundException("Orderdetail not found with id: " + cartItemDto.getId()));
+                Product product = productRepository.findById(productId)
+                        .orElseThrow(() -> new DataNotFoundException("Product not found with id: " + productId));
+                orderDetail.setId(orderDetailExisting.getId());
+                orderDetail.setPrice(product.getPrice());
+                orderDetail.setProduct(product);
+                orderDetail.setQuantity(quantity);
+                //orderDetail.setDiscount(product.getDiscount());
+                orderDetail.setDiscount(orderDetail.getDiscount());
+                if (order.getStatus() == 5) {
+                    updateProductQuantities(orderDTO.getCartItems());
+                }
+                orderDetails.add(orderDetail);
+            }
+            orderDetailRepository.saveAll(orderDetails);
+            return order;
+//        } catch (Exception e) {
+//            throw new DataNotFoundException("error");
+//        }
     }
 
     @Override
