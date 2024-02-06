@@ -6,6 +6,7 @@ import com.eFurnitureproject.eFurniture.Responses.ProductResponse;
 import com.eFurnitureproject.eFurniture.components.LocalizationUtils;
 import com.eFurnitureproject.eFurniture.dtos.ProductDto;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
+import com.eFurnitureproject.eFurniture.models.Order;
 import com.eFurnitureproject.eFurniture.models.Product;
 import com.eFurnitureproject.eFurniture.services.impl.ProductService;
 import com.eFurnitureproject.eFurniture.utils.MessageKeys;
@@ -93,5 +94,30 @@ public class ProductController {
                 .totalPages(totalPages)
                 .build());
     }
+
+    @CrossOrigin
+    @GetMapping("/get_all")
+    public ResponseEntity<List<Product>> getAll(){
+        List<Product> productResponses = productService.getAll();
+        return ResponseEntity.ok(productResponses);
+    }
+    @CrossOrigin
+    @GetMapping("/category")
+    public ResponseEntity<?> getCategoryProduct(
+            @Valid @RequestParam(value = "category_id", required = false) Long categoryId) {
+        try {
+            List<Product> products;
+            if (categoryId == null) {
+                // Nếu không có categoryId được chỉ định, trả về tất cả các sản phẩm
+                products = productService.getAllProduct(); // Cần phải thêm phương thức getAllProducts() trong ProductService
+            } else {
+                products = productService.getProductByCategory(categoryId);
+            }
+            return ResponseEntity.ok(products);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 
 }

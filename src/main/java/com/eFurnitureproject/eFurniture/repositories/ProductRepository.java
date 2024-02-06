@@ -12,6 +12,7 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     boolean existsByName(String name);
     Page<Product> findAll(Pageable pageable);
+    List<Product> findByCategoryId(Long id);
     //Optional<Product> findById
 
     @Query("SELECT p FROM Product p " +

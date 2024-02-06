@@ -114,6 +114,16 @@ public class ProductService implements IProductService {
         return products.map(ProductConverter::toResponse);
     }
 
+    public List<Product> getAll(){
+        return productRepository.findAll();
+    }
+    public List<Product> getProductByCategory(Long id){
+        return productRepository.findByCategoryId(id);
+    }
+    public List<Product> getAllProduct(){
+        return productRepository.findAll();
+    }
+
     private String generateCodeFromName(String codeProduct) {
         return codeProduct.replaceAll("\\s", "-").toLowerCase();
     }
