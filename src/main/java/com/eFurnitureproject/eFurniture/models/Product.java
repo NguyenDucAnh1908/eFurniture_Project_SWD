@@ -60,7 +60,7 @@ public class Product extends BaseEntity{
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "product_category",nullable = false)
-    @JsonBackReference
+    //@JsonBackReference
     private Category category;
 
     @ManyToOne(cascade = {CascadeType.ALL})

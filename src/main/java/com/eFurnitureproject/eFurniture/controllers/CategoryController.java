@@ -47,7 +47,7 @@ public class CategoryController {
         }
         return ResponseEntity.ok(categoryService.updateCategory(id, categoryDTO));
     }
-
+    @CrossOrigin
     @GetMapping("")
     public List<CategoryDto> getAllCategory() {
         return categoryService.getAllCategories();
