@@ -69,7 +69,7 @@ public class ProductController {
         productCreateResponse.setProduct(tagsProduct);
         return ResponseEntity.ok(productCreateResponse);
     }
-
+@CrossOrigin
     @GetMapping("")
     public ResponseEntity<ProductListResponse> getAllProduct(
             @RequestParam(value = "keyword", required = false) String keyword,

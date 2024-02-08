@@ -63,6 +63,7 @@ public class BrandController {
         return ResponseEntity.ok(brandResponse);
     }
 
+    @CrossOrigin
     @GetMapping("")
     public ResponseEntity<List<Brand>> getAllBrand() {
         List<Brand> brands = brandService.getAllBrand();
