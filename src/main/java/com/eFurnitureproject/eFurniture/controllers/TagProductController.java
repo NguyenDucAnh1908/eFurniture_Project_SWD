@@ -62,7 +62,7 @@ public class TagProductController {
         tagProductResponse.setTagsProduct(tagsProduct);
         return ResponseEntity.ok(tagProductResponse);
     }
-
+    @CrossOrigin
     @GetMapping("")
     public ResponseEntity<List<TagsProduct>> getAllTagsProducts() {
         List<TagsProduct> tagsProducts = tagProductService.getAllTagsProducts();
