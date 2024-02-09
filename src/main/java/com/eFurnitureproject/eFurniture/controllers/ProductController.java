@@ -6,7 +6,6 @@ import com.eFurnitureproject.eFurniture.Responses.ProductResponse;
 import com.eFurnitureproject.eFurniture.components.LocalizationUtils;
 import com.eFurnitureproject.eFurniture.dtos.ProductDto;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
-import com.eFurnitureproject.eFurniture.models.Order;
 import com.eFurnitureproject.eFurniture.models.Product;
 import com.eFurnitureproject.eFurniture.services.impl.ProductService;
 import com.eFurnitureproject.eFurniture.utils.MessageKeys;
@@ -93,6 +92,14 @@ public class ProductController {
                 .products(products)
                 .totalPages(totalPages)
                 .build());
+    }
+
+
+    @CrossOrigin
+    @GetMapping("{id}")
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) throws Exception {
+        Product product = productService.getProductById(id);
+        return  ResponseEntity.ok(product);
     }
 
     @CrossOrigin

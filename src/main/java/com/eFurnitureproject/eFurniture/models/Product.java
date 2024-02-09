@@ -65,12 +65,12 @@ public class Product extends BaseEntity{
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "product_brand",nullable = false)
-    @JsonBackReference
+    //@JsonBackReference
     private Brand brand;
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "product_tags",nullable = false)
-    @JsonBackReference
+    //@JsonBackReference
     private TagsProduct tagsProduct;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
