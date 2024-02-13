@@ -90,6 +90,10 @@ public class ProductImageService implements IProductImageService {
                 .imageUrl(productImage.getImageUrl())
                 .build();
     }
+
+    public List<ProductImages> getImagesByProduct (Long id){
+        return productImageRepository.findByProductId(id);
+    }
 //@Override
 //@Transactional
 //public List<ProductImageDto> uploadFiles(List<MultipartFile> gifs, Long productId) {
