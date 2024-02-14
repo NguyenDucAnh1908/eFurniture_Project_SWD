@@ -59,5 +59,30 @@ public class AddressController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while creating the address.");
         }
     }
+
+    @PutMapping("/update/{addressId}")
+    public ResponseEntity<?> updateAddress(@PathVariable Long addressId, @RequestBody AddressDto addressDto) {
+        try {
+            Address updatedAddress = addressService.updateAddress(addressId, addressDto);
+            return ResponseEntity.ok(updatedAddress);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while updating the address.");
+        }
+    }
+
+    @DeleteMapping("/delete/{addressId}")
+    public ResponseEntity<?> deleteAddress(@PathVariable Long addressId) {
+        try {
+            addressService.deleteAddress(addressId);
+            return ResponseEntity.ok().body("Address with ID " + addressId + " has been successfully deleted.");
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while deleting the address.");
+        }
+    }
+
 }
 

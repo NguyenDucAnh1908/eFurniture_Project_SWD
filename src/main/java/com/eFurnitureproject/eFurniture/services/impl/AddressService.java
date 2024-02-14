@@ -55,12 +55,42 @@ public class AddressService implements IAddressService  {
     }
 
     @Override
-    public AddressResponse updateAddress(Long addressId, AddressDto addressDto) {
-        return null;
+    public Address updateAddress(Long addressId, AddressDto addressDto) {
+        Address existingAddress = addressRepository.findById(addressId)
+                .orElseThrow(() -> new EntityNotFoundException("Address not found with id: " + addressId));
+
+        if (addressDto.getFirstName() != null && !addressDto.getFirstName().isEmpty()) {
+            existingAddress.setFirstName(addressDto.getFirstName());
+        }
+        if (addressDto.getLastName() != null && !addressDto.getLastName().isEmpty()) {
+            existingAddress.setLastName(addressDto.getLastName());
+        }
+        if (addressDto.getStreetAddress() != null && !addressDto.getStreetAddress().isEmpty()) {
+            existingAddress.setStreetAddress(addressDto.getStreetAddress());
+        }
+        if (addressDto.getProvince() != null && !addressDto.getProvince().isEmpty()) {
+            existingAddress.setProvince(addressDto.getProvince());
+        }
+        if (addressDto.getCountry() != null && !addressDto.getCountry().isEmpty()) {
+            existingAddress.setCountry(addressDto.getCountry());
+        }
+        if (addressDto.getPhoneNumber() != null && !addressDto.getPhoneNumber().isEmpty()) {
+            existingAddress.setPhoneNumber(addressDto.getPhoneNumber());
+        }
+        if (addressDto.getPostalCode() != null && !addressDto.getPostalCode().isEmpty()) {
+            existingAddress.setPostalCode(addressDto.getPostalCode());
+        }
+
+        return addressRepository.save(existingAddress);
     }
+
+
 
     @Override
     public void deleteAddress(Long addressId) {
+        Address existingAddress = addressRepository.findById(addressId)
+                .orElseThrow(() -> new EntityNotFoundException("Address not found with id: " + addressId));
 
+        addressRepository.delete(existingAddress);
     }
 }
