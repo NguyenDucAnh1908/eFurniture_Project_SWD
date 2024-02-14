@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AddressService implements IAddressService  {
 
-    @Autowired
     private final AddressRepository addressRepository;
     private final UserRepository userRepository;
 
