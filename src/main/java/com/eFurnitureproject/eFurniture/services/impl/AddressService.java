@@ -8,6 +8,7 @@ import com.eFurnitureproject.eFurniture.models.User;
 import com.eFurnitureproject.eFurniture.repositories.AddressRepository;
 import com.eFurnitureproject.eFurniture.repositories.UserRepository;
 import com.eFurnitureproject.eFurniture.services.IAddressService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,8 +34,24 @@ public class AddressService implements IAddressService  {
     }
 
     @Override
-    public AddressResponse createAddress(AddressDto addressDto, Long userId) {
-        return null;
+    public Address createAddress(AddressDto addressDto, Long userId) {
+
+        User userid = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+
+
+        Address newAddress = Address.builder()
+                .firstName(addressDto.getFirstName())
+                .lastName(addressDto.getLastName())
+                .streetAddress(addressDto.getStreetAddress())
+                .country(addressDto.getCountry())
+                .province(addressDto.getProvince())
+                .phoneNumber(addressDto.getPhoneNumber())
+                .postalCode(addressDto.getPostalCode())
+                .user(userid)
+                .build();
+
+        return addressRepository.save(newAddress);
+
     }
 
     @Override

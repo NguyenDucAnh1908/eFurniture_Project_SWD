@@ -2,7 +2,10 @@ package com.eFurnitureproject.eFurniture.controllers;
 
 import com.eFurnitureproject.eFurniture.Responses.AddressListResponse;
 import com.eFurnitureproject.eFurniture.Responses.AddressResponse;
+import com.eFurnitureproject.eFurniture.dtos.AddressDto;
+import com.eFurnitureproject.eFurniture.models.Address;
 import com.eFurnitureproject.eFurniture.services.IAddressService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -41,6 +44,19 @@ public class AddressController {
             AddressListResponse response = new AddressListResponse();
             response.setError("Invalid user ID: " + userId);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+
+    @PostMapping("/create_address")
+    public ResponseEntity<?> createAddress(@RequestBody AddressDto addressDto, @RequestParam Long userId) {
+        try {
+            Address createdAddress = addressService.createAddress(addressDto, userId);
+            return ResponseEntity.ok(createdAddress);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while creating the address.");
         }
     }
 }
