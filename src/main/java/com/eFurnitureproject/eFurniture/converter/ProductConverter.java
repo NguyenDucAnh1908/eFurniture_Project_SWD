@@ -15,6 +15,7 @@ public class ProductConverter {
         dto.setThumbnail(entity.getThumbnail());
         dto.setPrice(entity.getPrice());
         dto.setPriceSale(entity.getPriceSale());
+        //dto.setRating(entity.getRating());
         dto.setMaterial(entity.getMaterial());
         dto.setSize(entity.getSize());
         dto.setColor(entity.getColor());
@@ -36,6 +37,7 @@ public class ProductConverter {
         entity.setQuantity(dto.getQuantity());
         entity.setPriceSale(dto.getPriceSale());
         entity.setMaterial(dto.getMaterial());
+        //entity.setRating(dto.getRating());
         entity.setSize(dto.getSize());
         entity.setColor(dto.getColor());
         entity.setCodeProduct(dto.getCodeProduct());
@@ -57,6 +59,7 @@ public class ProductConverter {
         entity.setQuantity(dto.getQuantity());
         entity.setPriceSale(dto.getPriceSale());
         entity.setMaterial(dto.getMaterial());
+        //entity.setRating(dto.getRating());
         entity.setSize(dto.getSize());
         entity.setColor(dto.getColor());
         entity.setCodeProduct(dto.getCodeProduct());
@@ -79,6 +82,7 @@ public class ProductConverter {
                 .size(product.getSize())
                 .color(product.getColor())
                 .codeProduct(product.getCodeProduct())
+                //.rating(product.getRating())
                 .quantitySold(product.getQuantitySold())
                 .status(product.getStatus())
                 .discount(product.getDiscount())
