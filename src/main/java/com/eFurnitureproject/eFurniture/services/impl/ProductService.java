@@ -4,7 +4,10 @@ import com.eFurnitureproject.eFurniture.Responses.ProductResponse;
 import com.eFurnitureproject.eFurniture.converter.ProductConverter;
 import com.eFurnitureproject.eFurniture.dtos.ProductDto;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
-import com.eFurnitureproject.eFurniture.models.*;
+import com.eFurnitureproject.eFurniture.models.Brand;
+import com.eFurnitureproject.eFurniture.models.Category;
+import com.eFurnitureproject.eFurniture.models.Product;
+import com.eFurnitureproject.eFurniture.models.TagsProduct;
 import com.eFurnitureproject.eFurniture.repositories.*;
 import com.eFurnitureproject.eFurniture.services.IProductService;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +59,10 @@ public class ProductService implements IProductService {
                                 "Cannot find category with id: " + productDto.getTagsProductId()));
 
         Product product = ProductConverter.toEntity(productDto);
+        double discount = productDto.getDiscount() != null ? productDto.getDiscount() : 0.0;
+        double price = product.getPrice();
+        double priceSale = price * ((100 - discount) / 100);
+        product.setPriceSale(priceSale);
         product.setCodeProduct(generatedCode);
         product.setCategory(existingCategory);
         product.setBrand(existingBrand);
