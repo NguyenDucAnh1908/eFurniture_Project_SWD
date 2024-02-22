@@ -14,6 +14,7 @@ public class BlogConverter {
         dto.setTitle(entity.getTitle());
         dto.setContent(entity.getContent());
         dto.setThumbnail(entity.getThumbnail());
+        dto.setImageUrls(entity.getImageUrls());
         dto.setUserBlogId(entity.getUser().getId());
         dto.setTagBlogId(entity.getTagsBlog().getId());
 //        dto.setCategoryBlogId(entity.getCategoryBlog().getId());
@@ -51,11 +52,11 @@ public class BlogConverter {
                 .title(blog.getTitle())
                 .content(blog.getContent())
                 .thumbnail(blog.getThumbnail())
+                .imageUrls(blog.getImageUrls())
                 .userBlogId(blog.getUser().getId())
                 .tagBlogId(blog.getTagsBlog().getId())
                 .categoryBlogId(blog.getCategoryBlog().getId())
                 .active(blog.isActive())
-                .thumbnail(blog.getThumbnail())
                 .build();
         return blogResponse;
     }

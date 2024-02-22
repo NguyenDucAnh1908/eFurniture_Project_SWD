@@ -27,6 +27,7 @@
         private final BlogService blogService;
         private final BlogRepository blogRepository;
 
+        @CrossOrigin(origins = "http://localhost:3003")
         @GetMapping("/get_all_blogs")
         public ResponseEntity<BlogListResponse> getAllBlogs(
                 @RequestParam(value = "keyword", required = false) String keyword,
@@ -42,12 +43,34 @@
                     .build());
         }
 
+        @CrossOrigin(origins = "http://localhost:3003")
+        @PostMapping("/create_blog")
+        public ResponseEntity<?> createBlog(@RequestBody BlogDto blogDto) {
+            try {
+                Blog createdBlog = blogService.createBlog(blogDto);
+                return ResponseEntity.ok(createdBlog);
+            } catch (EntityNotFoundException e) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            }
+        }
+
+
+/*
         @PostMapping("/create_blog")
         public ResponseEntity<BlogResponse> createBlog(@RequestBody @Valid BlogDto blogDto) {
-            Blog createdBlog = blogService.createBlog(blogDto);
-            BlogResponse blogResponse = BlogConverter.toResponse(createdBlog);
-            return ResponseEntity.ok(blogResponse);
+            try {
+                Blog createdBlog = blogService.createBlog(blogDto);
+                BlogResponse blogResponse = BlogConverter.toResponse(createdBlog);
+                return ResponseEntity.ok(blogResponse);
+            } catch (EntityNotFoundException | IOException e) {
+                // Trường hợp có lỗi xảy ra trong quá trình tạo blog
+                // Ví dụ: Không tìm thấy người dùng hoặc thẻ
+                // hoặc lỗi khi upload ảnh lên Cloudinary
+                // Chúng ta trả về HTTP status 400 (Bad Request)
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            }
         }
+*/
 
         @PutMapping("/update_blog/{blogId}")
         public ResponseEntity<?> updateBlog(
@@ -73,6 +96,7 @@
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image");
             }
         }
+        @CrossOrigin(origins = "http://localhost:3003")
         @DeleteMapping("/delete_blog/{blogId}")
         public ResponseEntity<BlogResponse> deleteBlog(@PathVariable Long blogId) throws EntityNotFoundException {
             BlogResponse deletedBlog = blogService.DeactivateBlog(blogId);

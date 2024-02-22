@@ -1,5 +1,8 @@
 package com.eFurnitureproject.eFurniture.services.impl;
 
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.jsoup.nodes.Document;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.eFurnitureproject.eFurniture.Responses.BlogResponse;
@@ -16,6 +19,7 @@ import com.eFurnitureproject.eFurniture.repositories.UserRepository;
 import com.eFurnitureproject.eFurniture.services.IBlogService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -33,8 +39,8 @@ public class BlogService implements IBlogService {
     private  final CategoryBlogRepository categoryBlogRepository;
     private final UserRepository userRepository;
     private final TagsBlogRepository tagsBlogRepository;
-    @Autowired
-    private Cloudinary cloudinary;
+
+    private final Cloudinary cloudinary;
 
 
     @Override
@@ -48,6 +54,7 @@ public class BlogService implements IBlogService {
 
     @Override
     public Blog createBlog(BlogDto blogDto) throws EntityNotFoundException {
+        // Lấy thông tin từ DTO
         CategoryBlog existingCategory = categoryBlogRepository
                 .findById(blogDto.getCategoryBlogId())
                 .orElseThrow(() ->
@@ -64,6 +71,7 @@ public class BlogService implements IBlogService {
                         new EntityNotFoundException(
                                 "Cannot find tagsBlog with id: " + blogDto.getTagBlogId()));
 
+        // Tạo đối tượng Blog mới
         Blog newBlog = Blog.builder()
                 .title(blogDto.getTitle())
                 .content(blogDto.getContent())
@@ -74,10 +82,50 @@ public class BlogService implements IBlogService {
                 .active(true)
                 .build();
 
+        // Phân tích nội dung HTML để trích xuất URL hình ảnh
+        Document doc = Jsoup.parse(blogDto.getContent());
+        Elements imgTags = doc.select("img");
+        List<String> imageURLs = new ArrayList<>();
+        for (Element imgTag : imgTags) {
+            String url = imgTag.attr("src");
+            // Tải hình ảnh lên Cloudinary và lưu URL mới
+            String newURL = uploadToCloudinaryAndReturnURL(url);
+            // Thay thế URL cũ trong nội dung bằng URL mới
+            imgTag.attr("src", newURL);
+            // Lưu URL mới vào danh sách
+            imageURLs.add(newURL);
+        }
+
+        // Lưu danh sách các URL mới vào trường imageUrls
+        newBlog.setImageUrls(String.join(",", imageURLs));
+
+
+
+
+// Lưu nội dung đã được cập nhật vào đối tượng Blog
+        String updatedContent = doc.html();
+        newBlog.setContent(updatedContent);
+
+
+        // Lưu Blog vào cơ sở dữ liệu
         Blog savedBlog = blogRepository.save(newBlog);
         return savedBlog;
     }
 
+
+    private String uploadToCloudinaryAndReturnURL(String imageURL) {
+        try {
+            // Upload hình ảnh lên Cloudinary
+            Map uploadResult = cloudinary.uploader().upload(imageURL, ObjectUtils.emptyMap());
+
+            // Trả về URL mới của hình ảnh đã được tải lên Cloudinary
+            return (String) uploadResult.get("url");
+        } catch (IOException e) {
+            // Xử lý ngoại lệ nếu có lỗi khi tải hình ảnh lên Cloudinary
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 
     @Override

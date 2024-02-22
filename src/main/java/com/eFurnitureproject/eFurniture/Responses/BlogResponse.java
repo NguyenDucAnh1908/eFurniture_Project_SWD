@@ -15,6 +15,7 @@ public class BlogResponse {
     private String title;
     private String content;
     private String thumbnail;
+    private String imageUrls;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Long userBlogId; // Assuming you want to use userBlogId instead of User object directly
 
