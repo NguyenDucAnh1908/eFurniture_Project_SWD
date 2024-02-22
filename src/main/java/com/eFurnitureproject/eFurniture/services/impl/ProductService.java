@@ -105,10 +105,10 @@ public class ProductService implements IProductService {
 
     public Page<ProductResponse> getAllProducts(String keyword, PageRequest pageRequest,
                                            Double minPrice, Double maxPrice,
-                                           Long brandId, Long tagsProductId, Long categoryId) {
+                                                List<Long> brandIds, List<Long> tagsProductIds, List<Long> categoryIds) {
         Page<Product> products;
         products = productRepository.searchProducts(
-                keyword, pageRequest, minPrice, maxPrice, brandId, tagsProductId, categoryId);
+                keyword, pageRequest, minPrice, maxPrice, brandIds, tagsProductIds, categoryIds);
         return products.map(product -> {
             ProductResponse response = ProductConverter.toResponse(product);
             Double averageRating = feedbackRepository.findAverageRatingByProductId(product.getId());
