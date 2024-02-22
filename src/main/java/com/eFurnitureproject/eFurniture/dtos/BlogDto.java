@@ -30,9 +30,9 @@ public class BlogDto {
 
     private boolean active;
 
-    private Long userBlogId; // Assuming you want to use userBlogId instead of User object directly
+    private Long userBlogId;
 
-    private Long tagBlogId; // Assuming you want to use tagBlogId instead of TagsBlog object directly
+    private Long tagBlogId;
 
-    private Long categoryBlogId; // Assuming you want to use categoryBlogId instead of CategoryBlog object directly
+    private Long categoryBlogId;
 }
