@@ -27,7 +27,7 @@
         private final BlogService blogService;
         private final BlogRepository blogRepository;
 
-        @CrossOrigin(origins = "http://localhost:3003")
+        @CrossOrigin
         @GetMapping("/get_all_blogs")
         public ResponseEntity<BlogListResponse> getAllBlogs(
                 @RequestParam(value = "keyword", required = false) String keyword,
@@ -43,7 +43,7 @@
                     .build());
         }
 
-        @CrossOrigin(origins = "http://localhost:3003")
+        @CrossOrigin
         @PostMapping("/create_blog")
         public ResponseEntity<?> createBlog(@RequestBody BlogDto blogDto) {
             try {
@@ -96,7 +96,7 @@
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image");
             }
         }
-        @CrossOrigin(origins = "http://localhost:3003")
+        @CrossOrigin
         @DeleteMapping("/delete_blog/{blogId}")
         public ResponseEntity<BlogResponse> deleteBlog(@PathVariable Long blogId) throws EntityNotFoundException {
             BlogResponse deletedBlog = blogService.DeactivateBlog(blogId);
