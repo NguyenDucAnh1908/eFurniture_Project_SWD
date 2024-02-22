@@ -22,15 +22,17 @@ public class BlogDto {
     private String title;
 
     @NotBlank(message = "Content is required")
-    @Size(min = 0, max = 1000000, message = "Content must be between 0 and 1000000 characters")
+    @Size(min = 0, max = 65535, message = "Content must be between 0 and 1000000 characters")
     private String content;
 
     private String thumbnail;
+    private String imageUrls;
+
     private boolean active;
 
-    private Long userBlogId; // Assuming you want to use userBlogId instead of User object directly
+    private Long userBlogId;
 
-    private Long tagBlogId; // Assuming you want to use tagBlogId instead of TagsBlog object directly
+    private Long tagBlogId;
 
-    private Long categoryBlogId; // Assuming you want to use categoryBlogId instead of CategoryBlog object directly
+    private Long categoryBlogId;
 }

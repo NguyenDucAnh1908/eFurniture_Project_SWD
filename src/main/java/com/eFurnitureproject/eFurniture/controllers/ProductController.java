@@ -104,8 +104,8 @@ public class ProductController {
 
     @CrossOrigin
     @GetMapping("/get_all")
-    public ResponseEntity<List<Product>> getAll(){
-        List<Product> productResponses = productService.getAll();
+    public ResponseEntity<List<ProductResponse>> getAll(){
+        List<ProductResponse> productResponses = productService.getAll();
         return ResponseEntity.ok(productResponses);
     }
     @CrossOrigin
@@ -113,10 +113,10 @@ public class ProductController {
     public ResponseEntity<?> getCategoryProduct(
             @Valid @RequestParam(value = "category_id", required = false) Long categoryId) {
         try {
-            List<Product> products;
+            List<ProductResponse> products;
             if (categoryId == null) {
                 // Nếu không có categoryId được chỉ định, trả về tất cả các sản phẩm
-                products = productService.getAllProduct(); // Cần phải thêm phương thức getAllProducts() trong ProductService
+                products = productService.getAll(); // Cần phải thêm phương thức getAllProducts() trong ProductService
             } else {
                 products = productService.getProductByCategory(categoryId);
             }
