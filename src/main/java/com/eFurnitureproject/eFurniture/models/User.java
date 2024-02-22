@@ -2,7 +2,7 @@ package com.eFurnitureproject.eFurniture.models;
 
 import com.eFurnitureproject.eFurniture.models.Enum.Role;
 
-import com.eFurnitureproject.eFurniture.models.Enum.TokenType;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.persistence.*;
@@ -19,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Data
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
