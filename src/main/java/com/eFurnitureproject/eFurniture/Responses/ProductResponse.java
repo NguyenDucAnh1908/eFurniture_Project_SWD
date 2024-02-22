@@ -33,7 +33,8 @@ public class ProductResponse extends BaseResponse{
     @JsonProperty("quantity_sold")
     private int quantitySold;
     private int status;
-    private String discount;
+    private Double rating;
+    private Double discount;
     @JsonProperty("category_id")
     private Long categoryId;  // Field to represent Category ID
     @JsonProperty("brand_id")
