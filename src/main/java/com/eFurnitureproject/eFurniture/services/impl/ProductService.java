@@ -60,9 +60,9 @@ public class ProductService implements IProductService {
 
         Product product = ProductConverter.toEntity(productDto);
         double discount = productDto.getDiscount() != null ? productDto.getDiscount() : 0.0;
-        double price = product.getPrice();
-        double priceSale = price * ((100 - discount) / 100);
-        product.setPriceSale(priceSale);
+        double priceSale = product.getPriceSale();
+        double price = priceSale * ((100 - discount) / 100);
+        product.setPrice(price);
         product.setCodeProduct(generatedCode);
         product.setCategory(existingCategory);
         product.setBrand(existingBrand);

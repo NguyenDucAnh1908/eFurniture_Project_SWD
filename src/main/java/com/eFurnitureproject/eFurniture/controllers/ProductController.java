@@ -92,10 +92,12 @@ public class ProductController {
         Page<ProductResponse> productPage = productService.getAllProducts(
                 keyword, pageRequest, minPrice, maxPrice, parsedBrandIds, parsedTagsProductIds, parsedCategoryIds);
         int totalPages = productPage.getTotalPages();
+        Long totalProduct = productPage.getTotalElements();
         List<ProductResponse> products = productPage.getContent();
         return ResponseEntity.ok(ProductListResponse.builder()
                 .products(products)
                 .totalPages(totalPages)
+                .totalProducts(totalProduct)
                 .build());
     }
 
