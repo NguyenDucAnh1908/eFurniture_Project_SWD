@@ -28,13 +28,23 @@
         private final BlogRepository blogRepository;
 
         @CrossOrigin
+        @GetMapping("/get-blog-detail/{id}")
+        public ResponseEntity<?> getBlogById(@PathVariable("id") Long id) {
+            try {
+                Blog blog = blogService.getBlogById(id);
+                return new ResponseEntity<>(blog, HttpStatus.OK);
+            } catch (Exception e) {
+                return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            }
+        }
+        @CrossOrigin
         @GetMapping("/get_all_blogs")
         public ResponseEntity<BlogListResponse> getAllBlogs(
                 @RequestParam(value = "keyword", required = false) String keyword,
                 @RequestParam(value = "page", defaultValue = "0") int page,
                 @RequestParam(value = "size", defaultValue = "10") int size) {
             PageRequest pageRequest = PageRequest.of(page, size);
-            Page<BlogResponse> blogsPage = blogService.getAllBlogs(keyword, pageRequest, null, null);
+            Page<BlogResponse> blogsPage = blogService.getAllBlogs(keyword, pageRequest, null);
             int totalPages = blogsPage.getTotalPages();
             List<BlogResponse> blogList = blogsPage.getContent();
             return ResponseEntity.ok(BlogListResponse.builder()
@@ -45,7 +55,7 @@
 
         @CrossOrigin
         @PostMapping("/create_blog")
-        public ResponseEntity<?> createBlog(@RequestBody BlogDto blogDto) {
+        public ResponseEntity<?> createBlog(@RequestBody @Valid BlogDto blogDto) {
             try {
                 Blog createdBlog = blogService.createBlog(blogDto);
                 return ResponseEntity.ok(createdBlog);
@@ -53,24 +63,6 @@
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
             }
         }
-
-
-/*
-        @PostMapping("/create_blog")
-        public ResponseEntity<BlogResponse> createBlog(@RequestBody @Valid BlogDto blogDto) {
-            try {
-                Blog createdBlog = blogService.createBlog(blogDto);
-                BlogResponse blogResponse = BlogConverter.toResponse(createdBlog);
-                return ResponseEntity.ok(blogResponse);
-            } catch (EntityNotFoundException | IOException e) {
-                // Trường hợp có lỗi xảy ra trong quá trình tạo blog
-                // Ví dụ: Không tìm thấy người dùng hoặc thẻ
-                // hoặc lỗi khi upload ảnh lên Cloudinary
-                // Chúng ta trả về HTTP status 400 (Bad Request)
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-            }
-        }
-*/
 
         @PutMapping("/update_blog/{blogId}")
         public ResponseEntity<?> updateBlog(
@@ -84,6 +76,7 @@
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Blog is deactivated.");
             }
         }
+
 
 
         @PostMapping("/{blogId}/upload_thumbnail")

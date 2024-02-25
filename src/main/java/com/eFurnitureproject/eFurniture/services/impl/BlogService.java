@@ -20,7 +20,6 @@ import com.eFurnitureproject.eFurniture.services.IBlogService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -45,40 +44,56 @@ public class BlogService implements IBlogService {
 
     @Override
     public Page<BlogResponse> getAllBlogs(String keyword, Pageable pageable,
-                                          Long userBlogId, Long tagsBlogId) {
+                                          Long userBlogId) {
         Page<Blog> blogs = blogRepository.searchBlogs(
-                keyword, pageable, userBlogId, tagsBlogId);
+                keyword, pageable, userBlogId);
 
         return blogs.map(BlogConverter::toResponse);
     }
 
     @Override
+    public Blog getBlogById(Long blogId) throws Exception {
+        Optional<Blog> optionalBlog = blogRepository.findById(blogId);
+
+        if (optionalBlog.isPresent()) {
+            return optionalBlog.get();
+        } else {
+            throw new Exception("Can not find Blog with id= " + blogId);
+        }
+    }
+
+
+    @Override
     public Blog createBlog(BlogDto blogDto) throws EntityNotFoundException {
         // Lấy thông tin từ DTO
-        CategoryBlog existingCategory = categoryBlogRepository
-                .findById(blogDto.getCategoryBlogId())
-                .orElseThrow(() ->
-                        new EntityNotFoundException(
-                                "Cannot find category with id: " + blogDto.getCategoryBlogId()));
+        List<CategoryBlog> existingCategories = new ArrayList<>();
+        for (Long categoryId : blogDto.getCategoryBlogIds()) {
+            CategoryBlog category = categoryBlogRepository.findById(categoryId)
+                    .orElseThrow(() -> new EntityNotFoundException("Cannot find category with id: " + categoryId));
+            existingCategories.add(category);
+        }
+
+        List<TagsBlog> existingTags = new ArrayList<>();
+        for (Long tagId : blogDto.getTagBlogIds()) {
+            TagsBlog tag = tagsBlogRepository.findById(tagId)
+                    .orElseThrow(() -> new EntityNotFoundException("Cannot find tag with id: " + tagId));
+            existingTags.add(tag);
+        }
+
         User existingUser = userRepository
                 .findById(blogDto.getUserBlogId())
                 .orElseThrow(() ->
                         new EntityNotFoundException(
                                 "Cannot find user with id: " + blogDto.getUserBlogId()));
-        TagsBlog existingTagsBlog = tagsBlogRepository
-                .findById(blogDto.getTagBlogId())
-                .orElseThrow(() ->
-                        new EntityNotFoundException(
-                                "Cannot find tagsBlog with id: " + blogDto.getTagBlogId()));
 
         // Tạo đối tượng Blog mới
         Blog newBlog = Blog.builder()
                 .title(blogDto.getTitle())
                 .content(blogDto.getContent())
                 .thumbnail(blogDto.getThumbnail())
-                .categoryBlog(existingCategory)
+                .categories(existingCategories)
+                .tagsBlog(existingTags)
                 .user(existingUser)
-                .tagsBlog(existingTagsBlog)
                 .active(true)
                 .build();
 
@@ -99,18 +114,16 @@ public class BlogService implements IBlogService {
         // Lưu danh sách các URL mới vào trường imageUrls
         newBlog.setImageUrls(String.join(",", imageURLs));
 
-
-
-
-// Lưu nội dung đã được cập nhật vào đối tượng Blog
+        // Lưu nội dung đã được cập nhật vào đối tượng Blog
         String updatedContent = doc.html();
         newBlog.setContent(updatedContent);
-
 
         // Lưu Blog vào cơ sở dữ liệu
         Blog savedBlog = blogRepository.save(newBlog);
         return savedBlog;
     }
+
+
 
 
     private String uploadToCloudinaryAndReturnURL(String imageURL) {
@@ -135,7 +148,7 @@ public class BlogService implements IBlogService {
 
         Optional<Blog> blog = blogRepository.findByIdAndActive(blogId, true);
 
-        if(blog.isPresent()) {
+        if (blog.isPresent()) {
             if (updatedBlogDto.getTitle() != null) {
                 existingBlog.setTitle(updatedBlogDto.getTitle());
             }
@@ -146,13 +159,26 @@ public class BlogService implements IBlogService {
                 existingBlog.setThumbnail(updatedBlogDto.getThumbnail());
             }
 
-            if (!existingBlog.getCategoryBlog().getId().equals(updatedBlogDto.getCategoryBlogId())) {
-                CategoryBlog existingCategory = categoryBlogRepository
-                        .findById(updatedBlogDto.getCategoryBlogId())
-                        .orElseThrow(() ->
-                                new EntityNotFoundException(
-                                        "Cannot find category with id: " + updatedBlogDto.getCategoryBlogId()));
-                existingBlog.setCategoryBlog(existingCategory);
+            // Cập nhật danh sách các danh mục
+            if (updatedBlogDto.getCategoryBlogIds() != null && !updatedBlogDto.getCategoryBlogIds().isEmpty()) {
+                List<CategoryBlog> existingCategories = new ArrayList<>();
+                for (Long categoryId : updatedBlogDto.getCategoryBlogIds()) {
+                    CategoryBlog category = categoryBlogRepository.findById(categoryId)
+                            .orElseThrow(() -> new EntityNotFoundException("Cannot find category with id: " + categoryId));
+                    existingCategories.add(category);
+                }
+                existingBlog.setCategories(existingCategories);
+            }
+
+            // Cập nhật danh sách các thẻ
+            if (updatedBlogDto.getTagBlogIds() != null && !updatedBlogDto.getTagBlogIds().isEmpty()) {
+                List<TagsBlog> existingTags = new ArrayList<>();
+                for (Long tagId : updatedBlogDto.getTagBlogIds()) {
+                    TagsBlog tag = tagsBlogRepository.findById(tagId)
+                            .orElseThrow(() -> new EntityNotFoundException("Cannot find tag with id: " + tagId));
+                    existingTags.add(tag);
+                }
+                existingBlog.setTagsBlog(existingTags);
             }
 
             if (!existingBlog.getUser().getId().equals(updatedBlogDto.getUserBlogId())) {
@@ -164,21 +190,13 @@ public class BlogService implements IBlogService {
                 existingBlog.setUser(existingUser);
             }
 
-            if (!existingBlog.getTagsBlog().getId().equals(updatedBlogDto.getTagBlogId())) {
-                TagsBlog existingTagsBlog = tagsBlogRepository
-                        .findById(updatedBlogDto.getTagBlogId())
-                        .orElseThrow(() ->
-                                new EntityNotFoundException(
-                                        "Cannot find tagsBlog with id: " + updatedBlogDto.getTagBlogId()));
-                existingBlog.setTagsBlog(existingTagsBlog);
-            }
-//            updatedBlogDto.setActive(true);
             return blogRepository.save(existingBlog);
-        }
-        else{
+        } else {
             return null;
         }
     }
+
+
 
     public String uploadThumbnailToCloudinary(Long blogId, MultipartFile image) throws IOException {
         Blog blog = blogRepository.findById(blogId)

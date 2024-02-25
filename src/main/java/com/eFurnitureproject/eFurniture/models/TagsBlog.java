@@ -21,7 +21,5 @@ public class TagsBlog  extends BaseEntity{
     private String tagName;
     private String code;
 
-//    @OneToMany(mappedBy = "tagsBlog", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JsonManagedReference
-//    private List<Blog> blogs;
+
 }
