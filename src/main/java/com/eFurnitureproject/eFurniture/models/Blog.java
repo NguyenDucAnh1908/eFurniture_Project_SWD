@@ -43,7 +43,7 @@ public class Blog extends BaseEntity{
     private List<CategoryBlog> categories;
 
     @ManyToMany(cascade = {CascadeType.ALL})
-    @JoinTable( name= "blog_tags",
+    @JoinTable( name= "blog_tag",
             joinColumns = @JoinColumn(name = "blog_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_blog_id",nullable = true))
     private List<TagsBlog> tagsBlog;
