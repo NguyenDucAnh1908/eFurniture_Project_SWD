@@ -21,5 +21,4 @@ public class TagsBlog  extends BaseEntity{
     private String tagName;
     private String code;
 
-
 }

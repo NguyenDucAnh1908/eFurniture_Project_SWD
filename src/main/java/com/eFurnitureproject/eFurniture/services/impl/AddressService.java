@@ -10,7 +10,6 @@ import com.eFurnitureproject.eFurniture.repositories.UserRepository;
 import com.eFurnitureproject.eFurniture.services.IAddressService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -43,10 +42,10 @@ public class AddressService implements IAddressService  {
                 .firstName(addressDto.getFirstName())
                 .lastName(addressDto.getLastName())
                 .streetAddress(addressDto.getStreetAddress())
-                .country(addressDto.getCountry())
+                .ward(addressDto.getWard())
+                .district(addressDto.getDistrict())
                 .province(addressDto.getProvince())
                 .phoneNumber(addressDto.getPhoneNumber())
-                .postalCode(addressDto.getPostalCode())
                 .user(userid)
                 .build();
 
@@ -71,15 +70,11 @@ public class AddressService implements IAddressService  {
         if (addressDto.getProvince() != null && !addressDto.getProvince().isEmpty()) {
             existingAddress.setProvince(addressDto.getProvince());
         }
-        if (addressDto.getCountry() != null && !addressDto.getCountry().isEmpty()) {
-            existingAddress.setCountry(addressDto.getCountry());
-        }
+
         if (addressDto.getPhoneNumber() != null && !addressDto.getPhoneNumber().isEmpty()) {
             existingAddress.setPhoneNumber(addressDto.getPhoneNumber());
         }
-        if (addressDto.getPostalCode() != null && !addressDto.getPostalCode().isEmpty()) {
-            existingAddress.setPostalCode(addressDto.getPostalCode());
-        }
+
 
         return addressRepository.save(existingAddress);
     }

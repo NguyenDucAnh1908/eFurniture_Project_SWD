@@ -18,9 +18,9 @@ public class EFurnitureApplication {
 	public Cloudinary cloudinaryConfig() {
 		Cloudinary cloudinary = null;
 		Map config = new HashMap<>();
-		config.put("cloud_name", "dbzzkebfm");
-		config.put("api_key", "491474858821112");
-		config.put("api_secret", "FRYILcI0JEt7BcVnrr2BecTBlak");
+		config.put("cloud_name", "dwqq0mx4j");
+		config.put("api_key", "485134685654857");
+		config.put("api_secret", "lFJj6FmcE2owKBgm_1UGvb4-m6M");
 
 		cloudinary = new Cloudinary(config);
 		return cloudinary;
@@ -30,7 +30,7 @@ public class EFurnitureApplication {
 //		config.put("api_key", "491474858821112");
 //		config.put("api_secret", "FRYILcI0JEt7BcVnrr2BecTBlak");
 
-		//CHANH
+//		CHANH
 //		config.put("cloud_name", "dwqq0mx4j");
 //		config.put("api_key", "485134685654857");
 //		config.put("api_secret", "lFJj6FmcE2owKBgm_1UGvb4-m6M");

@@ -118,6 +118,10 @@ public class BlogService implements IBlogService {
         String updatedContent = doc.html();
         newBlog.setContent(updatedContent);
 
+        // Lấy URL đầu tiên từ danh sách imageURLs để sử dụng làm thumbnail
+        String thumbnailURL = imageURLs.isEmpty() ? null : imageURLs.get(0);
+        newBlog.setThumbnail(thumbnailURL);
+
         // Lưu Blog vào cơ sở dữ liệu
         Blog savedBlog = blogRepository.save(newBlog);
         return savedBlog;
