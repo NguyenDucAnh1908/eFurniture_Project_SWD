@@ -58,11 +58,12 @@
         public ResponseEntity<?> createBlog(@RequestBody @Valid BlogDto blogDto) {
             try {
                 Blog createdBlog = blogService.createBlog(blogDto);
-                return ResponseEntity.ok(createdBlog);
+                return ResponseEntity.status(HttpStatus.CREATED).body(createdBlog); // Trả về HTTP status code 201 CREATED khi tạo blog thành công
             } catch (EntityNotFoundException e) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
             }
         }
+
 
         @PutMapping("/update_blog/{blogId}")
         public ResponseEntity<?> updateBlog(
@@ -89,6 +90,8 @@
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image");
             }
         }
+
+
         @CrossOrigin
         @DeleteMapping("/delete_blog/{blogId}")
         public ResponseEntity<BlogResponse> deleteBlog(@PathVariable Long blogId) throws EntityNotFoundException {

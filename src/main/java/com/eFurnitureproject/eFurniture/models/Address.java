@@ -25,17 +25,18 @@ public class Address extends BaseEntity{
     @Column(name = "street_address", length = 500)
     private String streetAddress;
 
-    @Column(name = "province", length = 255)
+    @Column(name = "ward", length = 500)
+    private String ward;
+
+    @Column(name = "district", length = 500)
+    private String district;
+
+    @Column(name = "province", length = 500)
     private String province;
 
-    @Column(name = "country", length = 255)
-    private String country;
-
-    @Column(name = "phone_number", length = 255)
+    @Column(name = "phone_number", length = 500)
     private String phoneNumber;
 
-    @Column(name = "postal_code", length = 255)
-    private String postalCode;
 
     @ManyToOne
     @JoinColumn(name = "user_address",nullable = false)

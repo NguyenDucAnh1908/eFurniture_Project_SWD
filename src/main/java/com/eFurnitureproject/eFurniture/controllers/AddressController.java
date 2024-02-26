@@ -24,6 +24,7 @@ public class AddressController {
 
     private final IAddressService addressService;
 
+    @CrossOrigin
     @GetMapping("/get_all_address_by_id/{userId}")
     public ResponseEntity<AddressListResponse> getAllAddressesByUserId(
             @PathVariable Long userId,

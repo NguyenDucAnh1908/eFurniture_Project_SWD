@@ -12,9 +12,9 @@ public class AddressResponse {
     private String firstName;
     private String lastName;
     private String streetAddress;
+    private String ward;
+    private String district;
     private String province;
-    private String country;
     private String phoneNumber;
-    private String postalCode;
     //private Long userAddressId;
 }
