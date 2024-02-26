@@ -43,6 +43,9 @@ public class Address extends BaseEntity{
     @JsonBackReference
     private User user;
 
-    // Getters and setters
+    public void setUser(User user) {
+        this.user = user;
+    }
+
 
 }
