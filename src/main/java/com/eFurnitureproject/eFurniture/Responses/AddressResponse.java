@@ -16,5 +16,11 @@ public class AddressResponse {
     private String district;
     private String province;
     private String phoneNumber;
-    //private Long userAddressId;
+
+
+    private UserResponse user;
+
+    public void setUser(UserResponse user) {
+        this.user = user;
+    }
 }

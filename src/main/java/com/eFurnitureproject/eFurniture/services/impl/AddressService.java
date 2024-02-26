@@ -1,6 +1,7 @@
 package com.eFurnitureproject.eFurniture.services.impl;
 
 import com.eFurnitureproject.eFurniture.Responses.AddressResponse;
+import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.converter.AddressConverter;
 import com.eFurnitureproject.eFurniture.dtos.AddressDto;
 import com.eFurnitureproject.eFurniture.models.Address;
@@ -25,12 +26,36 @@ public class AddressService implements IAddressService  {
 
     @Override
     public Page<AddressResponse> getAllAddressesByUserId(Long userId, Pageable pageable, String keyword) {
-        userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
 
-        return addressRepository.searchAddress(keyword, pageable, userId)
-                .map(AddressConverter::toResponse);
+        Page<Address> addressPage = addressRepository.searchAddress(keyword, pageable, userId);
+
+        // Tạo một Page<AddressResponse> mới bằng cách ánh xạ từ Page<Address>
+        Page<AddressResponse> addressResponsePage = addressPage.map(address -> {
+            AddressResponse addressResponse = AddressConverter.toResponse(address);
+
+            UserResponse userResponse = UserResponse.builder()
+                    .id(user.getId())
+                    .fullName(user.getFullName())
+                    .phoneNumber(user.getPhoneNumber())
+                    .address(user.getAddress())
+                    .password(user.getPassword())
+                    .active(user.isActive())
+                    .dateOfBirth(user.getDateOfBirth())
+                    .facebookAccountId(user.getFacebookAccountId())
+                    .googleAccountId(user.getGoogleAccountId())
+                    .build();
+
+            addressResponse.setUser(userResponse);
+
+            return addressResponse;
+        });
+
+        return addressResponsePage;
     }
+
+
 
     @Override
     public Address createAddress(AddressDto addressDto, Long userId) {
