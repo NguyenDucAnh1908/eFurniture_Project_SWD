@@ -25,10 +25,15 @@ spring:
     default-locale: en
 api:
   prefix: api/v1
-#jwt:
-#  expiration: 2592000 #30 days = 30 * 24 * 60 * 60
-#  secretKey: TaqlmGv1iEDMRiFp/pHuID1+T84IABfuA0xXh4GhiUI=
 
-#logging.level.org.springframework.security: DEBUG
+application:
+  security:
+    jwt:
+      secret-key: "f732d7b5cdea20b0a9a5f3067f245f9f2b24f247684a736a761e623d3de24928"
+      expiration: 86400000
+      refresh-token:
+        expiration: 604800000
+
+
 
 
