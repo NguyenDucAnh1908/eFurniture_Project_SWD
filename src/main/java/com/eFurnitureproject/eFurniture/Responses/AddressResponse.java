@@ -12,9 +12,19 @@ public class AddressResponse {
     private String firstName;
     private String lastName;
     private String streetAddress;
-    private String province;
-    private String country;
+    private String wardCode;
+    private String districtCode;
+    private String provinceCode;
+    private String wardName;
+    private String districtName;
+    private String provinceName;
     private String phoneNumber;
-    private String postalCode;
-    //private Long userAddressId;
+    private String status;
+
+
+    private UserResponse user;
+
+    public void setUser(UserResponse user) {
+        this.user = user;
+    }
 }

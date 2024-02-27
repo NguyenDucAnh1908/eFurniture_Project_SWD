@@ -1,10 +1,14 @@
 package com.eFurnitureproject.eFurniture.converter;
 
-
+import com.eFurnitureproject.eFurniture.models.CategoryBlog;
 import com.eFurnitureproject.eFurniture.Responses.BlogResponse;
 import com.eFurnitureproject.eFurniture.dtos.BlogDto;
 import com.eFurnitureproject.eFurniture.models.Blog;
+import com.eFurnitureproject.eFurniture.models.TagsBlog;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class BlogConverter {
@@ -16,7 +20,7 @@ public class BlogConverter {
         dto.setThumbnail(entity.getThumbnail());
         dto.setImageUrls(entity.getImageUrls());
         dto.setUserBlogId(entity.getUser().getId());
-        dto.setTagBlogId(entity.getTagsBlog().getId());
+//        dto.setTagBlogId(entity.getTagsBlog().getId());
 //        dto.setCategoryBlogId(entity.getCategoryBlog().getId());
         return dto;
     }
@@ -47,6 +51,17 @@ public class BlogConverter {
     }
 
     public static BlogResponse toResponse(Blog blog) {
+        List<Long> categoryIds = blog.getCategories().stream()
+                .map(CategoryBlog::getId)
+                .collect(Collectors.toList());
+
+        List<Long> tagBlogIds = blog.getTagsBlog().stream()
+                .map(TagsBlog::getId)
+                .collect(Collectors.toList());
+
+        List<TagsBlog> tagsBlog = blog.getTagsBlog();
+        List<CategoryBlog> categories = blog.getCategories();
+
         BlogResponse blogResponse = BlogResponse.builder()
                 .id(blog.getId())
                 .title(blog.getTitle())
@@ -54,10 +69,13 @@ public class BlogConverter {
                 .thumbnail(blog.getThumbnail())
                 .imageUrls(blog.getImageUrls())
                 .userBlogId(blog.getUser().getId())
-                .tagBlogId(blog.getTagsBlog().getId())
-                .categoryBlogId(blog.getCategoryBlog().getId())
+                .tagBlogIds(tagBlogIds)
+                .categoryBlogIds(categoryIds)
                 .active(blog.isActive())
+                .createdAt(blog.getCreatedAt())
+                .updatedAt(blog.getUpdatedAt())
                 .build();
         return blogResponse;
     }
+
 }

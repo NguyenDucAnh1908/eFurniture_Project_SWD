@@ -1,3 +1,4 @@
+
 package com.eFurnitureproject.eFurniture.Responses;
 
 import lombok.AllArgsConstructor;
@@ -13,3 +14,4 @@ public class UserResponse {
     private String message;
     private String status;
 }
+
