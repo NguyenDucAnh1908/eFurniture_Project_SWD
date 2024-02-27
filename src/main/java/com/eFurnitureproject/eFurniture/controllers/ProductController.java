@@ -19,7 +19,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("${api.prefix}/products")
@@ -68,7 +70,7 @@ public class ProductController {
         productCreateResponse.setProduct(tagsProduct);
         return ResponseEntity.ok(productCreateResponse);
     }
-@CrossOrigin
+    @CrossOrigin
     @GetMapping("")
     public ResponseEntity<ProductListResponse> getAllProduct(
             @RequestParam(value = "keyword", required = false) String keyword,
@@ -76,21 +78,26 @@ public class ProductController {
             @RequestParam(value = "limit", defaultValue = "10") int limit,
             @RequestParam(value = "minPrice", required = false) Double minPrice,
             @RequestParam(value = "maxPrice", required = false) Double maxPrice,
-            @RequestParam(value = "brandId", required = false) Long brandId,
-            @RequestParam(value = "tagsProductId", required = false) Long tagsProductId,
-            @RequestParam(value = "categoryId", required = false) Long categoryId
+            @RequestParam(value = "brandIds", required = false) String brandIds,
+            @RequestParam(value = "tagsProductIds", required = false) String tagsProductIds,
+            @RequestParam(value = "categoryIds", required = false) String categoryIds
     ) {
+        List<Long> parsedBrandIds = parseIds(brandIds);
+        List<Long> parsedTagsProductIds = parseIds(tagsProductIds);
+        List<Long> parsedCategoryIds = parseIds(categoryIds);
         PageRequest pageRequest = PageRequest.of(
                 page, limit,
                 Sort.by("id").descending()
         );
         Page<ProductResponse> productPage = productService.getAllProducts(
-                keyword, pageRequest, minPrice, maxPrice, brandId, tagsProductId, categoryId);
+                keyword, pageRequest, minPrice, maxPrice, parsedBrandIds, parsedTagsProductIds, parsedCategoryIds);
         int totalPages = productPage.getTotalPages();
+        Long totalProduct = productPage.getTotalElements();
         List<ProductResponse> products = productPage.getContent();
         return ResponseEntity.ok(ProductListResponse.builder()
                 .products(products)
                 .totalPages(totalPages)
+                .totalProducts(totalProduct)
                 .build());
     }
 
@@ -104,8 +111,8 @@ public class ProductController {
 
     @CrossOrigin
     @GetMapping("/get_all")
-    public ResponseEntity<List<Product>> getAll(){
-        List<Product> productResponses = productService.getAll();
+    public ResponseEntity<List<ProductResponse>> getAll(){
+        List<ProductResponse> productResponses = productService.getAll();
         return ResponseEntity.ok(productResponses);
     }
     @CrossOrigin
@@ -113,10 +120,10 @@ public class ProductController {
     public ResponseEntity<?> getCategoryProduct(
             @Valid @RequestParam(value = "category_id", required = false) Long categoryId) {
         try {
-            List<Product> products;
+            List<ProductResponse> products;
             if (categoryId == null) {
                 // Nếu không có categoryId được chỉ định, trả về tất cả các sản phẩm
-                products = productService.getAllProduct(); // Cần phải thêm phương thức getAllProducts() trong ProductService
+                products = productService.getAll(); // Cần phải thêm phương thức getAllProducts() trong ProductService
             } else {
                 products = productService.getProductByCategory(categoryId);
             }
@@ -125,6 +132,13 @@ public class ProductController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
+    private List<Long> parseIds(String ids) {
+        if (ids == null || ids.isEmpty()) {
+            return null;
+        }
+        return Arrays.stream(ids.split(","))
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+    }
 
 }

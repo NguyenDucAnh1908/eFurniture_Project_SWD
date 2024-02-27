@@ -24,10 +24,10 @@ public class OrderResponse {
     private double totalAmount;
     @JsonProperty("payment_method")
     private String paymentMethod;
-    @JsonProperty("shipping_address")
-    private String shippingAddress;
-    @JsonProperty("tracking_number")
-    private String trackingNumber;
+//    @JsonProperty("shipping_address")
+//    private String shippingAddress;
+//    @JsonProperty("tracking_number")
+//    private String trackingNumber;
     @JsonProperty("shipping_method")
     private String shippingMethod;
     @JsonProperty("shipping_date")
@@ -41,6 +41,9 @@ public class OrderResponse {
     @NotBlank(message = "Phone number is required")
     @Size(min = 5, message = "Phone number must be at least 5 characters")
     private String phoneNumber;
+    private String province;
+    private String district;
+    private String ward;
     private String address;
     private Boolean active;
     @JsonProperty("cart_items")

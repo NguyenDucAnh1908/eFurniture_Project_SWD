@@ -11,8 +11,8 @@ import java.util.List;
 @Data
 @Builder
 @NoArgsConstructor
-public class ProductListResponse {
-    private List<ProductResponse> products;
+public class AddressListResponse {
+    private List<AddressResponse> address;
     private int totalPages;
-    private Long totalProducts;
+    private String error;
 }

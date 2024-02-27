@@ -1,9 +1,11 @@
 package com.eFurnitureproject.eFurniture.Responses;
 
+import com.eFurnitureproject.eFurniture.models.CategoryBlog;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,12 +17,14 @@ public class BlogResponse {
     private String title;
     private String content;
     private String thumbnail;
+    private String imageUrls;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Long userBlogId; // Assuming you want to use userBlogId instead of User object directly
+    private Long userBlogId;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    private Long tagBlogId; // Assuming you want to use tagBlogId instead of TagsBlog object directly
-
-    private Long categoryBlogId; // Assuming you want to use categoryBlogId instead of CategoryBlog object directly
+    private List<Long> categoryBlogIds;
+    private List<Long> tagBlogIds;
     private boolean active;
 
 }

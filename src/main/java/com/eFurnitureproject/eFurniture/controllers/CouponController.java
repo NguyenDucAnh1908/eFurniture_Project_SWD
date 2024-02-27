@@ -1,15 +1,17 @@
 package com.eFurnitureproject.eFurniture.controllers;
 
 import com.eFurnitureproject.eFurniture.Responses.CouponCalculationResponse;
+import com.eFurnitureproject.eFurniture.Responses.CouponResponse;
+import com.eFurnitureproject.eFurniture.models.Coupon;
 import com.eFurnitureproject.eFurniture.services.ICouponService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("${api.prefix}/coupons")
 //@Validated
 //Dependency Injection
@@ -34,5 +36,11 @@ public class CouponController {
                             .errorMessage(e.getMessage())
                             .build());
         }
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<CouponResponse>> getAllCoupon(){
+        List<CouponResponse> coupons = couponService.getAllCoupon();
+        return ResponseEntity.ok(coupons);
     }
 }

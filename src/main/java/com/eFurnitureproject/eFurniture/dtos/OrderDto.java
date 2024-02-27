@@ -1,6 +1,7 @@
 package com.eFurnitureproject.eFurniture.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -25,10 +26,10 @@ public class OrderDto {
     private double totalAmount;
     @JsonProperty("payment_method")
     private String paymentMethod;
-    @JsonProperty("shipping_address")
-    private String shippingAddress;
-    @JsonProperty("tracking_number")
-    private String trackingNumber;
+//    @JsonProperty("shipping_address")
+//    private String shippingAddress;
+//    @JsonProperty("tracking_number")
+//    private String trackingNumber;
     @JsonProperty("shipping_method")
     private String shippingMethod;
     @JsonProperty("shipping_date")
@@ -42,6 +43,9 @@ public class OrderDto {
     @NotBlank(message = "Phone number is required")
     @Size(min = 5, message = "Phone number must be at least 5 characters")
     private String phoneNumber;
+    private String province;
+    private String district;
+    private String ward;
     private String address;
     private Boolean active;
     @JsonProperty("cart_items")

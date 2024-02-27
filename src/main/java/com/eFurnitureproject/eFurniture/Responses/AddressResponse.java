@@ -9,13 +9,22 @@ import lombok.*;
 @Builder
 public class AddressResponse {
     private Long id;
+    private String firstName;
+    private String lastName;
     private String streetAddress;
-    private String city;
-    private String state;
-    private String country;
+    private String wardCode;
+    private String districtCode;
+    private String provinceCode;
+    private String wardName;
+    private String districtName;
+    private String provinceName;
     private String phoneNumber;
-    private String email;
-    private String addressType;
-    private int defaultAddress;
-    private Long userAddressId; // Assuming you want to use userAddressId instead of User object directly
+    private String status;
+
+
+    private UserResponse user;
+
+    public void setUser(UserResponse user) {
+        this.user = user;
+    }
 }
