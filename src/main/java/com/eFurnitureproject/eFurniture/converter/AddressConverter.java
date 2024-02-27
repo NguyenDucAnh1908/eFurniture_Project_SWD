@@ -11,7 +11,7 @@ public class AddressConverter {
         AddressDto dto = new AddressDto();
         dto.setId(entity.getId());
         dto.setStreetAddress(entity.getStreetAddress());
-        dto.setProvince(entity.getProvince());
+//        dto.setProvince(entity.getProvinceCode());
 //        dto.setCountry(entity.getDistrict());
         dto.setPhoneNumber(entity.getPhoneNumber());
         return dto;
@@ -21,7 +21,7 @@ public class AddressConverter {
     public static Address toEntity(AddressDto dto) {
         Address entity = new Address();
         entity.setStreetAddress(dto.getStreetAddress());
-        entity.setProvince(dto.getProvince());
+//        entity.setProvinceCode(dto.getProvince());
 //        entity.setDistrict(dto.getCountry());
         entity.setPhoneNumber(dto.getPhoneNumber());
         // entity.setUser(userRepository.findById(dto.getUserAddressId()).orElse(null));
@@ -35,9 +35,12 @@ public class AddressConverter {
                 .firstName(address.getFirstName())
                 .lastName(address.getLastName())
                 .streetAddress(address.getStreetAddress())
-                .ward(address.getWard())
-                .district(address.getDistrict())
-                .province(address.getProvince())
+                .wardCode(address.getWardCode())
+                .districtCode(address.getDistrictCode())
+                .provinceCode(address.getProvinceCode())
+                .wardName(address.getWardName())
+                .districtName(address.getDistrictName())
+                .provinceName(address.getProvinceName())
                 .phoneNumber(address.getPhoneNumber())
 //                .userAddressId(address.getUser())
                 .build();

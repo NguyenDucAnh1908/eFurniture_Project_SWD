@@ -17,11 +17,13 @@ public class AddressDto{
     @NotBlank(message = "Street address is required")
     private String streetAddress;
 
-    private String ward;
-    private String district;
-    @NotBlank(message = "Province is required")
-    private String province;
-
+    private String wardCode;
+    private String districtCode;
+    private String provinceCode;
+    private String wardName;
+    private String districtName;
+    private String provinceName;
+    private String status;
 
     @NotBlank(message = "Phone number is required")
     private String phoneNumber;

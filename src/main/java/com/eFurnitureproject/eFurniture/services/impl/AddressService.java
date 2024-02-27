@@ -31,7 +31,6 @@ public class AddressService implements IAddressService  {
 
         Page<Address> addressPage = addressRepository.searchAddress(keyword, pageable, userId);
 
-        // Tạo một Page<AddressResponse> mới bằng cách ánh xạ từ Page<Address>
         Page<AddressResponse> addressResponsePage = addressPage.map(address -> {
             AddressResponse addressResponse = AddressConverter.toResponse(address);
 
@@ -67,9 +66,12 @@ public class AddressService implements IAddressService  {
                 .firstName(addressDto.getFirstName())
                 .lastName(addressDto.getLastName())
                 .streetAddress(addressDto.getStreetAddress())
-                .ward(addressDto.getWard())
-                .district(addressDto.getDistrict())
-                .province(addressDto.getProvince())
+                .wardCode(addressDto.getWardCode())
+                .districtCode(addressDto.getDistrictCode())
+                .provinceCode(addressDto.getProvinceCode())
+                .wardName(addressDto.getWardName())
+                .districtName(addressDto.getDistrictName())
+                .provinceName(addressDto.getProvinceName())
                 .phoneNumber(addressDto.getPhoneNumber())
                 .user(userid)
                 .build();
@@ -92,9 +94,7 @@ public class AddressService implements IAddressService  {
         if (addressDto.getStreetAddress() != null && !addressDto.getStreetAddress().isEmpty()) {
             existingAddress.setStreetAddress(addressDto.getStreetAddress());
         }
-        if (addressDto.getProvince() != null && !addressDto.getProvince().isEmpty()) {
-            existingAddress.setProvince(addressDto.getProvince());
-        }
+
 
         if (addressDto.getPhoneNumber() != null && !addressDto.getPhoneNumber().isEmpty()) {
             existingAddress.setPhoneNumber(addressDto.getPhoneNumber());

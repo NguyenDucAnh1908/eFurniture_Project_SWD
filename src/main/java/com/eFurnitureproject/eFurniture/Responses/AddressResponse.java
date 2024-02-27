@@ -12,10 +12,14 @@ public class AddressResponse {
     private String firstName;
     private String lastName;
     private String streetAddress;
-    private String ward;
-    private String district;
-    private String province;
+    private String wardCode;
+    private String districtCode;
+    private String provinceCode;
+    private String wardName;
+    private String districtName;
+    private String provinceName;
     private String phoneNumber;
+    private String status;
 
 
     private UserResponse user;
