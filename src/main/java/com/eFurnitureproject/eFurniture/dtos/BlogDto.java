@@ -1,13 +1,11 @@
 package com.eFurnitureproject.eFurniture.dtos;
 
-import com.eFurnitureproject.eFurniture.models.CategoryBlog;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Getter
@@ -34,22 +32,7 @@ public class BlogDto {
 
     private Long userBlogId;
 
-    private List<Long> categoryBlogIds;
+    private Long tagBlogId;
 
-    private List<Long> tagBlogIds;
-    public List<Long> getCategoryBlogIds() {
-        return categoryBlogIds;
-    }
-
-    public void setCategoryBlogIds(List<Long> categoryBlogIds) {
-        this.categoryBlogIds = categoryBlogIds;
-    }
-
-    public List<Long> getTagBlogIds() {
-        return tagBlogIds;
-    }
-
-    public void setTagBlogIds(List<Long> tagBlogIds) {
-        this.tagBlogIds = tagBlogIds;
-    }
+    private Long categoryBlogId;
 }
