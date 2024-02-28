@@ -27,8 +27,9 @@ public class Token {
     private boolean expired;
 
     private boolean revoked;
-    @ManyToOne
 
+    @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "id")
     private User user;
 }

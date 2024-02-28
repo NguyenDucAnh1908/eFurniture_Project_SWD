@@ -3,6 +3,7 @@ package com.eFurnitureproject.eFurniture.models;
 import com.eFurnitureproject.eFurniture.models.Enum.Role;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.persistence.*;
@@ -54,8 +55,9 @@ public class User implements UserDetails {
     @Column(name = "email")
     private String email;
 
-    @OneToMany(mappedBy = "user")
-    private List<Token> tokens;
+//    @OneToMany(mappedBy = "user")
+//    @JsonManagedReference
+//    private List<Token> tokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -100,5 +102,14 @@ public class User implements UserDetails {
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    @JsonManagedReference
 //    private List<Blog> blogs;
+@Override
+public String toString() {
+    return "User{" +
+            "id=" + id +
+            ", fullName='" + fullName + '\'' +
+            ", email='" + email + '\'' +
+            // Thêm các trường khác của User vào đây nếu cần
+            '}';
+}
 
 }
