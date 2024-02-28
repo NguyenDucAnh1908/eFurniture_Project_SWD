@@ -17,18 +17,18 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/createUser")
-    private ResponseEntity<UserResponse> createUser(@RequestBody UserDto request){
-        try{
-            return userService.createUser(request);
-        }catch (Exception ex){
-            return ResponseEntity.badRequest().body(UserResponse
-                    .builder()
-                    .status("Fail")
-                    .message("Register fail")
-                    .build());
-        }
-    }
+//    @PostMapping("/createUser")
+//    private ResponseEntity<UserResponse> createUser(@RequestBody UserDto request){
+//        try{
+//            return userService.createUser(request);
+//        }catch (Exception ex){
+//            return ResponseEntity.badRequest().body(UserResponse
+//                    .builder()
+//                    .status("Fail")
+//                    .message("Register fail")
+//                    .build());
+//        }
+//    }
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationDTO request) {

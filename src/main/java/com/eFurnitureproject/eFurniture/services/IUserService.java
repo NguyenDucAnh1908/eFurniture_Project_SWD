@@ -13,7 +13,7 @@ import java.io.IOException;
 
 @Service
 public interface IUserService {
-    ResponseEntity<UserResponse> createUser(UserDto request);
+   // ResponseEntity<UserResponse> createUser(UserDto request);
 
     AuthenticationResponse authenticate(AuthenticationDTO request);
 

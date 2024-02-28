@@ -38,38 +38,38 @@ public class UserService implements IUserService {
             + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
     Pattern pattern = Pattern.compile(emailRegex);
 
-    @Override
-    public ResponseEntity<UserResponse> createUser(UserDto request) {
-        if (!(request.getPhoneNumber().length() == 10)) {
-            throw new RuntimeException("Phone is not value");
-        }
-        Matcher matcher = pattern.matcher(request.getEmail());
-        if (!matcher.matches()) {
-            throw new RuntimeException("Email is not value");
-        }
-        var user = User.builder()
-                .email(request.getEmail())
-                .active(true)
-                .fullName(request.getFullName())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .phoneNumber(request.getPhoneNumber())
-                .dateOfBirth(request.getDateOfBirth())
-                .role(Role.USER)
-                .build();
-        var existedEmail = repository.findByEmail(user.getEmail()).orElse(null);
-        if (existedEmail == null) {
-            repository.save(user);
-            return ResponseEntity.ok().body(UserResponse.builder()
-                    .status("Success")
-                    .message("Register success")
-                    .build());
-        } else {
-            return ResponseEntity.badRequest().body(UserResponse.builder()
-                    .status("Register fail")
-                    .message("Account existed")
-                    .build());
-        }
-    }
+//    @Override
+//    public ResponseEntity<UserResponse> createUser(UserDto request) {
+//        if (!(request.getPhoneNumber().length() == 10)) {
+//            throw new RuntimeException("Phone is not value");
+//        }
+//        Matcher matcher = pattern.matcher(request.getEmail());
+//        if (!matcher.matches()) {
+//            throw new RuntimeException("Email is not value");
+//        }
+//        var user = User.builder()
+//                .email(request.getEmail())
+//                .active(true)
+//                .fullName(request.getFullName())
+//                .password(passwordEncoder.encode(request.getPassword()))
+//                .phoneNumber(request.getPhoneNumber())
+//                .dateOfBirth(request.getDateOfBirth())
+//                .role(Role.USER)
+//                .build();
+//        var existedEmail = repository.findByEmail(user.getEmail()).orElse(null);
+//        if (existedEmail == null) {
+//            repository.save(user);
+//            return ResponseEntity.ok().body(UserResponse.builder()
+//                    .status("Success")
+//                    .message("Register success")
+//                    .build());
+//        } else {
+//            return ResponseEntity.badRequest().body(UserResponse.builder()
+//                    .status("Register fail")
+//                    .message("Account existed")
+//                    .build());
+//        }
+//    }
 
 
 
