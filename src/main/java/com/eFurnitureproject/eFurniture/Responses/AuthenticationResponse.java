@@ -1,5 +1,6 @@
 package com.eFurnitureproject.eFurniture.Responses;
 
+import com.eFurnitureproject.eFurniture.models.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class AuthenticationResponse {
     private String staus;
     private String messages;
+    private User user;
     @JsonProperty("token")
     private String token;
 

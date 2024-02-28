@@ -34,6 +34,18 @@ application:
       refresh-token:
         expiration: 604800000
 
+  spring:
+    mail:
+      host: smtp.gmail.com
+      port: 587
+      username: anhquanpro332002@gmail.com
+      password: mkyr wsnm tvmr oxap
+      properties:
+        mail:
+          smtp:
+            auth: true
+            starttls:
+              enable: true
 
 
 

@@ -41,7 +41,10 @@
 			<artifactId>jsoup</artifactId>
 			<version>1.14.3</version> <!-- Or the latest version available -->
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
