@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public interface IUserService {
@@ -25,7 +26,11 @@ public interface IUserService {
 
     User saveUserForMail(User user);
 
-    User findAllUser();
+    List<User> findAllUser();
 
     ResponseEntity<UpdateUserResponse> updateUser(String email, UserDto updateUserRequest);
+
+    ResponseEntity<ObjectResponse> deleteUser(String email);
+
+    User getUserById(Long id);
 }

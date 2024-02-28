@@ -7,9 +7,9 @@ spring:
     username: root
     password: 12345
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     properties:
       hibernate:
       #      //org.hibernate.dialect.MySQL8Dialect
@@ -34,14 +34,15 @@ application:
       refresh-token:
         expiration: 604800000
 
-  spring.mail:
-    host: smtp.gmail.com
-    port: 587
-    username: tuandinhngoc12301@gmail.com
-    password: mkyr wsnm tvmr oxap
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
+  spring:
+    mail:
+      host: smtp.gmail.com
+      port: 587
+      username: anhquanpro332002@gmail.com
+      password: mkyr wsnm tvmr oxap
+      properties:
+        mail:
+          smtp:
+            auth: true
+            starttls:
+              enable: true

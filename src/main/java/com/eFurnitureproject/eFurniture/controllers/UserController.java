@@ -18,8 +18,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1/auth/")
+@PreAuthorize("hasAnyRole('ADMIN','USER')")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -83,14 +86,12 @@ public class UserController {
 
     }
 
-    @GetMapping("/getAll")
-    @PreAuthorize("hasAuthority('admin:read')")
-    private User getAll() {
+    @GetMapping("/getAllUser")
+    private List<User> getAll() {
         return userService.findAllUser();
     }
 
     @PutMapping("/updateUser/{email}")
-    @PreAuthorize("hasAuthority('admin:update')")
     public ResponseEntity<UpdateUserResponse> updateStaff(
             @PathVariable String email,
             @RequestBody UserDto updateUserRequest) {
@@ -102,6 +103,15 @@ public class UserController {
                     .message(e.getMessage())
                     .build());
         }
+    }
+    @GetMapping("/getUserById/{id}")
+    private User getUserById(@PathVariable Long id){
+        return userService.getUserById(id);
+    }
+
+    @DeleteMapping("deleteUser/{email}")
+    public ResponseEntity<ObjectResponse> deleteUser(@PathVariable String email) {
+        return userService.deleteUser(email);
     }
 
 

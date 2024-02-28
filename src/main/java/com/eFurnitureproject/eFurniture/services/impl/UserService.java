@@ -26,6 +26,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -75,7 +76,6 @@ public class UserService implements IUserService {
                     .build());
         }
     }
-
 
 
     @Override
@@ -138,55 +138,78 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User findAllUser() {
+    public List<User> findAllUser() {
         try {
-            List<User> userList = repository.findAll();
-            return (User) userList;
+            return repository.findAll();
         } catch (Exception e) {
-            return null;
+            // Xử lý exception
+            return Collections.emptyList();
         }
     }
 
     @Override
     public ResponseEntity<UpdateUserResponse> updateUser(String email, UserDto updateUserRequest) {
         var user = repository.findByEmail(email).orElse(null);
-        if (user != null) {
-            if (updateUserRequest != null && updateUserRequest.getFullName() != null && !updateUserRequest.getFullName().isEmpty()) {
-                user.setFullName(updateUserRequest.getFullName());
-            }
-            Matcher matcher = pattern.matcher(updateUserRequest.getEmail());
-            if (matcher.matches()) {
-                user.setEmail(updateUserRequest.getEmail());
-            }
-            if ((updateUserRequest.getPhoneNumber() != null && updateUserRequest.getPhoneNumber().length() == 10)) {
-                user.setPhoneNumber(user.getPhoneNumber());
-            }
-            if (updateUserRequest.getPassword() != null && !updateUserRequest.getPassword().isEmpty()) {
-                user.setPassword(updateUserRequest.getPassword());
-            }
-            String token = ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes()))
-                    .getRequest().getHeader("Authorization").substring(7);
-            String userEmail = jwtService.extractUsername(token);
-            var requester = repository.findUserByEmail(userEmail).orElse(null);
-            assert requester != null;
-            if (requester.getRole().equals(Role.ADMIN)) {
-                user.setRole(updateUserRequest.getRole());
-            }
-            user.setActive(updateUserRequest.isActive());
-            return ResponseEntity.ok(UpdateUserResponse.builder()
-                    .status("Success")
-                    .message("Update User Success")
-                    .updateUser(user)
-                    .build());
-        } else {
+        if (user == null) {
             return ResponseEntity.badRequest().body(UpdateUserResponse.builder()
                     .status("Fail")
-                    .message("Email not available")
+                    .message("User not found")
+                    .build());
+        }
+        if (updateUserRequest != null && updateUserRequest.getFullName() != null && !updateUserRequest.getFullName().isEmpty()) {
+            user.setFullName(updateUserRequest.getFullName());
+        }
+        Matcher matcher = pattern.matcher(updateUserRequest.getEmail());
+        if (matcher.matches()) {
+            user.setEmail(updateUserRequest.getEmail());
+        }
+        if ((updateUserRequest.getPhoneNumber() != null && updateUserRequest.getPhoneNumber().length() == 10)) {
+            user.setPhoneNumber(user.getPhoneNumber());
+        }
+        if (updateUserRequest.getPassword() != null && !updateUserRequest.getPassword().isEmpty()) {
+            user.setPassword(updateUserRequest.getPassword());
+        }
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (servletRequestAttributes == null) {
+            return ResponseEntity.badRequest().body(UpdateUserResponse.builder()
+                    .status("Fail")
+                    .message("ServletRequestAttributes not found")
+                    .build());
+        }
+
+        user.setActive(updateUserRequest.isActive());
+        return ResponseEntity.ok(UpdateUserResponse.builder()
+                .status("Success")
+                .message("Update User Success")
+                .updateUser(user)
+                .build());
+    }
+
+    @Override
+    public ResponseEntity<ObjectResponse> deleteUser(String email) {
+        var user = repository.findByEmail(email).orElse(null);
+        if (user != null) {
+            user.setActive(false);
+            repository.save(user);
+            return ResponseEntity.ok().body(new ObjectResponse("Success","User deleted successfully"));
+        } else {
+            return ResponseEntity.badRequest().body(ObjectResponse.builder()
+                    .status("Fail")
+                    .message("User not found")
                     .build());
         }
     }
 
-    private void saveToken(User user, String jwtToken) {
+    @Override
+    public User getUserById(Long id) {
+        var user = repository.findUsersById(id);
+        if(user == null){
+            throw  new RuntimeException("Not found user");
+        }
+        return user;
+    }
+
+    private void saveToken (User user, String jwtToken){
         var token = Token.builder()
                 .user(user)
                 .token(jwtToken)
@@ -206,12 +229,8 @@ public class UserService implements IUserService {
             t.setRevoked(true);
         });
     }
-
-
-
-
-
 }
+
 
 
 
