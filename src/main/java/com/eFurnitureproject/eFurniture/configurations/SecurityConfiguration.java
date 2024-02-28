@@ -11,11 +11,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.eFurnitureproject.eFurniture.models.Enum.Permission.*;
-import static com.eFurnitureproject.eFurniture.models.Enum.Role.ADMIN;
-import static com.eFurnitureproject.eFurniture.models.Enum.Role.STAFF;
-import static org.springframework.http.HttpMethod.*;
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -33,7 +28,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authentication -> authentication
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/**").permitAll()
 //                        .requestMatchers("/api/v1/managemnet/**").hasAnyRole(ADMIN.name(), STAFF.name())
 //                        .requestMatchers(GET, "/api/v1/managemnet/**").hasAnyAuthority(ADMIN_VIEW.name(), STAFF_VIEW.name())
 //                        .requestMatchers(POST, "/api/v1/managemnet/**").hasAnyAuthority(ADMIN_CREATE.name(), STAFF_CREATE.name())

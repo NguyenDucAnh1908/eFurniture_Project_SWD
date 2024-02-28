@@ -78,8 +78,6 @@ public class UserController {
                     .message("Register fail")
                     .build());
         }
-
-
     }
 
     @GetMapping("/getAllUser")
