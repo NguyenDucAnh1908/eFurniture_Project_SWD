@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -149,7 +148,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public HttpEntity<Object> updateUser(String email, UserDto updateUserRequest) {
+    public ResponseEntity<UpdateUserResponse> updateUser(String email, UserDto updateUserRequest) {
         var user = repository.findByEmail(email).orElse(null);
         if (user != null) {
             if (updateUserRequest != null && updateUserRequest.getFullName() != null && !updateUserRequest.getFullName().isEmpty()) {

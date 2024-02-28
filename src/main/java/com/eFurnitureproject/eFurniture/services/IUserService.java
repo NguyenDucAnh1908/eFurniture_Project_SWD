@@ -2,12 +2,12 @@ package com.eFurnitureproject.eFurniture.services;
 
 import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
 import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
+import com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
 import com.eFurnitureproject.eFurniture.models.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -27,5 +27,5 @@ public interface IUserService {
 
     User findAllUser();
 
-    HttpEntity<Object> updateUser(String email, UserDto updateUserRequest);
+    ResponseEntity<UpdateUserResponse> updateUser(String email, UserDto updateUserRequest);
 }

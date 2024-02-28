@@ -95,7 +95,7 @@ public class UserController {
             @PathVariable String email,
             @RequestBody UserDto updateUserRequest) {
         try {
-            return ResponseEntity.ok(userService.updateUser(email, updateUserRequest).getBody());
+            return userService.updateUser(email,updateUserRequest);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(UpdateUserResponse.builder()
                     .status("Update fail")
