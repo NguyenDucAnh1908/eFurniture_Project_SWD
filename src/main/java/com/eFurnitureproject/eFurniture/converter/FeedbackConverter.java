@@ -31,7 +31,6 @@ public class FeedbackConverter {
                 .status(feedback.getStatus())
                 .reply(feedback.getReply())
                 .productId(feedback.getProduct() != null ? feedback.getProduct().getId() : null);
-
         if (feedback.getFeedbackImages() != null) {
             builder.images(toImageDtoList(feedback.getFeedbackImages()));
         }
