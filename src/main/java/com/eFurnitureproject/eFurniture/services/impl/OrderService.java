@@ -44,7 +44,7 @@ public class OrderService implements IOrderService {
         modelMapper.map(orderDto, order);
         order.setUser(user);
         order.setOrderDate(LocalDate.now());
-        //order.setStatus(OrderStatus.PENDING);
+        order.setStatus(1);
         LocalDate shippingDate = orderDto.getShippingDate() == null
                 ? LocalDate.now() : orderDto.getShippingDate();
         if (shippingDate.isBefore(LocalDate.now())) {
