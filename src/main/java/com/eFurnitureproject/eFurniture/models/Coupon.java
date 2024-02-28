@@ -3,8 +3,6 @@ package com.eFurnitureproject.eFurniture.models;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Entity
 @Table(name = "coupons")
 @Getter
@@ -22,7 +20,4 @@ public class Coupon extends BaseEntity{
 
     @Column(name = "active", nullable = false)
     private boolean active;
-
-    @OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<CouponCondition> couponCondition;
 }

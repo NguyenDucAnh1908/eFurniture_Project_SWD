@@ -13,7 +13,7 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
     Page<Address> findAllByUser_Id(Long userId, Pageable pageable);
 
     @Query("select b FROM Address b " +
-            "WHERE (:keyword IS NULL OR :keyword = '' OR b.streetAddress LIKE %:keyword% OR b.provinceCode LIKE %:keyword%) " +
+            "WHERE (:keyword IS NULL OR :keyword = '' OR b.streetAddress LIKE %:keyword% OR b.province LIKE %:keyword%) " +
             "AND (:user_address IS NULL OR :user_address = 0 OR b.user.id = : user_address) ")
     Page<Address> searchAddress(
             @Param("keyword") String keyword, Pageable pageable,

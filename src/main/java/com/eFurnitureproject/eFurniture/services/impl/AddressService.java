@@ -1,7 +1,6 @@
 package com.eFurnitureproject.eFurniture.services.impl;
 
 import com.eFurnitureproject.eFurniture.Responses.AddressResponse;
-import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.converter.AddressConverter;
 import com.eFurnitureproject.eFurniture.dtos.AddressDto;
 import com.eFurnitureproject.eFurniture.models.Address;
@@ -26,35 +25,12 @@ public class AddressService implements IAddressService  {
 
     @Override
     public Page<AddressResponse> getAllAddressesByUserId(Long userId, Pageable pageable, String keyword) {
-        User user = userRepository.findById(userId)
+        userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user ID"));
 
-        Page<Address> addressPage = addressRepository.searchAddress(keyword, pageable, userId);
-
-        Page<AddressResponse> addressResponsePage = addressPage.map(address -> {
-            AddressResponse addressResponse = AddressConverter.toResponse(address);
-
-            UserResponse userResponse = UserResponse.builder()
-                    .id(user.getId())
-                    .fullName(user.getFullName())
-                    .phoneNumber(user.getPhoneNumber())
-                    .address(user.getAddress())
-                    .password(user.getPassword())
-                    .active(user.isActive())
-                    .dateOfBirth(user.getDateOfBirth())
-                    .facebookAccountId(user.getFacebookAccountId())
-                    .googleAccountId(user.getGoogleAccountId())
-                    .build();
-
-            addressResponse.setUser(userResponse);
-
-            return addressResponse;
-        });
-
-        return addressResponsePage;
+        return addressRepository.searchAddress(keyword, pageable, userId)
+                .map(AddressConverter::toResponse);
     }
-
-
 
     @Override
     public Address createAddress(AddressDto addressDto, Long userId) {
@@ -66,13 +42,10 @@ public class AddressService implements IAddressService  {
                 .firstName(addressDto.getFirstName())
                 .lastName(addressDto.getLastName())
                 .streetAddress(addressDto.getStreetAddress())
-                .wardCode(addressDto.getWardCode())
-                .districtCode(addressDto.getDistrictCode())
-                .provinceCode(addressDto.getProvinceCode())
-                .wardName(addressDto.getWardName())
-                .districtName(addressDto.getDistrictName())
-                .provinceName(addressDto.getProvinceName())
+                .country(addressDto.getCountry())
+                .province(addressDto.getProvince())
                 .phoneNumber(addressDto.getPhoneNumber())
+                .postalCode(addressDto.getPostalCode())
                 .user(userid)
                 .build();
 
@@ -94,12 +67,18 @@ public class AddressService implements IAddressService  {
         if (addressDto.getStreetAddress() != null && !addressDto.getStreetAddress().isEmpty()) {
             existingAddress.setStreetAddress(addressDto.getStreetAddress());
         }
-
-
+        if (addressDto.getProvince() != null && !addressDto.getProvince().isEmpty()) {
+            existingAddress.setProvince(addressDto.getProvince());
+        }
+        if (addressDto.getCountry() != null && !addressDto.getCountry().isEmpty()) {
+            existingAddress.setCountry(addressDto.getCountry());
+        }
         if (addressDto.getPhoneNumber() != null && !addressDto.getPhoneNumber().isEmpty()) {
             existingAddress.setPhoneNumber(addressDto.getPhoneNumber());
         }
-
+        if (addressDto.getPostalCode() != null && !addressDto.getPostalCode().isEmpty()) {
+            existingAddress.setPostalCode(addressDto.getPostalCode());
+        }
 
         return addressRepository.save(existingAddress);
     }

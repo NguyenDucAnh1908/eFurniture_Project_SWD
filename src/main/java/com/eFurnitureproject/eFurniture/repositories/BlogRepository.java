@@ -17,9 +17,10 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
 
     @Query("SELECT b FROM Blog b " +
             "WHERE (:keyword IS NULL OR :keyword = '' OR b.title LIKE %:keyword% OR b.content LIKE %:keyword%) " +
-            "AND (:userBlogId IS NULL OR :userBlogId = 0 OR b.user.id = :userBlogId) ")
+            "AND (:userBlogId IS NULL OR :userBlogId = 0 OR b.user.id = :userBlogId) " +
+            "AND (:tagsBlogId IS NULL OR :tagsBlogId = 0 OR b.tagsBlog.id = :tagsBlogId)")
     Page<Blog> searchBlogs(
             @Param("keyword") String keyword, Pageable pageable,
-            @Param("userBlogId") Long userBlogId);
-
+            @Param("userBlogId") Long userBlogId,
+            @Param("tagsBlogId") Long tagsBlogId);
 }

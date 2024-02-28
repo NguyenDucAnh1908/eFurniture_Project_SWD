@@ -1,7 +1,5 @@
 package com.eFurnitureproject.eFurniture.services.impl;
 
-import com.eFurnitureproject.eFurniture.Responses.CouponResponse;
-import com.eFurnitureproject.eFurniture.converter.CouponConverter;
 import com.eFurnitureproject.eFurniture.models.Coupon;
 import com.eFurnitureproject.eFurniture.models.CouponCondition;
 import com.eFurnitureproject.eFurniture.repositories.CouponConditionRepository;
@@ -12,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,13 +58,4 @@ public class CouponService implements ICouponService {
         }
         return discount;
     }
-
-    public List<CouponResponse> getAllCoupon(){
-        List<Coupon> coupons = couponRepository.findAll();
-        return coupons.stream()
-                .map(CouponConverter::fromCoupon)
-                .collect(Collectors.toList());
-    }
-
-
 }

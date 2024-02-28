@@ -6,10 +6,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-@AllArgsConstructor
+
 @Data
-@Builder
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserResponse {
     private Long id;
     private String fullName;
@@ -22,3 +23,4 @@ public class UserResponse {
     private int googleAccountId;
 
 }
+

@@ -5,7 +5,6 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "blogs")
@@ -23,34 +22,30 @@ public class Blog extends BaseEntity{
     @Column(name = "title", length = 255)
     private String title;
 
-    @Column(name = "content", columnDefinition = "TEXT")
+    @Column(name = "content", length = 16383)
     private String content;
 
-    @Column(name = "thumbnail",  columnDefinition = "TEXT", nullable = true)
+    @Column(name = "thumbnail", length = 255, nullable = true)
     private String thumbnail;
 
-    @Column(name = "image_urls", columnDefinition = "TEXT", nullable = true)
+    @Column(name = "image_urls", length = 1024, nullable = true)
     private String imageUrls;
 
 
     @Column(name = "is_active")
     private boolean active;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
-    @JoinTable(name = "blog_category",
-            joinColumns = @JoinColumn(name = "blog_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id", nullable = true))
-    private List<CategoryBlog> categories;
-
-    @ManyToMany(cascade = {CascadeType.ALL})
-    @JoinTable( name= "blog_tag",
-            joinColumns = @JoinColumn(name = "blog_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_blog_id",nullable = true))
-    private List<TagsBlog> tagsBlog;
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "category_blog",nullable = true)
+    private CategoryBlog categoryBlog;
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "user_blog_id",nullable = false)
     private User user;
+
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "tag_blog_id",nullable = true)
+    private TagsBlog tagsBlog;
 
 
 }
