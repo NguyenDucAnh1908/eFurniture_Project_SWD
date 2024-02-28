@@ -60,9 +60,9 @@ public class ProductService implements IProductService {
 
         Product product = ProductConverter.toEntity(productDto);
         double discount = productDto.getDiscount() != null ? productDto.getDiscount() : 0.0;
-        double price = product.getPrice();
-        double priceSale = price * ((100 - discount) / 100);
-        product.setPriceSale(priceSale);
+        double priceSale = product.getPriceSale();
+        double price = priceSale * ((100 - discount) / 100);
+        product.setPrice(price);
         product.setCodeProduct(generatedCode);
         product.setCategory(existingCategory);
         product.setBrand(existingBrand);
@@ -105,10 +105,10 @@ public class ProductService implements IProductService {
 
     public Page<ProductResponse> getAllProducts(String keyword, PageRequest pageRequest,
                                            Double minPrice, Double maxPrice,
-                                           Long brandId, Long tagsProductId, Long categoryId) {
+                                                List<Long> brandIds, List<Long> tagsProductIds, List<Long> categoryIds) {
         Page<Product> products;
         products = productRepository.searchProducts(
-                keyword, pageRequest, minPrice, maxPrice, brandId, tagsProductId, categoryId);
+                keyword, pageRequest, minPrice, maxPrice, brandIds, tagsProductIds, categoryIds);
         return products.map(product -> {
             ProductResponse response = ProductConverter.toResponse(product);
             Double averageRating = feedbackRepository.findAverageRatingByProductId(product.getId());

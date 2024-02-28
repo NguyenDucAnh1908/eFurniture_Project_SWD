@@ -18,12 +18,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/address")
+@RequestMapping("api/v1/address")
 @RequiredArgsConstructor
 public class AddressController {
 
     private final IAddressService addressService;
 
+    @CrossOrigin
     @GetMapping("/get_all_address_by_id/{userId}")
     public ResponseEntity<AddressListResponse> getAllAddressesByUserId(
             @PathVariable Long userId,
@@ -48,8 +49,9 @@ public class AddressController {
     }
 
 
-    @PostMapping("/create_address")
-    public ResponseEntity<?> createAddress(@RequestBody AddressDto addressDto, @RequestParam Long userId) {
+    @CrossOrigin
+    @PostMapping("/create_address/{userId}")
+    public ResponseEntity<?> createAddress(@RequestBody AddressDto addressDto, @PathVariable Long userId) {
         try {
             Address createdAddress = addressService.createAddress(addressDto, userId);
             return ResponseEntity.ok(createdAddress);

@@ -17,16 +17,17 @@ public class AddressDto{
     @NotBlank(message = "Street address is required")
     private String streetAddress;
 
-    @NotBlank(message = "Province is required")
-    private String province;
-
-    @NotBlank(message = "Country is required")
-    private String country;
+    private String wardCode;
+    private String districtCode;
+    private String provinceCode;
+    private String wardName;
+    private String districtName;
+    private String provinceName;
+    private String status;
 
     @NotBlank(message = "Phone number is required")
     private String phoneNumber;
 
-    private String postalCode;
 
     private String userAddressId; // Assuming you want to use userAddressId instead of User object directly
 }

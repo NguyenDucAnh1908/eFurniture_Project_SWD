@@ -86,9 +86,9 @@ public class ProductConverter {
                 .quantitySold(product.getQuantitySold())
                 .status(product.getStatus())
                 .discount(product.getDiscount())
-                .brandId(product.getBrand().getId())
-                .tagsProductId(product.getTagsProduct().getId())
-                .categoryId(product.getCategory().getId())
+                .brandId(product.getBrand())
+                .tagsProductId(product.getTagsProduct())
+                .categoryId(product.getCategory())
                 .productImages(product.getProductImages())
                 .build();
         productResponse.setCreatedAt(product.getCreatedAt());

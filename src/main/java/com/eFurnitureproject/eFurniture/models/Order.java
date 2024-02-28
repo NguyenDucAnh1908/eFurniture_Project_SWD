@@ -1,6 +1,5 @@
 package com.eFurnitureproject.eFurniture.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,11 +31,22 @@ public class Order extends BaseEntity {
     @Column(name = "payment_method", length = 255)
     private String paymentMethod;
 
-    @Column(name = "shipping_address", length = 255)
-    private String shippingAddress;
+//    @Column(name = "shipping_address", length = 255)
+//    private String shippingAddress;
 
-    @Column(name = "tracking_number", length = 255)
-    private String trackingNumber;
+    //    @Column(name = "tracking_number", length = 255)
+//    private String trackingNumber;
+    @Column(name = "province", length = 255)
+    private String province;
+
+    @Column(name = "district", length = 255)
+    private String district;
+
+    @Column(name = "ward", length = 255)
+    private String ward;
+
+    @Column(name = "address", length = 255)
+    private String address;
 
     @Column(name = "shipping_method", length = 255)
     private String shippingMethod;
@@ -58,9 +68,6 @@ public class Order extends BaseEntity {
 
     @Column(name = "phone_number", length = 255)
     private String phoneNumber;
-
-    @Column(name = "address", length = 255)
-    private String address;
 
     @Column(name = "active")
     private Boolean active;
