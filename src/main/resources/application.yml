@@ -23,6 +23,17 @@ spring:
     basename: i18n/messages
     encoding: UTF-8
     default-locale: en
+  mail:
+      host: smtp.gmail.com
+      port: 587
+      username: tuandinhngoc12301@gmail.com
+      password: mkyr wsnm tvmr oxap
+      properties:
+        mail:
+          smtp:
+            auth: true
+            starttls:
+              enable: true
 api:
   prefix: api/v1
 
@@ -34,18 +45,7 @@ application:
       refresh-token:
         expiration: 604800000
 
-  spring:
-    mail:
-      host: smtp.gmail.com
-      port: 587
-      username: anhquanpro332002@gmail.com
-      password: mkyr wsnm tvmr oxap
-      properties:
-        mail:
-          smtp:
-            auth: true
-            starttls:
-              enable: true
+
 
 
 
