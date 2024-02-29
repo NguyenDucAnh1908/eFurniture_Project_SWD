@@ -17,7 +17,6 @@ public class UserResponse {
     private String fullName;
     private String phoneNumber;
     private String address;
-    private String password;
     private boolean active;
     private Date dateOfBirth;
     private int facebookAccountId;

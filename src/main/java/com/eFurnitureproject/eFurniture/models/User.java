@@ -102,14 +102,6 @@ public class User implements UserDetails {
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    @JsonManagedReference
 //    private List<Blog> blogs;
-@Override
-public String toString() {
-    return "User{" +
-            "id=" + id +
-            ", fullName='" + fullName + '\'' +
-            ", email='" + email + '\'' +
-            // Thêm các trường khác của User vào đây nếu cần
-            '}';
-}
+
 
 }

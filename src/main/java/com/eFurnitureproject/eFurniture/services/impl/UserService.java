@@ -68,6 +68,7 @@ public class UserService implements IUserService {
             return ResponseEntity.ok().body(ObjectResponse.builder()
                     .status("Success")
                     .message("Register success")
+                    .userResponse(convertToUserResponse(user))
                     .build());
         } else {
             return ResponseEntity.badRequest().body(ObjectResponse.builder()
@@ -77,6 +78,15 @@ public class UserService implements IUserService {
         }
     }
 
+    private UserResponse convertToUserResponse(User user){
+        return UserResponse.builder()
+                .id(user.getId())
+                .fullName(user.getFullName())
+                .phoneNumber(user.getPhoneNumber())
+                .dateOfBirth(user.getDateOfBirth())
+                .active(user.isActive())
+                .build();
+    }
 
 
     @Override
@@ -97,7 +107,7 @@ public class UserService implements IUserService {
                 .staus("Success")
                 .messages("Login success")
                 .token(jwtToken)
-                .user(user)
+                .user(convertToUserResponse(user))
                 .refeshToken(refreshToken)
                 .build();
     }
@@ -159,7 +169,7 @@ public class UserService implements IUserService {
         if (user != null) {
             user.setActive(false);
             repository.save(user);
-            return ResponseEntity.ok().body(new ObjectResponse("Success","User deleted successfully"));
+            return ResponseEntity.ok().body(new ObjectResponse("Success","User deleted successfully",convertToUserResponse(user)));
         } else {
             return ResponseEntity.badRequest().body(ObjectResponse.builder()
                     .status("Fail")
