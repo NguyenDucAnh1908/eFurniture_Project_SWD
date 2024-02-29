@@ -34,6 +34,7 @@ public class Blog extends BaseEntity{
 
 
     @Column(name = "is_active")
+    // dm phu le
     private boolean active;
 
     @ManyToMany(cascade = {CascadeType.ALL})

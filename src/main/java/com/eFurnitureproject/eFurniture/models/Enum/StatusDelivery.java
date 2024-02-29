@@ -1,4 +1,4 @@
-package com.eFurnitureproject.eFurniture.models;
+package com.eFurnitureproject.eFurniture.models.Enum;
 
 public enum StatusDelivery {
     PENDING,

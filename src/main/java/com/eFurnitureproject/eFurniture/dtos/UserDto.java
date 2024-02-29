@@ -1,6 +1,6 @@
+package com.eFurnitureproject.eFurniture.dtos;
 
-package com.eFurnitureproject.eFurniture.Responses;
-
+import com.eFurnitureproject.eFurniture.models.Enum.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,18 +9,16 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class UserResponse {
-    private Long id;
+public class UserDto {
     private String fullName;
     private String phoneNumber;
-    private String address;
     private String password;
     private boolean active;
     private Date dateOfBirth;
-    private int facebookAccountId;
-    private int googleAccountId;
-}
+    private String email;
+    private Role role;
 
+}
