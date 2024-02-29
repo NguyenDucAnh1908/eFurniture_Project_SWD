@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin()
 @RequestMapping("api/v1/auth/")
 @RequiredArgsConstructor
 public class UserController {
@@ -38,7 +39,6 @@ public class UserController {
                     .build());
         }
     }
-
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationDTO request) {
         try {
