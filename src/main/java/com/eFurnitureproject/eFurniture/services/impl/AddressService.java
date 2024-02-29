@@ -39,7 +39,7 @@ public class AddressService implements IAddressService  {
                     .fullName(user.getFullName())
                     .phoneNumber(user.getPhoneNumber())
                     .address(user.getAddress())
-                    .password(user.getPassword())
+
                     .active(user.isActive())
                     .dateOfBirth(user.getDateOfBirth())
                     .facebookAccountId(user.getFacebookAccountId())
