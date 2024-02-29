@@ -34,6 +34,7 @@ public class UserController {
                     .builder()
                     .status("Fail")
                     .message("Register fail")
+                    .userResponse(null)
                     .build());
         }
     }
