@@ -21,13 +21,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("${api.prefix}/orders")
 @RequiredArgsConstructor
 public class OrderController {
     private final IOrderService orderService;
     private final LocalizationUtils localizationUtils;
 
-    @CrossOrigin
+//    @CrossOrigin
     @PostMapping("")
     public ResponseEntity<?> createOrder(
             @Valid @RequestBody OrderDto orderDTO,
@@ -48,7 +49,7 @@ public class OrderController {
         }
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @GetMapping("")
     public ResponseEntity<OrderListResponse> getOrdersByKeyword(
             @RequestParam(defaultValue = "", required = false) String keyword,
@@ -74,7 +75,7 @@ public class OrderController {
                 .build());
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @PutMapping("/{id}")
     public ResponseEntity<?> updateOrder(
             @Valid @PathVariable long id,
@@ -88,7 +89,7 @@ public class OrderController {
         }
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @GetMapping("/user/{user_id}") // Thêm biến đường dẫn "user_id"
     //GET http://localhost:8088/api/v1/orders/user/4
     public ResponseEntity<?> getOrders(@Valid @PathVariable("user_id") Long userId) {
@@ -100,7 +101,7 @@ public class OrderController {
         }
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @GetMapping("/{id}")
     public ResponseEntity<?> getOrder(@Valid @PathVariable("id") Long orderId) {
         try {
@@ -112,7 +113,7 @@ public class OrderController {
         }
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteOrder(@Valid @PathVariable Long id) {
         //xóa mềm => cập nhật trường active = false

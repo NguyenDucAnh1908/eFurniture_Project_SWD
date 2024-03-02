@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("${api.prefix}/product_image")
 @RequiredArgsConstructor
 public class ProductImageController {
@@ -31,7 +32,7 @@ public class ProductImageController {
                     .body(Collections.emptyList()); // or handle the error response as needed
         }
     }
-    @CrossOrigin
+//    @CrossOrigin
     @GetMapping("/product/{id}")
     public ResponseEntity<List<ProductImages>> getImageByProducts(
             @Valid @PathVariable Long id

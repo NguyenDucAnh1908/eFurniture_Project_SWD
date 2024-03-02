@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("${api.prefix}/tag_product")
 @RequiredArgsConstructor
 public class TagProductController {
@@ -62,7 +63,7 @@ public class TagProductController {
         tagProductResponse.setTagsProduct(tagsProduct);
         return ResponseEntity.ok(tagProductResponse);
     }
-    @CrossOrigin
+//    @CrossOrigin
     @GetMapping("")
     public ResponseEntity<List<TagsProduct>> getAllTagsProducts() {
         List<TagsProduct> tagsProducts = tagProductService.getAllTagsProducts();

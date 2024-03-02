@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@CrossOrigin
 @RequestMapping("${api.prefix}/products")
 @RequiredArgsConstructor
 public class ProductController {
@@ -70,7 +71,7 @@ public class ProductController {
         productCreateResponse.setProduct(tagsProduct);
         return ResponseEntity.ok(productCreateResponse);
     }
-    @CrossOrigin
+//    @CrossOrigin
     @GetMapping("")
     public ResponseEntity<ProductListResponse> getAllProduct(
             @RequestParam(value = "keyword", required = false) String keyword,
@@ -102,20 +103,20 @@ public class ProductController {
     }
 
 
-    @CrossOrigin
+//    @CrossOrigin
     @GetMapping("{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Long id) throws Exception {
         Product product = productService.getProductById(id);
         return  ResponseEntity.ok(product);
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @GetMapping("/get_all")
     public ResponseEntity<List<ProductResponse>> getAll(){
         List<ProductResponse> productResponses = productService.getAll();
         return ResponseEntity.ok(productResponses);
     }
-    @CrossOrigin
+//    @CrossOrigin
     @GetMapping("/category")
     public ResponseEntity<?> getCategoryProduct(
             @Valid @RequestParam(value = "category_id", required = false) Long categoryId) {
