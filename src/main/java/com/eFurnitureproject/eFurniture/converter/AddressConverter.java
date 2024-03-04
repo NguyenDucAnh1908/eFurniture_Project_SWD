@@ -11,14 +11,9 @@ public class AddressConverter {
         AddressDto dto = new AddressDto();
         dto.setId(entity.getId());
         dto.setStreetAddress(entity.getStreetAddress());
-        dto.setCity(entity.getCity());
-        dto.setState(entity.getState());
-        dto.setCountry(entity.getCountry());
+//        dto.setProvince(entity.getProvinceCode());
+//        dto.setCountry(entity.getDistrict());
         dto.setPhoneNumber(entity.getPhoneNumber());
-        dto.setEmail(entity.getEmail());
-        dto.setAddressType(entity.getAddressType());
-        dto.setDefaultAddress(entity.getDefaultAddress());
-//        dto.setUserAddressId(entity.getUser().getId());
         return dto;
     }
 
@@ -26,14 +21,9 @@ public class AddressConverter {
     public static Address toEntity(AddressDto dto) {
         Address entity = new Address();
         entity.setStreetAddress(dto.getStreetAddress());
-        entity.setCity(dto.getCity());
-        entity.setState(dto.getState());
-        entity.setCountry(dto.getCountry());
+//        entity.setProvinceCode(dto.getProvince());
+//        entity.setDistrict(dto.getCountry());
         entity.setPhoneNumber(dto.getPhoneNumber());
-        entity.setEmail(dto.getEmail());
-        entity.setAddressType(dto.getAddressType());
-        entity.setDefaultAddress(dto.getDefaultAddress());
-        // Trong thực tế, bạn sẽ cần thêm logic để lấy và thiết lập đối tượng User dựa trên ID từ DTO.
         // entity.setUser(userRepository.findById(dto.getUserAddressId()).orElse(null));
         return entity;
     }
@@ -42,15 +32,17 @@ public class AddressConverter {
     public static AddressResponse toResponse(Address address) {
         AddressResponse addressResponse = AddressResponse.builder()
                 .id(address.getId())
+                .firstName(address.getFirstName())
+                .lastName(address.getLastName())
                 .streetAddress(address.getStreetAddress())
-                .city(address.getCity())
-                .state(address.getState())
-                .country(address.getCountry())
+                .wardCode(address.getWardCode())
+                .districtCode(address.getDistrictCode())
+                .provinceCode(address.getProvinceCode())
+                .wardName(address.getWardName())
+                .districtName(address.getDistrictName())
+                .provinceName(address.getProvinceName())
                 .phoneNumber(address.getPhoneNumber())
-                .email(address.getEmail())
-                .addressType(address.getAddressType())
-                .defaultAddress(address.getDefaultAddress())
-//                .userAddressId(address.getUser().getAddress())
+//                .userAddressId(address.getUser())
                 .build();
         return addressResponse;
     }

@@ -1,7 +1,9 @@
 package com.eFurnitureproject.eFurniture.controllers;
 
 import com.eFurnitureproject.eFurniture.dtos.ProductImageDto;
+import com.eFurnitureproject.eFurniture.models.ProductImages;
 import com.eFurnitureproject.eFurniture.services.impl.ProductImageService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("${api.prefix}/product_image")
 @RequiredArgsConstructor
 public class ProductImageController {
@@ -28,6 +31,14 @@ public class ProductImageController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Collections.emptyList()); // or handle the error response as needed
         }
+    }
+//    @CrossOrigin
+    @GetMapping("/product/{id}")
+    public ResponseEntity<List<ProductImages>> getImageByProducts(
+            @Valid @PathVariable Long id
+    ){
+        List<ProductImages> productImages = productImageService.getImagesByProduct(id);
+        return ResponseEntity.ok(productImages);
     }
 
 //    @PutMapping("/update/{id}")

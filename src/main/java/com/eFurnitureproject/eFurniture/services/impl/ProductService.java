@@ -8,10 +8,7 @@ import com.eFurnitureproject.eFurniture.models.Brand;
 import com.eFurnitureproject.eFurniture.models.Category;
 import com.eFurnitureproject.eFurniture.models.Product;
 import com.eFurnitureproject.eFurniture.models.TagsProduct;
-import com.eFurnitureproject.eFurniture.repositories.BrandRepository;
-import com.eFurnitureproject.eFurniture.repositories.CategoryRepository;
-import com.eFurnitureproject.eFurniture.repositories.ProductRepository;
-import com.eFurnitureproject.eFurniture.repositories.TagProductRepository;
+import com.eFurnitureproject.eFurniture.repositories.*;
 import com.eFurnitureproject.eFurniture.services.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,6 +27,7 @@ public class ProductService implements IProductService {
     private final CategoryRepository categoryRepository;
     private final BrandRepository brandRepository;
     private final TagProductRepository tagProductRepository;
+    private final FeedbackRepository feedbackRepository;
 
     @Override
     public Product getProductById(long id) throws Exception {
@@ -61,6 +59,10 @@ public class ProductService implements IProductService {
                                 "Cannot find category with id: " + productDto.getTagsProductId()));
 
         Product product = ProductConverter.toEntity(productDto);
+        double discount = productDto.getDiscount() != null ? productDto.getDiscount() : 0.0;
+        double priceSale = product.getPriceSale();
+        double price = priceSale * ((100 - discount) / 100);
+        product.setPrice(price);
         product.setCodeProduct(generatedCode);
         product.setCategory(existingCategory);
         product.setBrand(existingBrand);
@@ -103,22 +105,45 @@ public class ProductService implements IProductService {
 
     public Page<ProductResponse> getAllProducts(String keyword, PageRequest pageRequest,
                                            Double minPrice, Double maxPrice,
-                                           Long brandId, Long tagsProductId, Long categoryId) {
+                                                List<Long> brandIds, List<Long> tagsProductIds, List<Long> categoryIds) {
         Page<Product> products;
         products = productRepository.searchProducts(
-                keyword, pageRequest, minPrice, maxPrice, brandId, tagsProductId, categoryId);
-
-//        return products
-//                .map(ProductConverter::toDto);
-        // Assuming you have a ProductMapper class with a toDto method
-        return products.map(ProductConverter::toResponse);
+                keyword, pageRequest, minPrice, maxPrice, brandIds, tagsProductIds, categoryIds);
+        return products.map(product -> {
+            ProductResponse response = ProductConverter.toResponse(product);
+            Double averageRating = feedbackRepository.findAverageRatingByProductId(product.getId());
+            response.setRating(averageRating);
+            return response;
+        });
     }
 
-    public List<Product> getAll(){
-        return productRepository.findAll();
+    public List<ProductResponse> getAll(){
+        List<Product> products = productRepository.findAll();
+        return products.stream()
+                .map(product -> {
+                    ProductResponse response = ProductConverter.toResponse(product);
+                    Double averageRating = feedbackRepository.findAverageRatingByProductId(product.getId());
+                    response.setRating(averageRating);
+                    return response;
+                })
+                .collect(Collectors.toList());
+//        return products.map(product -> {
+//            ProductResponse response = ProductConverter.toResponse(product);
+//            Double averageRating = feedbackRepository.findAverageRatingByProductId(product.getId());
+//            response.setRating(averageRating);
+//            return response;
+//        });
     }
-    public List<Product> getProductByCategory(Long id){
-        return productRepository.findByCategoryId(id);
+    public List<ProductResponse> getProductByCategory(Long id){
+        List<Product> products = productRepository.findByCategoryId(id);
+        return products.stream()
+                .map(product -> {
+                    ProductResponse response = ProductConverter.toResponse(product);
+                    Double averageRating = feedbackRepository.findAverageRatingByProductId(product.getId());
+                    response.setRating(averageRating);
+                    return response;
+                })
+                .collect(Collectors.toList());
     }
     public List<Product> getAllProduct(){
         return productRepository.findAll();

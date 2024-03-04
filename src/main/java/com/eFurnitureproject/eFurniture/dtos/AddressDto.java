@@ -12,29 +12,22 @@ import lombok.*;
 public class AddressDto{
 
     private Long id;
-
+    private String firstName;
+    private String lastName;
     @NotBlank(message = "Street address is required")
     private String streetAddress;
 
-    @NotBlank(message = "City is required")
-    private String city;
-
-    @NotBlank(message = "State is required")
-    private String state;
-
-    @NotBlank(message = "Country is required")
-    private String country;
+    private String wardCode;
+    private String districtCode;
+    private String provinceCode;
+    private String wardName;
+    private String districtName;
+    private String provinceName;
+    private String status;
 
     @NotBlank(message = "Phone number is required")
     private String phoneNumber;
 
-    @NotBlank(message = "Email is required")
-    private String email;
-
-    @NotBlank(message = "Address type is required")
-    private String addressType;
-
-    private int defaultAddress;
 
     private String userAddressId; // Assuming you want to use userAddressId instead of User object directly
 }

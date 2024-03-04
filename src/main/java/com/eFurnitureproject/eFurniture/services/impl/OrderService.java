@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class OrderService implements IOrderService {
     private final ProductRepository productRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final ModelMapper modelMapper;
-
+    @CrossOrigin
     @Transactional
     public Order createOrder(OrderDto orderDto) throws Exception {
         User user = userRepository.findById(orderDto.getUserId())
@@ -43,7 +44,7 @@ public class OrderService implements IOrderService {
         modelMapper.map(orderDto, order);
         order.setUser(user);
         order.setOrderDate(LocalDate.now());
-        //order.setStatus(OrderStatus.PENDING);
+        order.setStatus(1);
         LocalDate shippingDate = orderDto.getShippingDate() == null
                 ? LocalDate.now() : orderDto.getShippingDate();
         if (shippingDate.isBefore(LocalDate.now())) {

@@ -23,6 +23,7 @@ public class ProductDto extends BaseDto{
     @Min(value = 0, message = "Price must be greater than or equal to 0")
     @Max(value = 10000000, message = "Price must be less than or equal to 10,000,000")
     private double price;
+    @Min(value = 0, message = "Price sale must be greater than or equal to 0")
     @JsonProperty("price_sale")
     private double priceSale;
     @Min(value = 1, message = "Quantity must be greater than or equal to 0")
@@ -34,7 +35,8 @@ public class ProductDto extends BaseDto{
     @JsonProperty("quantity_sold")
     private int quantitySold;
     private int status;
-    private String discount;
+    //private Double rating;
+    private Double discount;
     @JsonProperty("category_id")
     private Long categoryId;  // Field to represent Category ID
     @JsonProperty("brand_id")

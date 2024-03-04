@@ -1,6 +1,7 @@
-package com.eFurnitureproject.eFurniture.models;
+package com.eFurnitureproject.eFurniture.models.Enum;
 
 public enum StatusDelivery {
+    PENDING,
     WAITING_FOR_DELIVERY,
     GOING_TO_GET_IT,
     DELIVERING,

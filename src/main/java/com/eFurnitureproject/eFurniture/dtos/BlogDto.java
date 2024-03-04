@@ -1,11 +1,13 @@
 package com.eFurnitureproject.eFurniture.dtos;
 
+import com.eFurnitureproject.eFurniture.models.CategoryBlog;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Getter
@@ -22,15 +24,32 @@ public class BlogDto {
     private String title;
 
     @NotBlank(message = "Content is required")
-    @Size(min = 0, max = 1000000, message = "Content must be between 0 and 1000000 characters")
+    @Size(min = 0, max = 65535, message = "Content must be between 0 and 1000000 characters")
     private String content;
 
     private String thumbnail;
+    private String imageUrls;
+
     private boolean active;
 
-    private Long userBlogId; // Assuming you want to use userBlogId instead of User object directly
+    private Long userBlogId;
 
-    private Long tagBlogId; // Assuming you want to use tagBlogId instead of TagsBlog object directly
+    private List<Long> categoryBlogIds;
 
-    private Long categoryBlogId; // Assuming you want to use categoryBlogId instead of CategoryBlog object directly
+    private List<Long> tagBlogIds;
+    public List<Long> getCategoryBlogIds() {
+        return categoryBlogIds;
+    }
+
+    public void setCategoryBlogIds(List<Long> categoryBlogIds) {
+        this.categoryBlogIds = categoryBlogIds;
+    }
+
+    public List<Long> getTagBlogIds() {
+        return tagBlogIds;
+    }
+
+    public void setTagBlogIds(List<Long> tagBlogIds) {
+        this.tagBlogIds = tagBlogIds;
+    }
 }

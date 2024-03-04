@@ -46,6 +46,9 @@ public class Product extends BaseEntity{
     @Column(name = "color")
     private int color;
 
+//    @Column(name = "rating")
+//    private Double rating;
+
     @Column(name = "code_product", length = 255)
     private String codeProduct;
 
@@ -56,7 +59,7 @@ public class Product extends BaseEntity{
     private int status;
 
     @Column(name = "discount", length = 255)
-    private String discount;
+    private Double discount;
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "product_category",nullable = false)
@@ -65,12 +68,12 @@ public class Product extends BaseEntity{
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "product_brand",nullable = false)
-    @JsonBackReference
+    //@JsonBackReference
     private Brand brand;
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "product_tags",nullable = false)
-    @JsonBackReference
+    //@JsonBackReference
     private TagsProduct tagsProduct;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
