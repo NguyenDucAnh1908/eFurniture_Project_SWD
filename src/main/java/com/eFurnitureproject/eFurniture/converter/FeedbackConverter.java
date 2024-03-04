@@ -1,16 +1,11 @@
 package com.eFurnitureproject.eFurniture.converter;
 
 import com.eFurnitureproject.eFurniture.dtos.FeedbackDto;
-import com.eFurnitureproject.eFurniture.dtos.FeedbackImageDto;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Feedback;
-import com.eFurnitureproject.eFurniture.models.FeedbackImages;
-import com.eFurnitureproject.eFurniture.repositories.UserRepository;  // Import UserRepository
+import com.eFurnitureproject.eFurniture.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class FeedbackConverter {
