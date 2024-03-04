@@ -4,7 +4,7 @@ import com.eFurnitureproject.eFurniture.converter.DeliveryConverter;
 import com.eFurnitureproject.eFurniture.dtos.DeliveryDto;
 import com.eFurnitureproject.eFurniture.models.Delivery;
 import com.eFurnitureproject.eFurniture.models.Order;
-import com.eFurnitureproject.eFurniture.models.StatusDelivery;
+import com.eFurnitureproject.eFurniture.models.Enum.StatusDelivery;
 import com.eFurnitureproject.eFurniture.repositories.DeliveryRepository;
 
 import com.eFurnitureproject.eFurniture.services.IDeliveryService;

@@ -1,7 +1,7 @@
 package com.eFurnitureproject.eFurniture.services;
 
 import com.eFurnitureproject.eFurniture.dtos.DeliveryDto;
-import com.eFurnitureproject.eFurniture.models.StatusDelivery;
+import com.eFurnitureproject.eFurniture.models.Enum.StatusDelivery;
 
 import java.util.List;
 

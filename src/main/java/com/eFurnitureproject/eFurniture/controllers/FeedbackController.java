@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
-
+@CrossOrigin
 @RestController
 @RequestMapping("${api.prefix}/feedbacks")
 @RequiredArgsConstructor
@@ -26,13 +26,12 @@ public class FeedbackController {
         ResponseEntity<?> validationErrors = getResponseEntity(bindingResult);
         if (validationErrors != null) return validationErrors;
         try {
-            FeedbackDto createdFeedback = feedbackService.createFeedback(feedbackDto);
-            return new ResponseEntity<>(createdFeedback, HttpStatus.CREATED);
+            feedbackService.createFeedback(feedbackDto);
+            return new ResponseEntity<>("Feedback created successfully", HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateFeedback(
             @PathVariable Long id,
@@ -44,8 +43,8 @@ public class FeedbackController {
 
         try {
             // Call the service method to update feedback
-            FeedbackDto updatedFeedback = feedbackService.updateFeedback(id, updatedFeedbackDto);
-            return new ResponseEntity<>(updatedFeedback, HttpStatus.OK);
+            feedbackService.updateFeedback(id, updatedFeedbackDto);
+            return new ResponseEntity<>("Feedback updated successfully", HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -64,7 +63,7 @@ public class FeedbackController {
     }
 
     @GetMapping("/product/{productId}")
-    public ResponseEntity<Page<FeedbackDto>> getAllFeedbacksForProduct(
+    public ResponseEntity<?> getAllFeedbacksForProduct(
             @PathVariable Long productId,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size,
@@ -77,7 +76,7 @@ public class FeedbackController {
             Page<FeedbackDto> feedbacks = feedbackService.getAllFeedbacksForProduct(productId, page, size, rating, hasImage, hasComment);
             return new ResponseEntity<>(feedbacks, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
@@ -108,7 +107,6 @@ public class FeedbackController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
     @PostMapping("/reply/{feedbackId}")
     public ResponseEntity<FeedbackDto> replyToFeedback(@PathVariable Long feedbackId, @RequestParam String reply) {
         try {
@@ -119,3 +117,4 @@ public class FeedbackController {
         }
     }
 }
+    

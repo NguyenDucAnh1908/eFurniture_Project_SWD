@@ -1,5 +1,6 @@
 package com.eFurnitureproject.eFurniture.models;
 
+import com.eFurnitureproject.eFurniture.models.Enum.StatusDelivery;
 import jakarta.persistence.*;
 import lombok.*;
 

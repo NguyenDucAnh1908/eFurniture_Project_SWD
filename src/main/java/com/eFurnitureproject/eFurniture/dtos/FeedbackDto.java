@@ -1,22 +1,21 @@
 package com.eFurnitureproject.eFurniture.dtos;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
+
 @Data//toString
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FeedbackDto {
+public class FeedbackDto extends BaseDto{
     private Long id;
 
     @NotNull(message = "Rating is required")
@@ -27,7 +26,7 @@ public class FeedbackDto {
     @NotBlank(message = "Comment cannot be blank")
     private String comment;
 
-    private LocalDate dateFeedback;
+    private String imageUrls;
 
     private String status;
 
@@ -38,7 +37,11 @@ public class FeedbackDto {
 
     private Long userId;
 
-    @JsonProperty("images")
-    private List<FeedbackImageDto> images = new ArrayList<>();
+    private String userFullName;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updatedAt;
 }

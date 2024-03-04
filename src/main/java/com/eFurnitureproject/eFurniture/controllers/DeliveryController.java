@@ -1,7 +1,7 @@
 package com.eFurnitureproject.eFurniture.controllers;
 
 import com.eFurnitureproject.eFurniture.dtos.DeliveryDto;
-import com.eFurnitureproject.eFurniture.models.StatusDelivery;
+import com.eFurnitureproject.eFurniture.models.Enum.StatusDelivery;
 import com.eFurnitureproject.eFurniture.services.IDeliveryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

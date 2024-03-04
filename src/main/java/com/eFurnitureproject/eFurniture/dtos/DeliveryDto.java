@@ -1,6 +1,6 @@
 package com.eFurnitureproject.eFurniture.dtos;
 
-import com.eFurnitureproject.eFurniture.models.StatusDelivery;
+import com.eFurnitureproject.eFurniture.models.Enum.StatusDelivery;
 import lombok.*;
 
 @Data//toString

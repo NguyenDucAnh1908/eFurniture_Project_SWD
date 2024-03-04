@@ -1,47 +1,52 @@
 package com.eFurnitureproject.eFurniture.services.impl;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.eFurnitureproject.eFurniture.converter.FeedbackConverter;
 import com.eFurnitureproject.eFurniture.dtos.FeedbackDto;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Feedback;
-import com.eFurnitureproject.eFurniture.models.FeedbackImages;
 import com.eFurnitureproject.eFurniture.models.Product;
 import com.eFurnitureproject.eFurniture.models.User;
-import com.eFurnitureproject.eFurniture.repositories.FeedbackImagesRepository;
 import com.eFurnitureproject.eFurniture.repositories.FeedbackRepository;
 import com.eFurnitureproject.eFurniture.repositories.ProductRepository;
 import com.eFurnitureproject.eFurniture.repositories.UserRepository;
 import com.eFurnitureproject.eFurniture.services.IFeedbackService;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FeedbackService implements IFeedbackService {
 
     private final FeedbackRepository feedbackRepository;
-    private final FeedbackImagesRepository feedbackImagesRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final Cloudinary cloudinary;
 
 
     @Autowired
     public FeedbackService(FeedbackRepository feedbackRepository,
-                           FeedbackImagesRepository feedbackImagesRepository,
                            UserRepository userRepository,
-                           ProductRepository productRepository) {
+                           ProductRepository productRepository,
+                           Cloudinary cloudinary) {
         this.feedbackRepository = feedbackRepository;
-        this.feedbackImagesRepository = feedbackImagesRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.cloudinary = cloudinary;
     }
 
     @Transactional
@@ -59,20 +64,38 @@ public class FeedbackService implements IFeedbackService {
                                     "Cannot find user with id: " + feedbackDto.getUserId()));
 
             // Convert DTO to entity
-            Feedback feedback = FeedbackConverter.toEntity(feedbackDto);
+            Feedback feedback = Feedback.builder()
+                    .rating(feedbackDto.getRating())
+                    .status(feedbackDto.getStatus())
+                    .reply(feedbackDto.getReply())
+                    .build();
             feedback.setProduct(existingProduct);
             feedback.setUser(user);
 
+
+            // Analyze HTML content to extract image URLs
+            Document doc = Jsoup.parse(feedbackDto.getComment());
+            Elements imgTags = doc.select("img");
+            List<String> imageURLs = new ArrayList<>();
+            for (Element imgTag : imgTags) {
+                String url = imgTag.attr("src");
+                // Upload the image to Cloudinary and get the new URL
+                String newURL = uploadToCloudinaryAndReturnURL(url);
+                // Replace the old URL in the content with the new URL
+                imgTag.attr("src", newURL);
+                // Save the new URL to the list
+                imageURLs.add(newURL);
+            }
+
+            // Save the list of new URLs to the imageUrls field
+            feedback.setImageUrls(String.join(",", imageURLs));
+
+            // Save the updated content to the Blog object
+            String updatedComment = doc.html();
+            feedback.setComment(updatedComment);
+
             // Save the feedback to the database
             feedback = feedbackRepository.save(feedback);
-
-            // Save images associated with the feedback
-            if (feedbackDto.getImages() != null && !feedbackDto.getImages().isEmpty()) {
-                final Feedback finalFeedback = feedback;
-                List<FeedbackImages> feedbackImages = FeedbackConverter.toImageEntityList(feedbackDto.getImages());
-                feedbackImages.forEach(image -> image.setFeedback(finalFeedback));
-                feedbackImagesRepository.saveAll(feedbackImages);
-            }
 
             return FeedbackConverter.toDto(feedback);
         } catch (Exception e) {
@@ -90,23 +113,13 @@ public class FeedbackService implements IFeedbackService {
             if (optionalFeedback.isPresent()) {
                 // Update the existing feedback
                 Feedback existingFeedback = optionalFeedback.get();
-
                 existingFeedback.setRating(updatedFeedbackDto.getRating());
                 existingFeedback.setComment(updatedFeedbackDto.getComment());
-                existingFeedback.setDateFeedback(updatedFeedbackDto.getDateFeedback());
                 existingFeedback.setStatus(updatedFeedbackDto.getStatus());
                 existingFeedback.setReply(updatedFeedbackDto.getReply());
 
                 // Save the updated feedback to the database
                 existingFeedback = feedbackRepository.save(existingFeedback);
-
-                // Update associated images (if any)
-                if (updatedFeedbackDto.getImages() != null && !updatedFeedbackDto.getImages().isEmpty()) {
-                    List<FeedbackImages> updatedImages = FeedbackConverter.toImageEntityList(updatedFeedbackDto.getImages());
-                    Feedback finalExistingFeedback = existingFeedback;
-                    updatedImages.forEach(image -> image.setFeedback(finalExistingFeedback));
-                    feedbackImagesRepository.saveAll(updatedImages);
-                }
 
                 return FeedbackConverter.toDto(existingFeedback);
             } else {
@@ -120,7 +133,7 @@ public class FeedbackService implements IFeedbackService {
 
     @Transactional(readOnly = true)
     public Page<FeedbackDto> getAllFeedbacksForProduct(Long productId, int page, int size, Integer rating, boolean hasImage, boolean hasComment) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("dateFeedback").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
         Specification<Feedback> spec = Specification.where((root, query, cb) -> cb.equal(root.get("product").get("id"), productId));
 
@@ -138,8 +151,13 @@ public class FeedbackService implements IFeedbackService {
 
         Page<Feedback> feedbacksPage = feedbackRepository.findAll(spec, pageable);
 
-        return feedbacksPage.map(FeedbackConverter::toDto);
+        List<FeedbackDto> feedbackDtos = feedbacksPage.getContent().stream()
+                .map(FeedbackConverter::toDto)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(feedbackDtos, pageable, feedbacksPage.getTotalElements());
     }
+
 
     @Transactional(readOnly = true)
     public FeedbackDto getFeedbackById(Long id) {
@@ -182,6 +200,20 @@ public class FeedbackService implements IFeedbackService {
             return FeedbackConverter.toDto(feedback);
         } else {
             throw new RuntimeException("Feedback not found with ID: " + feedbackId);
+        }
+    }
+
+    private String uploadToCloudinaryAndReturnURL(String imageURL) {
+        try {
+            // Upload img into Cloudinary
+            Map uploadResult = cloudinary.uploader().upload(imageURL, ObjectUtils.emptyMap());
+
+            // Return URL of img in Cloudinary
+            return (String) uploadResult.get("url");
+        } catch (IOException e) {
+            // Exception Cloudinary
+            e.printStackTrace();
+            return null;
         }
     }
 }

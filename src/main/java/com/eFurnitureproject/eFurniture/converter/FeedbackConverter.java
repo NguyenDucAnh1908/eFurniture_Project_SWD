@@ -27,13 +27,13 @@ public class FeedbackConverter {
                 .id(feedback.getId())
                 .rating(feedback.getRating())
                 .comment(feedback.getComment())
-                .dateFeedback(feedback.getDateFeedback())
                 .status(feedback.getStatus())
                 .reply(feedback.getReply())
+                .updatedAt(feedback.getUpdatedAt())
+                .createdAt(feedback.getCreatedAt())
+                .userFullName(feedback.getUser().getFullName())
                 .productId(feedback.getProduct() != null ? feedback.getProduct().getId() : null);
-        if (feedback.getFeedbackImages() != null) {
-            builder.images(toImageDtoList(feedback.getFeedbackImages()));
-        }
+
 
         // Add user mapping
         if (feedback.getUser() != null) {
@@ -48,7 +48,6 @@ public class FeedbackConverter {
                 .id(feedbackDto.getId())
                 .rating(feedbackDto.getRating())
                 .comment(feedbackDto.getComment())
-                .dateFeedback(feedbackDto.getDateFeedback())
                 .status(feedbackDto.getStatus())
                 .reply(feedbackDto.getReply())
                 .user(userRepository.findById(feedbackDto.getUserId())
@@ -56,29 +55,4 @@ public class FeedbackConverter {
                 .build();
     }
 
-    public static List<FeedbackImageDto> toImageDtoList(List<FeedbackImages> feedbackImages) {
-        return feedbackImages.stream()
-                .map(FeedbackConverter::toImageDto)
-                .collect(Collectors.toList());
-    }
-
-    public static FeedbackImageDto toImageDto(FeedbackImages feedbackImage) {
-        return FeedbackImageDto.builder()
-                .id(feedbackImage.getId())
-                .imageUrl(feedbackImage.getImageUrl())
-                .build();
-    }
-
-    public static List<FeedbackImages> toImageEntityList(List<FeedbackImageDto> feedbackImageDtos) {
-        return feedbackImageDtos.stream()
-                .map(FeedbackConverter::toImageEntity)
-                .collect(Collectors.toList());
-    }
-
-    public static FeedbackImages toImageEntity(FeedbackImageDto feedbackImageDto) {
-        return FeedbackImages.builder()
-                .id(feedbackImageDto.getId())
-                .imageUrl(feedbackImageDto.getImageUrl())
-                .build();
-    }
 }

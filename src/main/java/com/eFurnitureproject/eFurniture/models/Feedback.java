@@ -23,11 +23,8 @@ public class Feedback extends  BaseEntity{
     @Column(name = "rating")
     private int rating;
 
-    @Column(name = "comment")
+    @Column(name = "comment", columnDefinition = "TEXT")
     private String comment;
-
-    @Column(name = "date_feedback")
-    private LocalDate dateFeedback;
 
     @Column(name = "status")
     private String status;
@@ -35,13 +32,12 @@ public class Feedback extends  BaseEntity{
     @Column(name = "reply")
     private String reply;
 
+    @Column(name = "image_urls", columnDefinition = "TEXT", nullable = true)
+    private String imageUrls;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "product_id",nullable = false)
     private Product product;
-
-    @OneToMany(mappedBy = "feedbacks", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<FeedbackImages> feedbackImages;
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "user_feedback",nullable = false)
