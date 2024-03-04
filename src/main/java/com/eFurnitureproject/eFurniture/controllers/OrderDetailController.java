@@ -4,6 +4,8 @@ import com.eFurnitureproject.eFurniture.Responses.OrderDetailResponse;
 import com.eFurnitureproject.eFurniture.components.LocalizationUtils;
 import com.eFurnitureproject.eFurniture.converter.OrderDetailConverter;
 import com.eFurnitureproject.eFurniture.dtos.OrderDetailDto;
+import com.eFurnitureproject.eFurniture.dtos.chartDto.TopSellingProductDTO;
+import com.eFurnitureproject.eFurniture.dtos.chartDto.SalesChartDTO;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.OrderDetail;
 import com.eFurnitureproject.eFurniture.services.IOrderDetailService;
@@ -15,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -82,5 +85,16 @@ public class OrderDetailController {
         return ResponseEntity.ok()
                 .body(localizationUtils
                         .getLocalizedMessage(MessageKeys.DELETE_ORDER_DETAIL_SUCCESSFULLY));
+    }
+
+    @GetMapping("/chart")
+    public ResponseEntity<List<SalesChartDTO>> getTotalAmountSoldByDate() {
+        List<SalesChartDTO> totalAmounts = orderDetailService.getTotalAmountSoldByDate();
+        return ResponseEntity.ok(totalAmounts);
+    }
+
+    @GetMapping("/chart-top-sale-product")
+    public List<TopSellingProductDTO> getMostSoldProductsByDate() {
+        return orderDetailService.findMostSoldProductsByDate();
     }
 }

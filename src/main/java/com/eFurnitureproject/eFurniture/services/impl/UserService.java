@@ -85,6 +85,7 @@ public class UserService implements IUserService {
                 .phoneNumber(user.getPhoneNumber())
                 .dateOfBirth(user.getDateOfBirth())
                 .active(user.isActive())
+                .role(user.getRole())
                 .build();
     }
 
