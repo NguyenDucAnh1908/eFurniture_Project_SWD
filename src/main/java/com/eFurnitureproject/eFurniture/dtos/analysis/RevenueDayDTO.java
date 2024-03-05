@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RevenueWeekDTO {
-    private Double lastWeekRevenue;
-    private Double currentWeekRevenue;
+public class RevenueDayDTO {
+    private Double totalSalesToday;
+    private Double totalSalesYesterday;
 }

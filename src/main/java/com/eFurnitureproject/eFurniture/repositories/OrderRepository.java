@@ -49,14 +49,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT SUM(o.totalAmount) FROM Order o WHERE MONTH(o.orderDate) = MONTH(CURRENT_DATE()) - 1")
     Double findTotalRevenueLastMonth();
 
-    @Query(value = "SELECT SUM(o.total_amount) " +
-            "FROM orders o " +
-            "WHERE o.order_date BETWEEN DATE_TRUNC('week', CURRENT_DATE) - INTERVAL '1 week' AND DATE_TRUNC('week', CURRENT_DATE)",
-            nativeQuery = true)
-    Double getTotalRevenueLastWeek();
+    @Query("SELECT SUM(o.totalAmount) FROM Order o WHERE o.orderDate = CURRENT_DATE")
+    Double getTotalAmountToday();
 
-    @Query("SELECT SUM(o.totalAmount) " +
-            "FROM Order o " +
-            "WHERE o.orderDate BETWEEN DATE_TRUNC('week', CURRENT_DATE) AND CURRENT_DATE")
-    Double getTotalRevenueCurrentWeek();
+    @Query("SELECT SUM(o.totalAmount) FROM Order o WHERE o.orderDate = CURRENT_DATE - 1")
+    Double getTotalAmountYesterday();
 }//o.active = true AND

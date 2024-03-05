@@ -7,7 +7,7 @@ import com.eFurnitureproject.eFurniture.converter.OrderConverter;
 import com.eFurnitureproject.eFurniture.dtos.OrderDto;
 import com.eFurnitureproject.eFurniture.dtos.analysis.OrderStatsDTO;
 import com.eFurnitureproject.eFurniture.dtos.analysis.RevenueDTO;
-import com.eFurnitureproject.eFurniture.dtos.analysis.RevenueWeekDTO;
+import com.eFurnitureproject.eFurniture.dtos.analysis.RevenueDayDTO;
 import com.eFurnitureproject.eFurniture.models.Order;
 import com.eFurnitureproject.eFurniture.services.IOrderService;
 import com.eFurnitureproject.eFurniture.utils.MessageKeys;
@@ -136,10 +136,10 @@ public class OrderController {
         return ResponseEntity.ok(revenueDTO);
     }
 
-    @GetMapping("/total-revenue-week")
-    public ResponseEntity<RevenueWeekDTO> getTotalRevenue() {
-        RevenueWeekDTO revenueDTO = orderService.getTotalRevenue();
-        return ResponseEntity.ok(revenueDTO);
+    @GetMapping("/total-revenue-day")
+    public ResponseEntity<RevenueDayDTO> getTotalSales() {
+        RevenueDayDTO totalSalesDTO = orderService.getTotalSales();
+        return ResponseEntity.ok(totalSalesDTO);
     }
 
 }

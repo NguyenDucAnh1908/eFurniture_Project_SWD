@@ -20,4 +20,10 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
             "GROUP BY od.product, od.orders.orderDate " +
             "ORDER BY totalSold DESC")
     List<Object[]> findMostSoldProductsByDate();
+
+    @Query("SELECT od.product, SUM(od.quantity) AS totalQuantitySold, SUM(od.totalAmount) AS totalAmountSold " +
+            "FROM OrderDetail od " +
+            "GROUP BY od.product " +
+            "ORDER BY totalQuantitySold DESC")
+    List<Object[]> findTop5BestSellingProducts();
 }

@@ -4,7 +4,7 @@ import com.eFurnitureproject.eFurniture.dtos.CartItemDto;
 import com.eFurnitureproject.eFurniture.dtos.OrderDto;
 import com.eFurnitureproject.eFurniture.dtos.analysis.OrderStatsDTO;
 import com.eFurnitureproject.eFurniture.dtos.analysis.RevenueDTO;
-import com.eFurnitureproject.eFurniture.dtos.analysis.RevenueWeekDTO;
+import com.eFurnitureproject.eFurniture.dtos.analysis.RevenueDayDTO;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.exceptions.InsufficientQuantityException;
 import com.eFurnitureproject.eFurniture.models.Order;
@@ -193,10 +193,10 @@ public class OrderService implements IOrderService {
         return ((currentMonthRevenue - lastMonthRevenue) / lastMonthRevenue) * 100;
     }
 
-    public RevenueWeekDTO getTotalRevenue() {
-        RevenueWeekDTO revenueDTO = new RevenueWeekDTO();
-        revenueDTO.setLastWeekRevenue(orderRepository.getTotalRevenueLastWeek());
-        revenueDTO.setCurrentWeekRevenue(orderRepository.getTotalRevenueCurrentWeek());
-        return revenueDTO;
+    public RevenueDayDTO getTotalSales() {
+        RevenueDayDTO totalSalesDTO = new RevenueDayDTO();
+        totalSalesDTO.setTotalSalesToday(orderRepository.getTotalAmountToday());
+        totalSalesDTO.setTotalSalesYesterday(orderRepository.getTotalAmountYesterday());
+        return totalSalesDTO;
     }
 }
