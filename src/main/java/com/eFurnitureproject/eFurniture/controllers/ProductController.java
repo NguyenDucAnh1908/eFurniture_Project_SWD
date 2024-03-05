@@ -5,6 +5,7 @@ import com.eFurnitureproject.eFurniture.Responses.ProductListResponse;
 import com.eFurnitureproject.eFurniture.Responses.ProductResponse;
 import com.eFurnitureproject.eFurniture.components.LocalizationUtils;
 import com.eFurnitureproject.eFurniture.dtos.ProductDto;
+import com.eFurnitureproject.eFurniture.dtos.analysis.OrderStatsDTO;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Product;
 import com.eFurnitureproject.eFurniture.services.impl.ProductService;

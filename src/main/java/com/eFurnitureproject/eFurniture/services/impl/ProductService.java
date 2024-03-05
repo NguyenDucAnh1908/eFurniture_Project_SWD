@@ -3,6 +3,7 @@ package com.eFurnitureproject.eFurniture.services.impl;
 import com.eFurnitureproject.eFurniture.Responses.ProductResponse;
 import com.eFurnitureproject.eFurniture.converter.ProductConverter;
 import com.eFurnitureproject.eFurniture.dtos.ProductDto;
+import com.eFurnitureproject.eFurniture.dtos.analysis.OrderStatsDTO;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Brand;
 import com.eFurnitureproject.eFurniture.models.Category;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -148,6 +150,7 @@ public class ProductService implements IProductService {
     public List<Product> getAllProduct(){
         return productRepository.findAll();
     }
+
 
     private String generateCodeFromName(String codeProduct) {
         return codeProduct.replaceAll("\\s", "-").toLowerCase();

@@ -45,4 +45,16 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("tagsProductIds") List<Long> tagsProductIds,
             @Param("categoryIds") List<Long> categoryIds);
 
+    @Query(value = "SELECT " +
+            "COUNT(p) AS totalProducts, " +
+            "MONTH(p.createdAt) AS currentMonth, " +
+            "YEAR(p.createdAt) AS currentYear, " +
+            "MONTH(p.createdAt) - 1 AS previousMonth " +
+            "FROM Product p " +
+            "WHERE MONTH(p.createdAt) = MONTH(CURRENT_DATE()) " +
+            "AND YEAR(p.createdAt) = YEAR(CURRENT_DATE()) " +
+            "OR (MONTH(p.createdAt) = MONTH(CURRENT_DATE()) - 1 AND YEAR(p.createdAt) = YEAR(CURRENT_DATE())) " +
+            "GROUP BY currentMonth, currentYear, previousMonth")
+    List<Object[]> countProductsByMonth();
+
 }
