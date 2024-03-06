@@ -5,6 +5,9 @@ import com.eFurnitureproject.eFurniture.Responses.OrderResponse;
 import com.eFurnitureproject.eFurniture.components.LocalizationUtils;
 import com.eFurnitureproject.eFurniture.converter.OrderConverter;
 import com.eFurnitureproject.eFurniture.dtos.OrderDto;
+import com.eFurnitureproject.eFurniture.dtos.analysis.OrderStatsDTO;
+import com.eFurnitureproject.eFurniture.dtos.analysis.RevenueDTO;
+import com.eFurnitureproject.eFurniture.dtos.analysis.RevenueDayDTO;
 import com.eFurnitureproject.eFurniture.models.Order;
 import com.eFurnitureproject.eFurniture.services.IOrderService;
 import com.eFurnitureproject.eFurniture.utils.MessageKeys;
@@ -119,6 +122,24 @@ public class OrderController {
         //xóa mềm => cập nhật trường active = false
         orderService.deleteOrder(id);
         return ResponseEntity.ok(localizationUtils.getLocalizedMessage(MessageKeys.DELETE_ORDER_SUCCESSFULLY));
+    }
+
+    @GetMapping("/total-order")
+    public ResponseEntity<OrderStatsDTO> getOrderStats() {
+        OrderStatsDTO orderStatsDTO = orderService.getOrderStats();
+        return ResponseEntity.ok(orderStatsDTO);
+    }
+
+    @GetMapping("/total-revenue")
+    public ResponseEntity<RevenueDTO> getRevenueStatistics() {
+        RevenueDTO revenueDTO = orderService.getRevenueStatistics();
+        return ResponseEntity.ok(revenueDTO);
+    }
+
+    @GetMapping("/total-revenue-day")
+    public ResponseEntity<RevenueDayDTO> getTotalSales() {
+        RevenueDayDTO totalSalesDTO = orderService.getTotalSales();
+        return ResponseEntity.ok(totalSalesDTO);
     }
 
 }

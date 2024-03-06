@@ -2,6 +2,9 @@ package com.eFurnitureproject.eFurniture.services.impl;
 
 import com.eFurnitureproject.eFurniture.dtos.CartItemDto;
 import com.eFurnitureproject.eFurniture.dtos.OrderDto;
+import com.eFurnitureproject.eFurniture.dtos.analysis.OrderStatsDTO;
+import com.eFurnitureproject.eFurniture.dtos.analysis.RevenueDTO;
+import com.eFurnitureproject.eFurniture.dtos.analysis.RevenueDayDTO;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.exceptions.InsufficientQuantityException;
 import com.eFurnitureproject.eFurniture.models.Order;
@@ -165,4 +168,35 @@ public class OrderService implements IOrderService {
         }
     }
 
+    public OrderStatsDTO getOrderStats() {
+        OrderStatsDTO orderStatsDTO = new OrderStatsDTO();
+        long totalOrders = orderRepository.countTotalOrders();
+        orderStatsDTO.setTotalOrders(totalOrders);
+        double orderChangePercentage = orderRepository.calculateOrderChange();
+        orderStatsDTO.setOrderChangePercentage(orderChangePercentage);
+        return orderStatsDTO;
+    }
+
+    public RevenueDTO getRevenueStatistics() {
+        Double currentMonthRevenue = orderRepository.findTotalRevenueCurrentMonth();
+        Double lastMonthRevenue = orderRepository.findTotalRevenueLastMonth();
+
+        Double revenueChangePercentage = calculateRevenueChangePercentage(currentMonthRevenue, lastMonthRevenue);
+
+        return new RevenueDTO(currentMonthRevenue, lastMonthRevenue, revenueChangePercentage);
+    }
+
+    private Double calculateRevenueChangePercentage(Double currentMonthRevenue, Double lastMonthRevenue) {
+        if (lastMonthRevenue == null || lastMonthRevenue == 0) {
+            return currentMonthRevenue == null ? null : 100.0; // Assuming a 100% increase if last month revenue is 0
+        }
+        return ((currentMonthRevenue - lastMonthRevenue) / lastMonthRevenue) * 100;
+    }
+
+    public RevenueDayDTO getTotalSales() {
+        RevenueDayDTO totalSalesDTO = new RevenueDayDTO();
+        totalSalesDTO.setTotalSalesToday(orderRepository.getTotalAmountToday());
+        totalSalesDTO.setTotalSalesYesterday(orderRepository.getTotalAmountYesterday());
+        return totalSalesDTO;
+    }
 }

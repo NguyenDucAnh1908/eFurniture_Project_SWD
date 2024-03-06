@@ -5,6 +5,8 @@ import com.eFurnitureproject.eFurniture.Responses.ProductListResponse;
 import com.eFurnitureproject.eFurniture.Responses.ProductResponse;
 import com.eFurnitureproject.eFurniture.components.LocalizationUtils;
 import com.eFurnitureproject.eFurniture.dtos.ProductDto;
+import com.eFurnitureproject.eFurniture.dtos.Top5ProductDto;
+import com.eFurnitureproject.eFurniture.dtos.analysis.OrderStatsDTO;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Product;
 import com.eFurnitureproject.eFurniture.services.impl.ProductService;
@@ -133,6 +135,12 @@ public class ProductController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/top5-best-selling")
+    public List<Top5ProductDto> getTop5BestSellingProducts() {
+        return productService.getTop5BestSellingProducts();
+    }
+
     private List<Long> parseIds(String ids) {
         if (ids == null || ids.isEmpty()) {
             return null;
@@ -141,5 +149,6 @@ public class ProductController {
                 .map(Long::parseLong)
                 .collect(Collectors.toList());
     }
+
 
 }

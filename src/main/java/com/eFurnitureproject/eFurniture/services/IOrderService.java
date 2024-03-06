@@ -1,6 +1,9 @@
 package com.eFurnitureproject.eFurniture.services;
 
 import com.eFurnitureproject.eFurniture.dtos.OrderDto;
+import com.eFurnitureproject.eFurniture.dtos.analysis.OrderStatsDTO;
+import com.eFurnitureproject.eFurniture.dtos.analysis.RevenueDTO;
+import com.eFurnitureproject.eFurniture.dtos.analysis.RevenueDayDTO;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Order;
 import org.springframework.data.domain.Page;
@@ -15,4 +18,9 @@ public interface IOrderService {
     Order getOrder(Long id);
     void deleteOrder(Long id);
     List<Order> findByUserId(Long userId);
+
+    OrderStatsDTO getOrderStats();
+
+    RevenueDTO getRevenueStatistics();
+    RevenueDayDTO getTotalSales();
 }

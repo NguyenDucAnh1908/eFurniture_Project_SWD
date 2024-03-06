@@ -6,6 +6,7 @@ import com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse.UpdateUserR
 import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
+import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
 import com.eFurnitureproject.eFurniture.models.Enum.Role;
 import com.eFurnitureproject.eFurniture.models.Enum.TokenType;
 import com.eFurnitureproject.eFurniture.models.Token;
@@ -239,8 +240,19 @@ public class UserService implements IUserService {
     }
 
 
+    public UserStatsDTO getUserStats() {
+        Long usersThisMonth = repository.countUsersThisMonth();
+        Long usersLastMonth = repository.countUsersLastMonth();
 
+        double percentageChange;
+        if (usersLastMonth == 0) {
+            percentageChange = usersThisMonth > 0 ? 100 : 0;
+        } else {
+            percentageChange = ((double) (usersThisMonth - usersLastMonth) / usersLastMonth) * 100;
+        }
 
+        return new UserStatsDTO(usersThisMonth, usersLastMonth, percentageChange);
+    }
 
 }
 

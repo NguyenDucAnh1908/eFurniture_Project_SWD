@@ -1,6 +1,7 @@
 package com.eFurnitureproject.eFurniture.controllers;
 
 import com.eFurnitureproject.eFurniture.dtos.FeedbackDto;
+import com.eFurnitureproject.eFurniture.dtos.chartDto.FeedbackRatingCountDto;
 import com.eFurnitureproject.eFurniture.services.IFeedbackService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,11 +13,13 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 @CrossOrigin
 @RestController
 @RequestMapping("${api.prefix}/feedbacks")
 @RequiredArgsConstructor
+@CrossOrigin
 public class FeedbackController {
 
     private final IFeedbackService feedbackService;
@@ -120,6 +123,11 @@ public class FeedbackController {
                     .body("Internal Server Error: " + e.getMessage());
 
         }
+    }
+
+    @GetMapping("/feedback/count-by-rating")
+    public List<FeedbackRatingCountDto> getFeedbackCountByRating() {
+        return feedbackService.getFeedbackCountByRating();
     }
 }
     
