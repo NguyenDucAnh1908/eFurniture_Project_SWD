@@ -7,6 +7,7 @@ import com.eFurnitureproject.eFurniture.repositories.BookingRepository;
 import com.eFurnitureproject.eFurniture.repositories.DesignRepository;
 import com.eFurnitureproject.eFurniture.repositories.ProjectBookingRepository;
 import com.eFurnitureproject.eFurniture.services.IBookingService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -46,4 +47,9 @@ public class BookingService implements IBookingService {
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
     }
+
+
+
+
+
 }

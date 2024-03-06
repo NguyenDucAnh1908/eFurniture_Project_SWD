@@ -2,7 +2,9 @@ package com.eFurnitureproject.eFurniture.controllers;
 
 import com.eFurnitureproject.eFurniture.models.Booking;
 import com.eFurnitureproject.eFurniture.models.Design;
+import com.eFurnitureproject.eFurniture.models.ProjectBooking;
 import com.eFurnitureproject.eFurniture.services.impl.BookingService;
+import com.eFurnitureproject.eFurniture.services.impl.ProjectBookingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ import java.util.List;
 public class BookingController {
     @Autowired
     private BookingService bookingService;
+    private ProjectBookingService projectBookingService;
 
     @PostMapping("/create")
     public ResponseEntity<?> createBooking(@RequestBody Booking booking) {
@@ -49,5 +52,33 @@ public class BookingController {
         Design createdDesign = bookingService.createDesign(design);
         return new ResponseEntity<>(createdDesign, HttpStatus.CREATED);
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<ProjectBooking> updateProjectBooking(@PathVariable Long id, @RequestBody ProjectBooking projectBooking) {
+        // Kiểm tra xem ProjectBooking có tồn tại không trước khi cập nhật
+        ProjectBooking existingProjectBooking = projectBookingService.getProjectBookingById(id);
+        if (existingProjectBooking == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Đảm bảo ID từ URL được đặt cho projectBooking để tránh các vấn đề không đồng nhất
+        projectBooking.setId(id);
+        ProjectBooking updatedProjectBooking = projectBookingService.updateProjectBooking(projectBooking);
+
+        if(updatedProjectBooking != null) {
+            return ResponseEntity.ok(updatedProjectBooking);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    @GetMapping("/{projectBookingId}")
+    public ResponseEntity<ProjectBooking> getProjectBookingById(@PathVariable Long projectBookingId) {
+        ProjectBooking projectBooking = projectBookingService.getProjectBookingById(projectBookingId);
+        if (projectBooking != null) {
+            return new ResponseEntity<>(projectBooking, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 
 }
