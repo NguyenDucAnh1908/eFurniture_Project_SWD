@@ -1,6 +1,7 @@
 package com.eFurnitureproject.eFurniture.controllers;
 
 import com.eFurnitureproject.eFurniture.dtos.FeedbackDto;
+import com.eFurnitureproject.eFurniture.dtos.chartDto.FeedbackRatingCountDto;
 import com.eFurnitureproject.eFurniture.services.IFeedbackService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 @CrossOrigin
 @RestController
@@ -108,13 +110,23 @@ public class FeedbackController {
         }
     }
     @PostMapping("/reply/{feedbackId}")
-    public ResponseEntity<FeedbackDto> replyToFeedback(@PathVariable Long feedbackId, @RequestParam String reply) {
+    public ResponseEntity<?> replyToFeedback(@PathVariable Long feedbackId, @RequestParam String reply, @RequestParam Long replierId) {
         try {
-            FeedbackDto repliedFeedback = feedbackService.replyToFeedback(feedbackId, reply);
-            return new ResponseEntity<>(repliedFeedback, HttpStatus.OK);
+            if (replierId == null || reply == null || reply.isEmpty()) {
+                return ResponseEntity.badRequest().body("Invalid replierId or reply");
+            }
+            feedbackService.replyToFeedback(feedbackId, reply, replierId);
+            return new ResponseEntity<>("Feedback replied successfully", HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Internal Server Error: " + e.getMessage());
+
         }
+    }
+
+    @GetMapping("/feedback/count-by-rating")
+    public List<FeedbackRatingCountDto> getFeedbackCountByRating() {
+        return feedbackService.getFeedbackCountByRating();
     }
 }
     

@@ -2,6 +2,8 @@ package com.eFurnitureproject.eFurniture.services;
 
 import com.eFurnitureproject.eFurniture.Responses.ProductResponse;
 import com.eFurnitureproject.eFurniture.dtos.ProductDto;
+import com.eFurnitureproject.eFurniture.dtos.Top5ProductDto;
+import com.eFurnitureproject.eFurniture.dtos.analysis.OrderStatsDTO;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Product;
 
@@ -13,5 +15,6 @@ public interface IProductService {
     Product updateProduct(Long id, ProductDto productDto) throws Exception;
     List<ProductResponse> getProductByCategory(Long id);
     List<Product> getAllProduct();
+    List<Top5ProductDto> getTop5BestSellingProducts();
 
 }

@@ -45,4 +45,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("tagsProductIds") List<Long> tagsProductIds,
             @Param("categoryIds") List<Long> categoryIds);
 
+
 }

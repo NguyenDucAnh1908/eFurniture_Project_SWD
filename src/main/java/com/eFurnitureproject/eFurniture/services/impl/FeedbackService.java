@@ -4,6 +4,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.eFurnitureproject.eFurniture.converter.FeedbackConverter;
 import com.eFurnitureproject.eFurniture.dtos.FeedbackDto;
+import com.eFurnitureproject.eFurniture.dtos.chartDto.FeedbackRatingCountDto;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Feedback;
 import com.eFurnitureproject.eFurniture.models.Product;
@@ -131,6 +132,18 @@ public class FeedbackService implements IFeedbackService {
         }
     }
 
+    @Override
+    public List<FeedbackRatingCountDto> getFeedbackCountByRating() {
+        List<Object[]> result = feedbackRepository.findFeedbackCountByRating();
+        return result.stream()
+                .map(row -> {
+                    int rating = (int) row[0];
+                    long count = (long) row[1];
+                    return new FeedbackRatingCountDto(rating, count);
+                })
+                .collect(Collectors.toList());
+    }
+
     @Transactional(readOnly = true)
     public Page<FeedbackDto> getAllFeedbacksForProduct(Long productId, int page, int size, Integer rating, boolean hasImage, boolean hasComment) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
@@ -187,14 +200,19 @@ public class FeedbackService implements IFeedbackService {
         return Math.round(averageRating * 10.0) / 10.0;
     }
 
-    @Transactional
-    public FeedbackDto replyToFeedback(Long feedbackId, String reply) {
+    @Transactional(rollbackFor = Exception.class)
+    public FeedbackDto replyToFeedback(Long feedbackId, String reply, Long replierId){
         Optional<Feedback> optionalFeedback = feedbackRepository.findById(feedbackId);
 
         if (optionalFeedback.isPresent()) {
             Feedback feedback = optionalFeedback.get();
             feedback.setReply(reply);
-
+            Optional<User> optionalReplier = userRepository.findById(replierId);
+            if (optionalReplier.isPresent()) {
+                feedback.setReplier(optionalReplier.get());
+            } else {
+                throw new RuntimeException("Replier not found with ID: " + replierId);
+            }
             feedback = feedbackRepository.save(feedback);
 
             return FeedbackConverter.toDto(feedback);

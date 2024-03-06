@@ -19,4 +19,9 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
 
     @Query("SELECT AVG(f.rating) FROM Feedback f WHERE f.product.id = :productId")
     Double findAverageRatingByProductId(@Param("productId") Long productId);
+    @Query("SELECT f.rating, COUNT(DISTINCT f.user.id) " +
+            "FROM Feedback f " +
+            "WHERE f.rating BETWEEN 1 AND 5 " +
+            "GROUP BY f.rating")
+    List<Object[]> findFeedbackCountByRating();
 }

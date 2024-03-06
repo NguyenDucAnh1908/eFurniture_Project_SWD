@@ -1,12 +1,8 @@
 package com.eFurnitureproject.eFurniture.models;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Entity
 @Table(name = "feedbacks")
@@ -29,8 +25,12 @@ public class Feedback extends  BaseEntity{
     @Column(name = "status")
     private String status;
 
-    @Column(name = "reply")
+    @Column(name = "reply", columnDefinition = "TEXT", nullable = true)
     private String reply;
+
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "replier_id", nullable = true)
+    private User replier;
 
     @Column(name = "image_urls", columnDefinition = "TEXT", nullable = true)
     private String imageUrls;
