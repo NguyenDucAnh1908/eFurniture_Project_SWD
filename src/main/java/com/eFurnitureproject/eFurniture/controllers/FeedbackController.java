@@ -108,12 +108,17 @@ public class FeedbackController {
         }
     }
     @PostMapping("/reply/{feedbackId}")
-    public ResponseEntity<FeedbackDto> replyToFeedback(@PathVariable Long feedbackId, @RequestParam String reply) {
+    public ResponseEntity<?> replyToFeedback(@PathVariable Long feedbackId, @RequestParam String reply, @RequestParam Long replierId) {
         try {
-            FeedbackDto repliedFeedback = feedbackService.replyToFeedback(feedbackId, reply);
-            return new ResponseEntity<>(repliedFeedback, HttpStatus.OK);
+            if (replierId == null || reply == null || reply.isEmpty()) {
+                return ResponseEntity.badRequest().body("Invalid replierId or reply");
+            }
+            feedbackService.replyToFeedback(feedbackId, reply, replierId);
+            return new ResponseEntity<>("Feedback replied successfully", HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Internal Server Error: " + e.getMessage());
+
         }
     }
 }

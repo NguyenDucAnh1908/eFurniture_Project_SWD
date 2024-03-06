@@ -187,14 +187,19 @@ public class FeedbackService implements IFeedbackService {
         return Math.round(averageRating * 10.0) / 10.0;
     }
 
-    @Transactional
-    public FeedbackDto replyToFeedback(Long feedbackId, String reply) {
+    @Transactional(rollbackFor = Exception.class)
+    public FeedbackDto replyToFeedback(Long feedbackId, String reply, Long replierId){
         Optional<Feedback> optionalFeedback = feedbackRepository.findById(feedbackId);
 
         if (optionalFeedback.isPresent()) {
             Feedback feedback = optionalFeedback.get();
             feedback.setReply(reply);
-
+            Optional<User> optionalReplier = userRepository.findById(replierId);
+            if (optionalReplier.isPresent()) {
+                feedback.setReplier(optionalReplier.get());
+            } else {
+                throw new RuntimeException("Replier not found with ID: " + replierId);
+            }
             feedback = feedbackRepository.save(feedback);
 
             return FeedbackConverter.toDto(feedback);

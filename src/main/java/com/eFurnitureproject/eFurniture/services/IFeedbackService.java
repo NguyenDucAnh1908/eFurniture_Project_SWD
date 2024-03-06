@@ -14,7 +14,7 @@ public interface IFeedbackService {
 
     double getAverageRatingForProduct(Long productId);
 
-    FeedbackDto replyToFeedback(Long feedbackId, String reply);
+    FeedbackDto replyToFeedback(Long feedbackId, String reply, Long replierId);
 
     FeedbackDto updateFeedback(Long id, FeedbackDto updatedFeedbackDto);
 }
