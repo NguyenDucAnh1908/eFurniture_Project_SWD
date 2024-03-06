@@ -49,6 +49,8 @@ public class ProductController {
             return ResponseEntity.badRequest().body(productCreateResponse);
         }
         Product tagsProduct = productService.createProduct(productDTO);
+//        productCreateResponse.setMessage(localizationUtils.getLocalizedMessage(MessageKeys.INSERT_PRODUCT_SUCCESSFULLY));
+        productCreateResponse.setStatus("success");
         productCreateResponse.setProduct(tagsProduct);
         return ResponseEntity.ok(productCreateResponse);
     }

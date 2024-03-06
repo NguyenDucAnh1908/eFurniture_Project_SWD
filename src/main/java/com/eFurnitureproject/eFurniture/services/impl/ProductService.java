@@ -99,6 +99,10 @@ public class ProductService implements IProductService {
                             new DataNotFoundException(
                                     "Cannot find category with id: " + productDto.getTagsProductId()));
             ProductConverter.toEntity(productDto, existingProduct);
+            double discount = productDto.getDiscount() != null ? productDto.getDiscount() : 0.0;
+            double priceSale = productDto.getPriceSale();
+            double price = priceSale * ((100 - discount) / 100);
+            existingProduct.setPrice(price);
             existingProduct.setCodeProduct(generatedCode);
             existingProduct.setCategory(existingCategory);
             existingProduct.setBrand(existingBrand);
