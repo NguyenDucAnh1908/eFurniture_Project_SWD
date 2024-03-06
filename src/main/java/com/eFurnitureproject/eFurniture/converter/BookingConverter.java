@@ -9,15 +9,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class BookingConverter {
-    private static UserRepository userRepository;  // Add UserRepository
+    private static UserRepository userRepository;
 
     @Autowired
     public BookingConverter(UserRepository userRepository) {
         BookingConverter.userRepository = userRepository;
     }
 
+
     public static BookingDto toDTO(Booking booking) {
         BookingDto.BookingDtoBuilder builder = BookingDto.builder()
+                .id(booking.getId())
                 .streetAddress(booking.getStreetAddress())
                 .wardCode(booking.getWardCode())
                 .districtCode(booking.getDistrictCode())
@@ -26,10 +28,15 @@ public class BookingConverter {
                 .districtName(booking.getDistrictName())
                 .provinceName(booking.getProvinceName())
                 .status(booking.getStatus())
-                .note(booking.getNote())
-                .userId(booking.getUser().getId());
+                .createdAt(booking.getCreatedAt())
+                .updatedAt(booking.getUpdatedAt())
+                .note(booking.getNote());
+
         if (booking.getUser() != null) {
             builder.userId(booking.getUser().getId());
+        }
+        if (booking.getDesigner() != null) {
+            builder.designerId(booking.getDesigner().getId());
         }
 
         return builder.build();
@@ -37,6 +44,7 @@ public class BookingConverter {
 
     public static Booking toEntity(BookingDto bookingDto) throws DataNotFoundException {
         return Booking.builder()
+                .id(bookingDto.getId())
                 .streetAddress(bookingDto.getStreetAddress())
                 .wardCode(bookingDto.getWardCode())
                 .districtCode(bookingDto.getDistrictCode())
@@ -44,7 +52,7 @@ public class BookingConverter {
                 .wardName(bookingDto.getWardName())
                 .districtName(bookingDto.getDistrictName())
                 .provinceName(bookingDto.getProvinceName())
-                .status(bookingDto.getStatus())
+                .status("Unconfirmed")
                 .note(bookingDto.getNote())
                 .user(userRepository.findById(bookingDto.getUserId())
                         .orElseThrow(() -> new DataNotFoundException("Cannot find user with id: " + bookingDto.getUserId())))

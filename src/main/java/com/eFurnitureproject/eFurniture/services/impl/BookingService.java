@@ -10,13 +10,14 @@ import com.eFurnitureproject.eFurniture.models.User;
 import com.eFurnitureproject.eFurniture.repositories.BookingRepository;
 import com.eFurnitureproject.eFurniture.repositories.DesignRepository;
 import com.eFurnitureproject.eFurniture.repositories.ProjectBookingRepository;
+import com.eFurnitureproject.eFurniture.repositories.UserRepository;
 import com.eFurnitureproject.eFurniture.services.IBookingService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,22 +26,27 @@ public class BookingService implements IBookingService {
     private final BookingRepository bookingRepository;
     private final DesignRepository designRepository;
     private final ProjectBookingRepository projectBookingRepository;
-    private final UserService userService;
+    private final UserRepository userRepository;
     @Override
     public ProjectBooking createProjectBooking(ProjectBooking projectBooking) {
         return projectBookingRepository.save(projectBooking);
     }
 
     public BookingDto registerBooking(BookingDto bookingDto) throws DataNotFoundException {
-        Booking booking = BookingConverter.toEntity(bookingDto);
+        try {
+            User user = userRepository.findById(bookingDto.getUserId())
+                    .orElseThrow(() ->
+                            new DataNotFoundException(
+                                    "Cannot find user with id: " + bookingDto.getUserId()));
+            Booking booking = BookingConverter.toEntity(bookingDto);
+            booking.setUser(user);
 
-
-        // Set the user (assuming user ID is provided in the DTO)
-        User user = userService.getUserById(bookingDto.getUserId());
-        booking.setUser(user);
-
-        Booking savedBooking = bookingRepository.save(booking);
-        return BookingConverter.toDTO(savedBooking);
+            booking = bookingRepository.save(booking);
+            return BookingConverter.toDTO(booking);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error register booking: " + e.getMessage());
+        }
     }
 
     @Override
@@ -55,7 +61,10 @@ public class BookingService implements IBookingService {
     }
 
     @Override
-    public List<Booking> getAllBookings() {
-        return bookingRepository.findAll();
+    public List<BookingDto> getAllBookingDtos() {
+        List<Booking> bookings = bookingRepository.findAll();
+        return bookings.stream()
+                .map(BookingConverter::toDTO)
+                .collect(Collectors.toList());
     }
 }

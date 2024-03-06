@@ -1,10 +1,12 @@
 package com.eFurnitureproject.eFurniture.controllers;
 
+import com.eFurnitureproject.eFurniture.dtos.AdditionalInfoDto;
 import com.eFurnitureproject.eFurniture.dtos.BookingDto;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Booking;
 import com.eFurnitureproject.eFurniture.models.Design;
 import com.eFurnitureproject.eFurniture.services.impl.BookingService;
+import com.eFurnitureproject.eFurniture.services.impl.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +21,8 @@ import java.util.List;
 public class BookingController {
     @Autowired
     private BookingService bookingService;
-
+    @Autowired
+    private UserService userService;
     @PostMapping("/register-booking")
     public ResponseEntity<?> registerBooking(@RequestBody BookingDto bookingDto) {
         try {
@@ -44,15 +47,26 @@ public class BookingController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Booking>> getAllBookings() {
-        List<Booking> bookings = bookingService.getAllBookings();
-        return new ResponseEntity<>(bookings, HttpStatus.OK);
+    public ResponseEntity<List<BookingDto>> getAllBookings() {
+        List<BookingDto> bookingDtos = bookingService.getAllBookingDtos();
+        return new ResponseEntity<>(bookingDtos, HttpStatus.OK);
     }
+
 
     @PostMapping("/design")
     public ResponseEntity<Design> createDesign(@RequestBody Design design) {
         Design createdDesign = bookingService.createDesign(design);
         return new ResponseEntity<>(createdDesign, HttpStatus.CREATED);
     }
-
+    @PutMapping("/receive-booking-request/{bookingId}")
+    public ResponseEntity<?> receiveConsultation(@PathVariable Long bookingId, @RequestBody AdditionalInfoDto additionalInfoDto) {
+        try {
+            userService.receiveAndConfirmConsultation(bookingId, additionalInfoDto);
+            return new ResponseEntity<>("Booking request received and confirmed successfully", HttpStatus.OK);
+        } catch (DataNotFoundException e) {
+            return new ResponseEntity<>("Booking request not found: " + e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

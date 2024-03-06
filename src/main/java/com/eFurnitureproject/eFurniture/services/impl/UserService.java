@@ -4,13 +4,18 @@ import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
 import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
 import com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse.UpdateUserResponse;
 import com.eFurnitureproject.eFurniture.Responses.UserResponse;
+import com.eFurnitureproject.eFurniture.dtos.AdditionalInfoDto;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
 import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
+import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
+import com.eFurnitureproject.eFurniture.models.Booking;
+import com.eFurnitureproject.eFurniture.models.Design;
 import com.eFurnitureproject.eFurniture.models.Enum.Role;
 import com.eFurnitureproject.eFurniture.models.Enum.TokenType;
 import com.eFurnitureproject.eFurniture.models.Token;
 import com.eFurnitureproject.eFurniture.models.User;
+import com.eFurnitureproject.eFurniture.repositories.BookingRepository;
 import com.eFurnitureproject.eFurniture.repositories.TokenRepository;
 import com.eFurnitureproject.eFurniture.repositories.UserRepository;
 import com.eFurnitureproject.eFurniture.services.IUserService;
@@ -27,6 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.awt.print.Book;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -41,6 +47,8 @@ public class UserService implements IUserService {
     private final TokenRepository tokenRepository;
     private final JwtServiceImpl jwtService;
     private final AuthenticationManager authenticationManager;
+    private final BookingRepository bookingRepository;
+
     private final String emailRegex = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
             + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
     Pattern pattern = Pattern.compile(emailRegex);
@@ -253,6 +261,20 @@ public class UserService implements IUserService {
 
         return new UserStatsDTO(usersThisMonth, usersLastMonth, percentageChange);
     }
+
+    public void receiveAndConfirmConsultation(Long id, AdditionalInfoDto additionalInfoDto) throws DataNotFoundException {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Booking request not found with ID: " + id));
+        User designer = repository.findById(additionalInfoDto.getDesignerId())
+                .orElseThrow(() -> new DataNotFoundException("Designer not found with ID: " + additionalInfoDto.getDesignerId()));
+        booking.setNote(additionalInfoDto.getNotes());
+
+        booking.setStatus("Confirmed");
+        booking.setDesigner(designer);
+
+        bookingRepository.save(booking);
+    }
+
 
 }
 

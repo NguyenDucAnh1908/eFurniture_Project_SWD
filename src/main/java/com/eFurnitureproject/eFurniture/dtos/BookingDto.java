@@ -1,7 +1,10 @@
 package com.eFurnitureproject.eFurniture.dtos;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Data
 @Getter
@@ -10,6 +13,8 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class BookingDto extends BaseDto{
+    private Long id;
+
     private String streetAddress;
     private String wardCode;
     private String districtCode;
@@ -20,4 +25,10 @@ public class BookingDto extends BaseDto{
     private String status;
     private String note;
     private Long userId;
+    private Long designerId;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updatedAt;
 }

@@ -14,7 +14,7 @@ public interface IBookingService {
 
     Booking getBookingById(Long bookingId);
 
-    List<Booking> getAllBookings();
-
     BookingDto registerBooking(BookingDto bookingDto) throws DataNotFoundException;
+
+    List<BookingDto> getAllBookingDtos();
 }
