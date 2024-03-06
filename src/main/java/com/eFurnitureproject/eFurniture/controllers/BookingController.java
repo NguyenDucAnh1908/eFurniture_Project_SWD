@@ -1,5 +1,7 @@
 package com.eFurnitureproject.eFurniture.controllers;
 
+import com.eFurnitureproject.eFurniture.dtos.BookingDto;
+import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Booking;
 import com.eFurnitureproject.eFurniture.models.Design;
 import com.eFurnitureproject.eFurniture.services.impl.BookingService;
@@ -18,15 +20,18 @@ public class BookingController {
     @Autowired
     private BookingService bookingService;
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createBooking(@RequestBody Booking booking) {
+    @PostMapping("/register-booking")
+    public ResponseEntity<?> registerBooking(@RequestBody BookingDto bookingDto) {
         try {
-            Booking createdBooking = bookingService.createBooking(booking);
+            BookingDto createdBooking = bookingService.registerBooking(bookingDto);
             return new ResponseEntity<>(createdBooking, HttpStatus.CREATED);
+        } catch (DataNotFoundException e) {
+            return new ResponseEntity<>("Data not found: " + e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @GetMapping("/{bookingId}")
     public ResponseEntity<Booking> getBookingById(@PathVariable Long bookingId) {

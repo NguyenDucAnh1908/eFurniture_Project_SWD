@@ -19,7 +19,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("${api.prefix}/feedbacks")
 @RequiredArgsConstructor
-@CrossOrigin
 public class FeedbackController {
 
     private final IFeedbackService feedbackService;
