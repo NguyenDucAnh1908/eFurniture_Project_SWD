@@ -37,7 +37,6 @@ public class Booking extends BaseEntity{
     @Column(name = "provinceName", length = 500)
     private String provinceName;
 
-
     @Column(name = "status", length = 255)
     private String status;
 

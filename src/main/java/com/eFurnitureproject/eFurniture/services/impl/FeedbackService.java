@@ -4,6 +4,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.eFurnitureproject.eFurniture.converter.FeedbackConverter;
 import com.eFurnitureproject.eFurniture.dtos.FeedbackDto;
+import com.eFurnitureproject.eFurniture.dtos.chartDto.FeedbackRatingCountDto;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Feedback;
 import com.eFurnitureproject.eFurniture.models.Product;
@@ -129,6 +130,18 @@ public class FeedbackService implements IFeedbackService {
             e.printStackTrace();
             throw new RuntimeException("Error updating feedback: " + e.getMessage());
         }
+    }
+
+    @Override
+    public List<FeedbackRatingCountDto> getFeedbackCountByRating() {
+        List<Object[]> result = feedbackRepository.findFeedbackCountByRating();
+        return result.stream()
+                .map(row -> {
+                    int rating = (int) row[0];
+                    long count = (long) row[1];
+                    return new FeedbackRatingCountDto(rating, count);
+                })
+                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
