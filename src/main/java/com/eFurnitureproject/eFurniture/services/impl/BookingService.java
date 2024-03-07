@@ -28,10 +28,7 @@ public class BookingService implements IBookingService {
     private final DesignRepository designRepository;
     private final ProjectBookingRepository projectBookingRepository;
     private final UserRepository userRepository;
-    @Override
-    public ProjectBooking createProjectBooking(ProjectBooking projectBooking) {
-        return projectBookingRepository.save(projectBooking);
-    }
+
 
     public BookingDto registerBooking(BookingDto bookingDto) throws DataNotFoundException {
         try {

@@ -9,7 +9,7 @@ import com.eFurnitureproject.eFurniture.models.ProjectBooking;
 import java.util.List;
 
 public interface IBookingService {
-    ProjectBooking createProjectBooking(ProjectBooking projectBooking);
+
     Design createDesign(Design design);
 
     Booking getBookingById(Long bookingId);

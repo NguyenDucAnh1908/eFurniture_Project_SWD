@@ -2,10 +2,13 @@ package com.eFurnitureproject.eFurniture.controllers;
 
 import com.eFurnitureproject.eFurniture.dtos.AdditionalInfoDto;
 import com.eFurnitureproject.eFurniture.dtos.BookingDto;
+import com.eFurnitureproject.eFurniture.dtos.ProjectBookingDto;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Booking;
 import com.eFurnitureproject.eFurniture.models.Design;
+import com.eFurnitureproject.eFurniture.models.ProjectBooking;
 import com.eFurnitureproject.eFurniture.services.impl.BookingService;
+import com.eFurnitureproject.eFurniture.services.impl.ProjectBookingService;
 import com.eFurnitureproject.eFurniture.services.impl.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,8 @@ public class BookingController {
     private BookingService bookingService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ProjectBookingService projectBookingService;
     @PostMapping("/register-booking")
     public ResponseEntity<?> registerBooking(@RequestBody BookingDto bookingDto) {
         try {
@@ -30,6 +35,15 @@ public class BookingController {
             return new ResponseEntity<>(createdBooking, HttpStatus.CREATED);
         } catch (DataNotFoundException e) {
             return new ResponseEntity<>("Data not found: " + e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PostMapping("/register-project-booking")
+    public ResponseEntity<?> registerProjectBooking(@RequestBody ProjectBookingDto projectBookingDto) {
+        try {
+            ProjectBookingDto createdProjectBooking = projectBookingService.createProjectBooking(projectBookingDto);
+            return new ResponseEntity<>(createdProjectBooking, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -69,4 +83,44 @@ public class BookingController {
             return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+   /* @PutMapping("/updateProjectBooking/{id}")
+    public ResponseEntity<ProjectBooking> updateProjectBooking(@PathVariable Long id, @RequestBody ProjectBooking projectBooking) {
+        // Kiểm tra xem ProjectBooking có tồn tại không trước khi cập nhật
+        ProjectBooking existingProjectBooking = projectBookingService.getProjectBookingById(id);
+        if (existingProjectBooking == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Đảm bảo ID từ URL được đặt cho projectBooking để tránh các vấn đề không đồng nhất
+        projectBooking.setId(id);
+        ProjectBooking updatedProjectBooking = projectBookingService.updateProjectBooking(projectBooking);
+
+        if(updatedProjectBooking != null) {
+            return ResponseEntity.ok(updatedProjectBooking);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }*/
+   @PutMapping("updateProjectBooking/{id}")
+   public ResponseEntity<?> updateProjectBooking(@PathVariable("id") Long id, @RequestBody ProjectBookingDto projectBookingDto) {
+       try {
+           ProjectBooking updatedProjectBooking = projectBookingService.updateProjectBooking(id, projectBookingDto);
+           return ResponseEntity.ok(updatedProjectBooking);
+       } catch (DataNotFoundException e) {
+           return ResponseEntity.notFound().build();
+       } catch (Exception e) {
+           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
+       }
+   }
+    @GetMapping("getProjectBookingbyId/{projectbookingId}")
+    public ResponseEntity<ProjectBooking> getProjectBookingById(@PathVariable Long projectbookingId) {
+        ProjectBooking projectBooking = projectBookingService.getProjectBookingById(projectbookingId);
+        if (projectBooking != null) {
+            return new ResponseEntity<>(projectBooking, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 }
