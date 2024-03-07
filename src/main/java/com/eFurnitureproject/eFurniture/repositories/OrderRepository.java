@@ -11,12 +11,18 @@ import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByUserId(Long userId);
-    @Query("SELECT o FROM Order o WHERE o.active = true AND (:keyword IS NULL OR :keyword = '' OR " +
+
+    @Query("SELECT o FROM Order o WHERE o.active = true " +
+            "AND (:keyword IS NULL OR :keyword = '' OR " +
             "o.fullName LIKE %:keyword% " +
             "OR o.address LIKE %:keyword% " +
             "OR o.notes LIKE %:keyword% " +
-            "OR o.email LIKE %:keyword%)")
-    Page<Order> findByKeyword(@Param("keyword") String keyword, Pageable pageable);
+            "OR o.email LIKE %:keyword%) " +
+            "AND (:paymentStatusId IS NULL OR o.paymentStatus.id = :paymentStatusId)")
+    Page<Order> findByKeyword(
+            @Param("keyword") String keyword,
+            @Param("paymentStatusId") Long paymentStatusId,
+            Pageable pageable);
 
     @Query("SELECT COUNT(o) FROM Order o")
     long countTotalOrders();
