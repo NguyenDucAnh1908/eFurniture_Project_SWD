@@ -102,7 +102,7 @@ public class BookingController {
             return ResponseEntity.notFound().build();
         }
     }*/
-   @PutMapping("updateProjectBooking/{id}")
+   @PutMapping("updateProjectBooking    /{id}")
    public ResponseEntity<?> updateProjectBooking(@PathVariable("id") Long id, @RequestBody ProjectBookingDto projectBookingDto) {
        try {
            ProjectBooking updatedProjectBooking = projectBookingService.updateProjectBooking(id, projectBookingDto);
@@ -121,6 +121,11 @@ public class BookingController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+    @GetMapping("/getProjectBookingbyUserid/{userId}")
+    public ResponseEntity<?> getProjectBookingsByUserId(@PathVariable("userId") Long userId) {
+        List<ProjectBooking> projectBookings = projectBookingService.getProjectBookingsByUserId(userId);
+        return ResponseEntity.ok(projectBookings);
     }
 
 }

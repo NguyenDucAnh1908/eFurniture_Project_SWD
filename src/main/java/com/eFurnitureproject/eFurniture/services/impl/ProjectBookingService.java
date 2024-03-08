@@ -15,6 +15,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 @Service
 @RequiredArgsConstructor
@@ -102,4 +103,8 @@ public class ProjectBookingService implements IProjectBookingService {
         Optional<ProjectBooking> bookingOptional = projectBookingRepository.findById(projectBookingId);
         return bookingOptional.orElse(null);
     }
+    public List<ProjectBooking> getProjectBookingsByUserId(Long userId) {
+        return projectBookingRepository.findByUserId(userId);
+    }
+
 }
