@@ -2,7 +2,6 @@ package com.eFurnitureproject.eFurniture.services.impl;
 
 import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
 import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
-import com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse.UpdateUserResponse;
 import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
@@ -28,6 +27,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -91,6 +91,20 @@ public class UserService implements IUserService {
     }
 
 
+
+    private List<UserResponse> convertList(List<User> userList) {
+        List<UserResponse> userResponseList = new ArrayList<>();
+
+        for (User user : userList) {
+            UserResponse userResponse = convertToUserResponse(user);
+            userResponseList.add(userResponse);
+        }
+
+        return userResponseList;
+    }
+
+
+
     @Override
     public AuthenticationResponse authenticate(AuthenticationDTO request) {
         authenticationManager.authenticate(
@@ -152,9 +166,10 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<User> findAllUser() {
+    public List<UserResponse> findAllUser() {
         try {
-            return repository.findAll();
+            List<User> userList =repository.findAll();
+            return convertList(userList);
         } catch (Exception e) {
             return Collections.emptyList();
         }
@@ -181,12 +196,13 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public ResponseEntity<UpdateUserResponse> updateUser(String email, UserDto updateUserRequest) {
+    public ResponseEntity<ObjectResponse> updateUser(String email, UserDto updateUserRequest) {
         var user = repository.findByEmail(email).orElse(null);
         if (user == null) {
-            return ResponseEntity.badRequest().body(UpdateUserResponse.builder()
+            return ResponseEntity.badRequest().body(ObjectResponse.builder()
                     .status("Fail")
                     .message("User not found")
+                    .userResponse(null)
                     .build());
         }
         if (updateUserRequest != null && updateUserRequest.getFullName() != null && !updateUserRequest.getFullName().isEmpty()) {
@@ -204,17 +220,18 @@ public class UserService implements IUserService {
         }
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (servletRequestAttributes == null) {
-            return ResponseEntity.badRequest().body(UpdateUserResponse.builder()
+            return ResponseEntity.badRequest().body(ObjectResponse.builder()
                     .status("Fail")
                     .message("ServletRequestAttributes not found")
+                    .userResponse(null)
                     .build());
         }
 
         user.setActive(updateUserRequest.isActive());
-        return ResponseEntity.ok(UpdateUserResponse.builder()
+        return ResponseEntity.ok(ObjectResponse.builder()
                 .status("Success")
                 .message("Update User Success")
-                .update(user)
+                .userResponse(convertToUserResponse(user))
                 .build());
     }
 

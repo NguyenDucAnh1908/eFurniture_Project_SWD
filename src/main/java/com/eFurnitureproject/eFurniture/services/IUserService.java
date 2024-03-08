@@ -28,12 +28,12 @@ public interface IUserService {
 
     User saveUserForMail(User user);
 
-    List<User> findAllUser();
+    List<UserResponse> findAllUser();
 
     User getUserById(Long id);
 
     ResponseEntity<ObjectResponse> deleteUser(String email);
 
-    ResponseEntity<UpdateUserResponse> updateUser(String email, UserDto updateUserRequest);
+    ResponseEntity<ObjectResponse> updateUser(String email, UserDto updateUserRequest);
     UserStatsDTO getUserStats();
 }

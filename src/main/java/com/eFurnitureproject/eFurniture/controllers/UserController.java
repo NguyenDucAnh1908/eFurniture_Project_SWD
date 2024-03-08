@@ -83,18 +83,18 @@ public class UserController {
     }
 
     @GetMapping("/getAllUser")
-    private List<User> getAll() {
+    private List<UserResponse> getAll() {
         return userService.findAllUser();
     }
 
     @PutMapping("/updateUser/{email}")
-    public ResponseEntity<UpdateUserResponse> updateStaff(
+    public ResponseEntity<ObjectResponse> updateStaff(
             @PathVariable String email,
             @RequestBody UserDto updateUserRequest) {
         try {
             return userService.updateUser(email,updateUserRequest);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(UpdateUserResponse.builder()
+            return ResponseEntity.badRequest().body(ObjectResponse.builder()
                     .status("Update fail")
                     .message(e.getMessage())
                     .build());
