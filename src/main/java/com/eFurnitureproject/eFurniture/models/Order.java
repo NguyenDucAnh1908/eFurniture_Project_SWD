@@ -24,6 +24,8 @@ public class Order extends BaseEntity {
 
     @Column(name = "total_Amount")
     private double totalAmount;
+    @Column(name = "sub_total")
+    private double subTotal;
 
     @Column(name = "payment_method", length = 255)
     private String paymentMethod;

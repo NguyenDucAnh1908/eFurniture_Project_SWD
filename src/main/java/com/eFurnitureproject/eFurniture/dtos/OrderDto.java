@@ -28,6 +28,9 @@ public class OrderDto {
     @JsonProperty("total_amount")
     @Min(value = 1, message = "Total money must be >= 0")
     private double totalAmount;
+    @Min(value = 1, message = "Sub Total money must be >= 0")
+    @JsonProperty("sub_total")
+    private double subTotal;
     @JsonProperty("payment_method")
     private String paymentMethod;
 //    @JsonProperty("shipping_address")
@@ -60,4 +63,5 @@ public class OrderDto {
     private Long userId;
     @JsonProperty("coupon_id")
     private Long couponId;
+    private List<ProductImageDto> productImages;
 }
