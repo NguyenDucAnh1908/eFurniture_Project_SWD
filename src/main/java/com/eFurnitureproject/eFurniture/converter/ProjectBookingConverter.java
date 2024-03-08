@@ -26,7 +26,9 @@ public class ProjectBookingConverter {
                 .intendUse(projectBooking.getIntendUse())
                 .occupantsNumber(projectBooking.getOccupantsNumber())
                 .timeLine(projectBooking.getTimeLine())
-                .projectPrice(projectBooking.getProjectPrice());
+                .projectPrice(projectBooking.getProjectPrice())
+                .code(projectBooking.getCode());
+
 
 
         if (projectBooking.getUser() != null) {
@@ -50,6 +52,7 @@ public class ProjectBookingConverter {
                 .occupantsNumber(projectBookingDto.getOccupantsNumber())
                 .timeLine(projectBookingDto.getTimeLine())
                 .projectPrice(projectBookingDto.getProjectPrice())
+                .code(projectBookingDto.getCode())
                 .user(userRepository.findById(projectBookingDto.getUserId())
                         .orElseThrow(() -> new DataNotFoundException("Cannot find user with id: " + projectBookingDto.getUserId())))
                 .booking(bookingRepository.findById(projectBookingDto.getBookingId())

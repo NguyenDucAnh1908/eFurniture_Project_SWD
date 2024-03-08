@@ -13,4 +13,5 @@ public interface IProjectBookingService {
 
     ProjectBooking getProjectBookingById(Long projectBookingId);
     List<ProjectBooking> getProjectBookingsByUserId(Long userId);
+    ProjectBookingDto getProjectBookingByCode(String code) throws DataNotFoundException;
 }

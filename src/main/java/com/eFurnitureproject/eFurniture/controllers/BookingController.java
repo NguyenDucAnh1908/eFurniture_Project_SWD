@@ -127,5 +127,16 @@ public class BookingController {
         List<ProjectBooking> projectBookings = projectBookingService.getProjectBookingsByUserId(userId);
         return ResponseEntity.ok(projectBookings);
     }
+    @GetMapping("/getProjectBookingByCode/{code}")
+    public ResponseEntity<?> getProjectBookingByCode(@PathVariable String code) {
+        try {
+            ProjectBookingDto projectBooking = projectBookingService.getProjectBookingByCode(code);
+            return new ResponseEntity<>(projectBooking, HttpStatus.OK);
+        } catch (DataNotFoundException e) {
+            return new ResponseEntity<>("ProjectBooking not found with code: " + code, HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

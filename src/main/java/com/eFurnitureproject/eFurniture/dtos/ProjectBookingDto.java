@@ -20,6 +20,7 @@ import lombok.*;
                 private String occupantsNumber;
                 private String timeLine;
                 private String projectPrice;
+                private String code;
                 private Long userId; // Giả sử bạn chỉ muốn truyền userId thay vì toàn bộ đối tượng User
                 private Long bookingId; // Tương tự như trên, chỉ truyền ID thay vì toàn bộ đối tượng Booking
 

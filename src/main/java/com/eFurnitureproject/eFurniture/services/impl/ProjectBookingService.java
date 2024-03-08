@@ -38,6 +38,8 @@ public class ProjectBookingService implements IProjectBookingService {
             ProjectBooking projectBooking = ProjectBookingConverter.toEntity(projectBookingDto, userRepository, bookingRepository);
             projectBooking.setUser(user);
             projectBooking.setBooking(booking);
+            String code =createCodeForProjectBooking();
+            projectBooking.setCode(code);
 
             projectBooking = projectBookingRepository.save(projectBooking);
             return ProjectBookingConverter.toDTO(projectBooking);
@@ -45,6 +47,11 @@ public class ProjectBookingService implements IProjectBookingService {
             e.printStackTrace();
             throw new RuntimeException("Error registering project booking: " + e.getMessage());
         }
+    }
+    private String createCodeForProjectBooking() {
+        // Lấy tổng số lượng ProjectBooking hiện có và cộng thêm 1 để tạo mã tiếp theo
+        long count = projectBookingRepository.count();
+        return "Codepb-" + (count + 1);
     }
 
    /* @Override
@@ -105,6 +112,11 @@ public class ProjectBookingService implements IProjectBookingService {
     }
     public List<ProjectBooking> getProjectBookingsByUserId(Long userId) {
         return projectBookingRepository.findByUserId(userId);
+    }
+    public ProjectBookingDto getProjectBookingByCode(String code) throws DataNotFoundException {
+        ProjectBooking projectBooking = projectBookingRepository.findByCode(code)
+                .orElseThrow(() -> new DataNotFoundException("ProjectBooking not found with code: " + code));
+        return ProjectBookingConverter.toDTO(projectBooking);
     }
 
 }
