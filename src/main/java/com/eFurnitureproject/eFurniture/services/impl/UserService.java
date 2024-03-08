@@ -2,6 +2,7 @@ package com.eFurnitureproject.eFurniture.services.impl;
 
 import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
 import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
+import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
 import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
@@ -27,7 +28,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -62,6 +62,7 @@ public class UserService implements IUserService {
                 .phoneNumber(request.getPhoneNumber())
                 .dateOfBirth(request.getDateOfBirth())
                 .role(Role.USER)
+                .address(request.getAddress())
                 .build();
         var existedEmail = repository.findByEmail(user.getEmail()).orElse(null);
         if (existedEmail == null) {
@@ -87,21 +88,10 @@ public class UserService implements IUserService {
                 .dateOfBirth(user.getDateOfBirth())
                 .active(user.isActive())
                 .role(user.getRole())
+                .address(user.getAddress())
                 .build();
     }
 
-
-
-    private List<UserResponse> convertList(List<User> userList) {
-        List<UserResponse> userResponseList = new ArrayList<>();
-
-        for (User user : userList) {
-            UserResponse userResponse = convertToUserResponse(user);
-            userResponseList.add(userResponse);
-        }
-
-        return userResponseList;
-    }
 
 
 
@@ -113,19 +103,29 @@ public class UserService implements IUserService {
                         request.getPassword()
                 )
         );
-        var user = repository.findByEmail(request.getEmail())
-                .orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefeshToken(user);
-        revokeAllUsserTokens(user);
-        saveToken(user, jwtToken);
-        return AuthenticationResponse.builder()
-                .staus("Success")
-                .messages("Login success")
-                .token(jwtToken)
-                .user(convertToUserResponse(user))
-                .refeshToken(refreshToken)
-                .build();
+        try{
+            var user = repository.findByEmail(request.getEmail())
+                    .orElseThrow();
+
+            var jwtToken = jwtService.generateToken(user);
+            var refreshToken = jwtService.generateRefeshToken(user);
+            revokeAllUsserTokens(user);
+            saveToken(user, jwtToken);
+            return AuthenticationResponse.builder()
+                    .staus("Success")
+                    .messages("Login success")
+                    .token(jwtToken)
+                    .user(convertToUserResponse(user))
+                    .refeshToken(refreshToken)
+                    .build();
+        }catch (Exception e){
+            return AuthenticationResponse.builder()
+                    .staus("Fail")
+                    .messages("Login fail")
+                    .user(null)
+                    .build();
+        }
+
     }
 
     @Override
@@ -166,23 +166,26 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public List<UserResponse> findAllUser() {
+    public List<User> findAllUser() {
         try {
-            List<User> userList =repository.findAll();
-            return convertList(userList);
+            return repository.findAll();
         } catch (Exception e) {
             return Collections.emptyList();
         }
     }
 
     @Override
-    public User getUserById(Long id) {
+    public UserResponse getUserById(Long userId) {
+        var user = repository.findById(userId).orElse(null);
+        if(user != null){
+            return  convertToUserResponse(user);
+        }
         return null;
     }
 
     @Override
-    public ResponseEntity<ObjectResponse> deleteUser(String email) {
-        var user = repository.findByEmail(email).orElse(null);
+    public ResponseEntity<ObjectResponse> deleteUser(Long userId) {
+        var user = repository.findById(userId).orElse(null);
         if (user != null) {
             user.setActive(false);
             repository.save(user);
@@ -196,13 +199,12 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public ResponseEntity<ObjectResponse> updateUser(String email, UserDto updateUserRequest) {
-        var user = repository.findByEmail(email).orElse(null);
+    public ResponseEntity<UpdateUserResponse> updateUser(Long userId, UserDto updateUserRequest) {
+        var user = repository.findById(userId).orElse(null);
         if (user == null) {
-            return ResponseEntity.badRequest().body(ObjectResponse.builder()
+            return ResponseEntity.badRequest().body(UpdateUserResponse.builder()
                     .status("Fail")
                     .message("User not found")
-                    .userResponse(null)
                     .build());
         }
         if (updateUserRequest != null && updateUserRequest.getFullName() != null && !updateUserRequest.getFullName().isEmpty()) {
@@ -218,20 +220,22 @@ public class UserService implements IUserService {
         if (updateUserRequest.getPassword() != null && !updateUserRequest.getPassword().isEmpty()) {
             user.setPassword(updateUserRequest.getPassword());
         }
+        if (updateUserRequest.getAddress() != null && !updateUserRequest.getAddress().isEmpty()) {
+            user.setPassword(updateUserRequest.getAddress());
+        }
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (servletRequestAttributes == null) {
-            return ResponseEntity.badRequest().body(ObjectResponse.builder()
+            return ResponseEntity.badRequest().body(UpdateUserResponse.builder()
                     .status("Fail")
                     .message("ServletRequestAttributes not found")
-                    .userResponse(null)
                     .build());
         }
 
         user.setActive(updateUserRequest.isActive());
-        return ResponseEntity.ok(ObjectResponse.builder()
+        return ResponseEntity.ok(UpdateUserResponse.builder()
                 .status("Success")
                 .message("Update User Success")
-                .userResponse(convertToUserResponse(user))
+                .update(user)
                 .build());
     }
 

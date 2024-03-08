@@ -2,6 +2,7 @@ package com.eFurnitureproject.eFurniture.services;
 
 import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
 import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
+import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
 import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
@@ -27,12 +28,12 @@ public interface IUserService {
 
     User saveUserForMail(User user);
 
-    List<UserResponse> findAllUser();
+    List<User> findAllUser();
 
-    User getUserById(Long id);
+    UserResponse getUserById(Long userId);
 
-    ResponseEntity<ObjectResponse> deleteUser(String email);
+    ResponseEntity<ObjectResponse> deleteUser(Long userId);
 
-    ResponseEntity<ObjectResponse> updateUser(String email, UserDto updateUserRequest);
+    ResponseEntity<UpdateUserResponse> updateUser(Long userId, UserDto updateUserRequest);
     UserStatsDTO getUserStats();
 }

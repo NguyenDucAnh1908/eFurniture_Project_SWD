@@ -2,6 +2,7 @@ package com.eFurnitureproject.eFurniture.controllers;
 
 import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
 import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
+import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
 import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
@@ -82,32 +83,32 @@ public class UserController {
         }
     }
 
-    @GetMapping("/getAllUser")
-    private List<UserResponse> getAll() {
+    @GetMapping("")
+    private List<User> getAll() {
         return userService.findAllUser();
     }
 
-    @PutMapping("/updateUser/{email}")
-    public ResponseEntity<ObjectResponse> updateStaff(
-            @PathVariable String email,
+    @PutMapping("/updateUser/{userId}")
+    public ResponseEntity<UpdateUserResponse> updateStaff(
+            @PathVariable Long userId,
             @RequestBody UserDto updateUserRequest) {
         try {
-            return userService.updateUser(email,updateUserRequest);
+            return userService.updateUser(userId,updateUserRequest);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(ObjectResponse.builder()
+            return ResponseEntity.badRequest().body(UpdateUserResponse.builder()
                     .status("Update fail")
                     .message(e.getMessage())
                     .build());
         }
     }
-    @GetMapping("/getUserById/{id}")
-    private User getUserById(@PathVariable Long id){
-        return userService.getUserById(id);
+    @GetMapping("{userId}")
+    private UserResponse getUserById(@PathVariable Long userId){
+        return userService.getUserById(userId);
     }
 
-    @DeleteMapping("deleteUser/{email}")
-    public ResponseEntity<ObjectResponse> deleteUser(@PathVariable String email) {
-        return userService.deleteUser(email);
+    @DeleteMapping("deleteUser/{userId}")
+    public ResponseEntity<ObjectResponse> deleteUser(@PathVariable Long userId) {
+        return userService.deleteUser(userId);
     }
 
     @GetMapping("/user-stats")

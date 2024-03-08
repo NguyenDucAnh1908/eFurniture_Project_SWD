@@ -32,13 +32,13 @@ public class ProductService implements IProductService {
     private final BrandRepository brandRepository;
     private final TagProductRepository tagProductRepository;
     private final FeedbackRepository feedbackRepository;
-    private  final OrderDetailRepository orderDetailRepository;
+    private final OrderDetailRepository orderDetailRepository;
     private final ModelMapper modelMapper;
 
     @Override
     public Product getProductById(long id) throws Exception {
         Optional<Product> optionalProduct = productRepository.findById(id);
-        if(optionalProduct.isPresent()) {
+        if (optionalProduct.isPresent()) {
             return optionalProduct.get();
         }
         throw new DataNotFoundException("Cannot find product with id =" + id);
@@ -114,7 +114,7 @@ public class ProductService implements IProductService {
     }
 
     public Page<ProductResponse> getAllProducts(String keyword, PageRequest pageRequest,
-                                           Double minPrice, Double maxPrice,
+                                                Double minPrice, Double maxPrice,
                                                 List<Long> brandIds, List<Long> tagsProductIds, List<Long> categoryIds) {
         Page<Product> products;
         products = productRepository.searchProducts(
@@ -127,7 +127,7 @@ public class ProductService implements IProductService {
         });
     }
 
-    public List<ProductResponse> getAll(){
+    public List<ProductResponse> getAll() {
         List<Product> products = productRepository.findAll();
         return products.stream()
                 .map(product -> {
@@ -144,7 +144,8 @@ public class ProductService implements IProductService {
 //            return response;
 //        });
     }
-    public List<ProductResponse> getProductByCategory(Long id){
+
+    public List<ProductResponse> getProductByCategory(Long id) {
         List<Product> products = productRepository.findByCategoryId(id);
         return products.stream()
                 .map(product -> {
@@ -155,7 +156,8 @@ public class ProductService implements IProductService {
                 })
                 .collect(Collectors.toList());
     }
-    public List<Product> getAllProduct(){
+
+    public List<Product> getAllProduct() {
         return productRepository.findAll();
     }
 
@@ -167,6 +169,13 @@ public class ProductService implements IProductService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Product> findtop5() {
+        List<Product> top5 = productRepository.findTop5ProductsByTotalSold();
+        return top5;
+    }
+
+
     private Top5ProductDto mapToProductDto(Object[] result) {
         Top5ProductDto productDto = new Top5ProductDto();
         productDto.setProduct((Product) result[0]);
@@ -174,7 +183,6 @@ public class ProductService implements IProductService {
         productDto.setTotalAmountSold((Double) result[2]);
         return productDto;
     }
-
 
 
     private String generateCodeFromName(String codeProduct) {
