@@ -63,5 +63,5 @@ public class OrderDto {
     private Long userId;
     @JsonProperty("coupon_id")
     private Long couponId;
-    private List<ProductImageDto> productImages;
+//    private List<ProductImageDto> productImages;
 }

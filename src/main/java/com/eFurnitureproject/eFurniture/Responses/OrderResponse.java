@@ -35,7 +35,7 @@ public class OrderResponse {
 //    private String trackingNumber;
     @JsonProperty("shipping_method")
     private String shippingMethod;
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @JsonProperty("shipping_date")
     private LocalDate shippingDate;
     private String notes;
@@ -56,6 +56,7 @@ public class OrderResponse {
     private PaymentStatus paymentStatus;
     @JsonProperty("cart_items")
     private List<CartItemDto> cartItems;
+    private Long couponId;
     //private int orderDetails;
     @JsonProperty("user_id")
     @Min(value = 1, message = "User's ID must be > 0")

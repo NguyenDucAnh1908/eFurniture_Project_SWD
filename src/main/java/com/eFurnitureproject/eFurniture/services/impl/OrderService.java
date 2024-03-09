@@ -91,11 +91,21 @@ public class OrderService implements IOrderService {
                 .orElseThrow(() -> new DataNotFoundException("Cannot find order with id: " + id));
         User existingUser = userRepository.findById(orderDTO.getUserId())
                 .orElseThrow(()-> new DataNotFoundException("Cannot find user with id: " + id));
+//        OrderStatus orderStatus = orderStatusRepository.findById(orderDTO.getOrderStatus())
+//                .orElseThrow(() -> new DataNotFoundException("Cannot find order status with id: " + orderDTO.getUserId()));
+//        PaymentStatus paymentStatus = paymentStatusRepository.findById(orderDTO.getPaymentStatus())
+//                .orElseThrow(() -> new DataNotFoundException("Cannot find payment status with id: " + orderDTO.getUserId()));
+        OrderStatus orderStatus = orderStatusRepository.findById(orderDTO.getOrderStatus())
+                .orElse(order.getOrderStatus());
+
+        PaymentStatus paymentStatus = paymentStatusRepository.findById(orderDTO.getPaymentStatus())
+                .orElse(order.getPaymentStatus());
         modelMapper.typeMap(OrderDto.class, Order.class)
                 .addMappings(mapper -> mapper.skip(Order::setId));
         modelMapper.map(orderDTO, order);
         order.setUser(existingUser);
-
+        order.setOrderStatus(orderStatus);
+        order.setPaymentStatus(paymentStatus);
             orderRepository.save(order);
             List<OrderDetail> orderDetails = new ArrayList<>();
             OrderDetail orderDetail = null;
@@ -112,6 +122,8 @@ public class OrderService implements IOrderService {
                 orderDetail.setPrice(product.getPrice());
                 orderDetail.setProduct(product);
                 orderDetail.setQuantity(quantity);
+                order.setOrderStatus(orderStatus);
+                order.setPaymentStatus(paymentStatus);
                 //orderDetail.setDiscount(product.getDiscount());
                 orderDetail.setDiscount(orderDetail.getDiscount());
                 if (order.getOrderStatus() != null && order.getOrderStatus().getId() == 5) {
