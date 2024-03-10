@@ -10,7 +10,7 @@ public class OrderConverter {
         OrderResponse orderResponse =  OrderResponse
                 .builder()
                 .id(order.getId())
-                .userId(order.getId())
+                .userId(order.getUser().getId())
                 .active(order.getActive())
                 .address(order.getAddress())
                 .province(order.getProvince())
@@ -25,7 +25,10 @@ public class OrderConverter {
                 .shippingMethod(order.getShippingMethod())
                 .paymentMethod(order.getPaymentMethod())
                 .totalAmount(order.getTotalAmount())
-                .status(order.getStatus())
+                .subTotal(order.getSubTotal())
+                .orderStatus(order.getOrderStatus())
+                .couponId(order.getCoupon().getId())
+                .paymentStatus(order.getPaymentStatus())
                 .orderDetails(order.getOrderDetails())
                 .build();
         return orderResponse;

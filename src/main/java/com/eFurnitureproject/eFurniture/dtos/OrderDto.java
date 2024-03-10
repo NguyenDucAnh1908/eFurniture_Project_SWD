@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -20,10 +21,16 @@ import java.util.List;
 public class OrderDto {
     private Long id;
     //private LocalDateTime orderDate;
-    private int status;
+    @NotNull(message = "orderStatus not null")
+    private Long orderStatus;
+    @NotNull(message = "paymentStatus not null")
+    private Long paymentStatus;
     @JsonProperty("total_amount")
     @Min(value = 1, message = "Total money must be >= 0")
     private double totalAmount;
+    @Min(value = 1, message = "Sub Total money must be >= 0")
+    @JsonProperty("sub_total")
+    private double subTotal;
     @JsonProperty("payment_method")
     private String paymentMethod;
 //    @JsonProperty("shipping_address")
@@ -56,4 +63,5 @@ public class OrderDto {
     private Long userId;
     @JsonProperty("coupon_id")
     private Long couponId;
+//    private List<ProductImageDto> productImages;
 }

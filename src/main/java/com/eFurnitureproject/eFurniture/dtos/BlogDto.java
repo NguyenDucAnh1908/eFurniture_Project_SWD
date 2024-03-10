@@ -1,12 +1,11 @@
 package com.eFurnitureproject.eFurniture.dtos;
 
-import com.eFurnitureproject.eFurniture.models.CategoryBlog;
-import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import java.time.LocalDateTime;
+
 import java.util.List;
 
 @Data

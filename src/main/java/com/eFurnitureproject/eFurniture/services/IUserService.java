@@ -6,6 +6,7 @@ import com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse.UpdateUserR
 import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
+import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
 import com.eFurnitureproject.eFurniture.models.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,4 +35,5 @@ public interface IUserService {
     ResponseEntity<ObjectResponse> deleteUser(String email);
 
     ResponseEntity<UpdateUserResponse> updateUser(String email, UserDto updateUserRequest);
+    UserStatsDTO getUserStats();
 }

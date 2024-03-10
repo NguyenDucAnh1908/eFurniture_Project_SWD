@@ -5,6 +5,7 @@ import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
 import com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse.UpdateUserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
+import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
 import com.eFurnitureproject.eFurniture.models.User;
 import com.eFurnitureproject.eFurniture.services.impl.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/auth/")
+@CrossOrigin()
+@RequestMapping("api/v1/")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -38,7 +40,6 @@ public class UserController {
                     .build());
         }
     }
-
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationDTO request) {
         try {
@@ -109,5 +110,11 @@ public class UserController {
         return userService.deleteUser(email);
     }
 
-
+    @GetMapping("/user-stats")
+    public ResponseEntity<UserStatsDTO> getUserStats() {
+        UserStatsDTO userStatsDTO = userService.getUserStats();
+        String formattedPercentageChange = userStatsDTO.getFormattedPercentageChange();
+        userStatsDTO.setPercentageChange(formattedPercentageChange != null ? Double.valueOf(formattedPercentageChange) : null);
+        return ResponseEntity.ok(userStatsDTO);
+    }
 }
