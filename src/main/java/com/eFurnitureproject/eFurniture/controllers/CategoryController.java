@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("${api.prefix}/categories")
 @RequiredArgsConstructor
 public class CategoryController {
@@ -47,7 +48,7 @@ public class CategoryController {
         }
         return ResponseEntity.ok(categoryService.updateCategory(id, categoryDTO));
     }
-    @CrossOrigin
+//    @CrossOrigin
     @GetMapping("")
     public List<CategoryDto> getAllCategory() {
         return categoryService.getAllCategories();

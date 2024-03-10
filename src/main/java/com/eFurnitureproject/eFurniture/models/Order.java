@@ -22,9 +22,6 @@ public class Order extends BaseEntity {
     @Column(name = "order_Date")
     private LocalDate orderDate;
 
-    @Column(name = "status")
-    private int status;
-
     @Column(name = "total_Amount")
     private double totalAmount;
 
@@ -85,4 +82,12 @@ public class Order extends BaseEntity {
     @JoinColumn(name = "coupon_id")
     //@JsonBackReference
     private Coupon coupon;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "status_id", nullable = false)
+    private OrderStatus orderStatus;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_status_id", nullable = false)
+    private PaymentStatus paymentStatus;
 }

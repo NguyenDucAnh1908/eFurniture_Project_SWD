@@ -1,7 +1,8 @@
 package com.eFurnitureproject.eFurniture.services.impl;
 
 import com.eFurnitureproject.eFurniture.dtos.OrderDetailDto;
-import com.eFurnitureproject.eFurniture.dtos.OrderDto;
+import com.eFurnitureproject.eFurniture.dtos.chartDto.SalesChartDTO;
+import com.eFurnitureproject.eFurniture.dtos.chartDto.TopSellingProductDTO;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Order;
 import com.eFurnitureproject.eFurniture.models.OrderDetail;
@@ -15,7 +16,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -78,5 +82,38 @@ public class OrderDetailService implements IOrderDetailService {
     @Override
     public List<OrderDetail> findByOrderId(Long orderId) {
         return orderDetailRepository.findByOrdersId(orderId);
+    }
+
+    public List<SalesChartDTO> getTotalAmountSoldByDate() {
+        List<Object[]> results = orderDetailRepository.getTotalAmountSoldByDate();
+        List<SalesChartDTO> dtos = new ArrayList<>();
+        for (Object[] result : results) {
+            LocalDate orderDate = (LocalDate) result[0];
+            double totalAmount = (double) result[1];
+            dtos.add(new SalesChartDTO(orderDate, totalAmount));
+        }
+        return dtos;
+    }
+
+    //    public List<TopSellingProductDTO> findMostSoldProductsToday() {
+//        List<Object[]> results = orderDetailRepository.findMostSoldProductsToday();
+//        List<TopSellingProductDTO> dtos = new ArrayList<>();
+//        for (Object[] result : results) {
+//            Product product = (Product) result[0];
+//            int totalQuantity = ((Number) result[1]).intValue(); // Convert to int
+//            dtos.add(new TopSellingProductDTO(product, totalQuantity));
+//        }
+//        return dtos;
+//    }
+    public List<TopSellingProductDTO> findMostSoldProductsByDate() {
+        List<Object[]> resultList = orderDetailRepository.findMostSoldProductsByDate();
+        return resultList.stream()
+                .map(result -> {
+                    Product product = (Product) result[0];
+                    int totalSold = ((Number) result[1]).intValue();
+                    LocalDate date = (LocalDate) result[2];
+                    return new TopSellingProductDTO(product, totalSold, date);
+                })
+                .collect(Collectors.toList());
     }
 }

@@ -1,4 +1,4 @@
-package com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse;
+package com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse;
 
 import com.eFurnitureproject.eFurniture.models.User;
 import lombok.AllArgsConstructor;

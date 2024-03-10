@@ -2,6 +2,8 @@ package com.eFurnitureproject.eFurniture.Responses;
 
 import com.eFurnitureproject.eFurniture.dtos.CartItemDto;
 import com.eFurnitureproject.eFurniture.models.OrderDetail;
+import com.eFurnitureproject.eFurniture.models.OrderStatus;
+import com.eFurnitureproject.eFurniture.models.PaymentStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -18,7 +20,7 @@ import java.util.List;
 public class OrderResponse {
     private Long id;
     //private LocalDateTime orderDate;
-    private int status;
+
     @JsonProperty("total_amount")
     @Min(value = 1, message = "Total money must be >= 0")
     private double totalAmount;
@@ -46,6 +48,8 @@ public class OrderResponse {
     private String ward;
     private String address;
     private Boolean active;
+    private OrderStatus orderStatus;
+    private PaymentStatus paymentStatus;
     @JsonProperty("cart_items")
     private List<CartItemDto> cartItems;
     //private int orderDetails;

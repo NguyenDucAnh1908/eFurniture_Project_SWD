@@ -2,9 +2,11 @@ package com.eFurnitureproject.eFurniture.controllers;
 
 import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
 import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
-import com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse.UpdateUserResponse;
+import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
+import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
+import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
 import com.eFurnitureproject.eFurniture.models.User;
 import com.eFurnitureproject.eFurniture.services.impl.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,7 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/auth/")
+@CrossOrigin()
+@RequestMapping("api/v1/")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
@@ -38,7 +41,6 @@ public class UserController {
                     .build());
         }
     }
-
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationDTO request) {
         try {
@@ -81,17 +83,17 @@ public class UserController {
         }
     }
 
-    @GetMapping("/getAllUser")
+    @GetMapping("")
     private List<User> getAll() {
         return userService.findAllUser();
     }
 
-    @PutMapping("/updateUser/{email}")
+    @PutMapping("/updateUser/{userId}")
     public ResponseEntity<UpdateUserResponse> updateStaff(
-            @PathVariable String email,
+            @PathVariable Long userId,
             @RequestBody UserDto updateUserRequest) {
         try {
-            return userService.updateUser(email,updateUserRequest);
+            return userService.updateUser(userId,updateUserRequest);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(UpdateUserResponse.builder()
                     .status("Update fail")
@@ -99,15 +101,21 @@ public class UserController {
                     .build());
         }
     }
-    @GetMapping("/getUserById/{id}")
-    private User getUserById(@PathVariable Long id){
-        return userService.getUserById(id);
+    @GetMapping("{userId}")
+    private UserResponse getUserById(@PathVariable Long userId){
+        return userService.getUserById(userId);
     }
 
-    @DeleteMapping("deleteUser/{email}")
-    public ResponseEntity<ObjectResponse> deleteUser(@PathVariable String email) {
-        return userService.deleteUser(email);
+    @DeleteMapping("deleteUser/{userId}")
+    public ResponseEntity<ObjectResponse> deleteUser(@PathVariable Long userId) {
+        return userService.deleteUser(userId);
     }
 
-
+    @GetMapping("/user-stats")
+    public ResponseEntity<UserStatsDTO> getUserStats() {
+        UserStatsDTO userStatsDTO = userService.getUserStats();
+        String formattedPercentageChange = userStatsDTO.getFormattedPercentageChange();
+        userStatsDTO.setPercentageChange(formattedPercentageChange != null ? Double.valueOf(formattedPercentageChange) : null);
+        return ResponseEntity.ok(userStatsDTO);
+    }
 }

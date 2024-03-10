@@ -5,6 +5,7 @@ import com.eFurnitureproject.eFurniture.Responses.OrderResponse;
 import com.eFurnitureproject.eFurniture.components.LocalizationUtils;
 import com.eFurnitureproject.eFurniture.converter.OrderConverter;
 import com.eFurnitureproject.eFurniture.dtos.OrderDto;
+import com.eFurnitureproject.eFurniture.dtos.analysis.*;
 import com.eFurnitureproject.eFurniture.models.Order;
 import com.eFurnitureproject.eFurniture.services.IOrderService;
 import com.eFurnitureproject.eFurniture.utils.MessageKeys;
@@ -19,15 +20,17 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
+@CrossOrigin
 @RequestMapping("${api.prefix}/orders")
 @RequiredArgsConstructor
 public class OrderController {
     private final IOrderService orderService;
     private final LocalizationUtils localizationUtils;
 
-    @CrossOrigin
+//    @CrossOrigin
     @PostMapping("")
     public ResponseEntity<?> createOrder(
             @Valid @RequestBody OrderDto orderDTO,
@@ -48,12 +51,13 @@ public class OrderController {
         }
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @GetMapping("")
     public ResponseEntity<OrderListResponse> getOrdersByKeyword(
             @RequestParam(defaultValue = "", required = false) String keyword,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int limit
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(value = "categoryIds", required = false) Long paymentStatusId
     ) {
         // Tạo Pageable từ thông tin trang và giới hạn
         PageRequest pageRequest = PageRequest.of(
@@ -62,7 +66,7 @@ public class OrderController {
                 Sort.by("id").ascending()
         );
         Page<OrderResponse> orderPage = orderService
-                .getOrdersByKeyword(keyword, pageRequest)
+                .getOrdersByKeyword(keyword, paymentStatusId, pageRequest)
                 .map(OrderConverter::fromOrder);
         // Lấy tổng số trang
         int totalPages = orderPage.getTotalPages();
@@ -74,7 +78,7 @@ public class OrderController {
                 .build());
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @PutMapping("/{id}")
     public ResponseEntity<?> updateOrder(
             @Valid @PathVariable long id,
@@ -88,7 +92,7 @@ public class OrderController {
         }
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @GetMapping("/user/{user_id}") // Thêm biến đường dẫn "user_id"
     //GET http://localhost:8088/api/v1/orders/user/4
     public ResponseEntity<?> getOrders(@Valid @PathVariable("user_id") Long userId) {
@@ -100,7 +104,7 @@ public class OrderController {
         }
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @GetMapping("/{id}")
     public ResponseEntity<?> getOrder(@Valid @PathVariable("id") Long orderId) {
         try {
@@ -112,7 +116,7 @@ public class OrderController {
         }
     }
 
-    @CrossOrigin
+//    @CrossOrigin
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteOrder(@Valid @PathVariable Long id) {
         //xóa mềm => cập nhật trường active = false
@@ -120,4 +124,46 @@ public class OrderController {
         return ResponseEntity.ok(localizationUtils.getLocalizedMessage(MessageKeys.DELETE_ORDER_SUCCESSFULLY));
     }
 
+    @GetMapping("/total-order")
+    public ResponseEntity<OrderStatsDTO> getOrderStats() {
+        OrderStatsDTO orderStatsDTO = orderService.getOrderStats();
+        return ResponseEntity.ok(orderStatsDTO);
+    }
+
+    @GetMapping("/total-revenue")
+    public ResponseEntity<RevenueDTO> getRevenueStatistics() {
+        RevenueDTO revenueDTO = orderService.getRevenueStatistics();
+        return ResponseEntity.ok(revenueDTO);
+    }
+
+    @GetMapping("/total-revenue-day")
+    public ResponseEntity<RevenueDayDTO> getTotalSales() {
+        RevenueDayDTO totalSalesDTO = orderService.getTotalSales();
+        return ResponseEntity.ok(totalSalesDTO);
+    }
+
+    @GetMapping("/count/{productId}")
+    public ResponseEntity<OrderCountDto> countOrdersByProductId(@PathVariable Long productId) {
+        Integer orderCount = orderService.countOrdersByProductId(productId);
+        OrderCountDto orderCountDto = new OrderCountDto();
+        orderCountDto.setProductId(productId);
+        orderCountDto.setOrderCount(orderCount);
+        return ResponseEntity.ok(orderCountDto);
+    }
+
+    @GetMapping("/revenue/{productId}")
+    public ResponseEntity<ProductRevenueDto> getProductRevenue(@PathVariable Long productId) {
+        Optional<Double> revenue = orderService.getProductRevenue(productId);
+        if (revenue.isPresent()) {
+            ProductRevenueDto productRevenueDto = new ProductRevenueDto();
+            productRevenueDto.setTotalRevenue(revenue.get());
+            productRevenueDto.setProductId(productId);
+            return ResponseEntity.ok(productRevenueDto);
+        } else {
+            ProductRevenueDto productRevenueDto = new ProductRevenueDto();
+            productRevenueDto.setTotalRevenue(0.0); // Set total revenue to 0
+            productRevenueDto.setProductId(productId);
+            return ResponseEntity.ok(productRevenueDto);
+        }
+    }
 }

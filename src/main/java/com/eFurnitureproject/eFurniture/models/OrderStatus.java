@@ -1,9 +1,24 @@
 package com.eFurnitureproject.eFurniture.models;
 
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Table(name = "order_status")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class OrderStatus {
-    public static final String PENDING = "pending";
-    public static final String PROCESSING = "processing";
-    public static final String SHIPPED = "shipped";
-    public static final String DELIVERED = "delivered";
-    public static final String CANCELLED = "cancelled";
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "name", length = 255)
+    private String name;
+
+    @Column(name = "code", length = 255)
+    private String code;
 }

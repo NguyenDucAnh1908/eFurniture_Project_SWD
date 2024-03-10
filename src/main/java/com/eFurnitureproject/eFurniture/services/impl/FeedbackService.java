@@ -2,6 +2,7 @@ package com.eFurnitureproject.eFurniture.services.impl;
 
 import com.eFurnitureproject.eFurniture.converter.FeedbackConverter;
 import com.eFurnitureproject.eFurniture.dtos.FeedbackDto;
+import com.eFurnitureproject.eFurniture.dtos.chartDto.FeedbackRatingCountDto;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Feedback;
 import com.eFurnitureproject.eFurniture.models.FeedbackImages;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FeedbackService implements IFeedbackService {
@@ -183,5 +185,16 @@ public class FeedbackService implements IFeedbackService {
         } else {
             throw new RuntimeException("Feedback not found with ID: " + feedbackId);
         }
+    }
+
+    public List<FeedbackRatingCountDto> getFeedbackCountByRating() {
+        List<Object[]> result = feedbackRepository.findFeedbackCountByRating();
+        return result.stream()
+                .map(row -> {
+                    int rating = (int) row[0];
+                    long count = (long) row[1];
+                    return new FeedbackRatingCountDto(rating, count);
+                })
+                .collect(Collectors.toList());
     }
 }

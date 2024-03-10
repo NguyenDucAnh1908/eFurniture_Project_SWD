@@ -25,7 +25,8 @@ public class OrderConverter {
                 .shippingMethod(order.getShippingMethod())
                 .paymentMethod(order.getPaymentMethod())
                 .totalAmount(order.getTotalAmount())
-                .status(order.getStatus())
+                .orderStatus(order.getOrderStatus())
+                .paymentStatus(order.getPaymentStatus())
                 .orderDetails(order.getOrderDetails())
                 .build();
         return orderResponse;

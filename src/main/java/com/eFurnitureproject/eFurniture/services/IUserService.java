@@ -2,10 +2,11 @@ package com.eFurnitureproject.eFurniture.services;
 
 import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
 import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
-import com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse.UpdateUserResponse;
+import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
 import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
+import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
 import com.eFurnitureproject.eFurniture.models.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,9 +30,10 @@ public interface IUserService {
 
     List<User> findAllUser();
 
-    User getUserById(Long id);
+    UserResponse getUserById(Long userId);
 
-    ResponseEntity<ObjectResponse> deleteUser(String email);
+    ResponseEntity<ObjectResponse> deleteUser(Long userId);
 
-    ResponseEntity<UpdateUserResponse> updateUser(String email, UserDto updateUserRequest);
+    ResponseEntity<UpdateUserResponse> updateUser(Long userId, UserDto updateUserRequest);
+    UserStatsDTO getUserStats();
 }

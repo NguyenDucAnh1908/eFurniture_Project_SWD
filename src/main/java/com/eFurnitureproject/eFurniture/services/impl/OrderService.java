@@ -2,16 +2,13 @@ package com.eFurnitureproject.eFurniture.services.impl;
 
 import com.eFurnitureproject.eFurniture.dtos.CartItemDto;
 import com.eFurnitureproject.eFurniture.dtos.OrderDto;
+import com.eFurnitureproject.eFurniture.dtos.analysis.OrderStatsDTO;
+import com.eFurnitureproject.eFurniture.dtos.analysis.RevenueDTO;
+import com.eFurnitureproject.eFurniture.dtos.analysis.RevenueDayDTO;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.exceptions.InsufficientQuantityException;
-import com.eFurnitureproject.eFurniture.models.Order;
-import com.eFurnitureproject.eFurniture.models.OrderDetail;
-import com.eFurnitureproject.eFurniture.models.Product;
-import com.eFurnitureproject.eFurniture.models.User;
-import com.eFurnitureproject.eFurniture.repositories.OrderDetailRepository;
-import com.eFurnitureproject.eFurniture.repositories.OrderRepository;
-import com.eFurnitureproject.eFurniture.repositories.ProductRepository;
-import com.eFurnitureproject.eFurniture.repositories.UserRepository;
+import com.eFurnitureproject.eFurniture.models.*;
+import com.eFurnitureproject.eFurniture.repositories.*;
 import com.eFurnitureproject.eFurniture.services.IOrderService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -24,6 +21,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,19 +30,26 @@ public class OrderService implements IOrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final OrderDetailRepository orderDetailRepository;
+    private final OrderStatusRepository orderStatusRepository;
+    private final  PaymentStatusRepository paymentStatusRepository;
     private final ModelMapper modelMapper;
     @CrossOrigin
     @Transactional
     public Order createOrder(OrderDto orderDto) throws Exception {
         User user = userRepository.findById(orderDto.getUserId())
                 .orElseThrow(() -> new DataNotFoundException("Cannot find user with id: " + orderDto.getUserId()));
+        OrderStatus orderStatus = orderStatusRepository.findById(orderDto.getOrderStatus())
+                .orElseThrow(() -> new DataNotFoundException("Cannot find order status with id: " + orderDto.getUserId()));
+        PaymentStatus paymentStatus = paymentStatusRepository.findById(orderDto.getPaymentStatus())
+                .orElseThrow(() -> new DataNotFoundException("Cannot find payment status with id: " + orderDto.getUserId()));
         modelMapper.typeMap(OrderDto.class, Order.class)
                 .addMappings(mappers -> mappers.skip(Order::setId));
         Order order = new Order();
         modelMapper.map(orderDto, order);
         order.setUser(user);
         order.setOrderDate(LocalDate.now());
-        order.setStatus(1);
+        order.setOrderStatus(orderStatus);
+        order.setPaymentStatus(paymentStatus);
         LocalDate shippingDate = orderDto.getShippingDate() == null
                 ? LocalDate.now() : orderDto.getShippingDate();
         if (shippingDate.isBefore(LocalDate.now())) {
@@ -53,7 +58,7 @@ public class OrderService implements IOrderService {
         order.setShippingDate(shippingDate);
         order.setActive(true);
         order.setTotalAmount(orderDto.getTotalAmount());
-        if (order.getStatus() == 5) {
+        if (order.getOrderStatus() != null && order.getOrderStatus().getId() == 5) {
             updateProductQuantities(orderDto.getCartItems());
         }
         orderRepository.save(order);
@@ -109,7 +114,7 @@ public class OrderService implements IOrderService {
                 orderDetail.setQuantity(quantity);
                 //orderDetail.setDiscount(product.getDiscount());
                 orderDetail.setDiscount(orderDetail.getDiscount());
-                if (order.getStatus() == 5) {
+                if (order.getOrderStatus() != null && order.getOrderStatus().getId() == 5) {
                     updateProductQuantities(orderDTO.getCartItems());
                 }
                 orderDetails.add(orderDetail);
@@ -122,8 +127,8 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public Page<Order> getOrdersByKeyword(String keyword, Pageable pageable) {
-        return orderRepository.findByKeyword(keyword, pageable);
+    public Page<Order> getOrdersByKeyword(String keyword, Long paymentStatusId,Pageable pageable) {
+        return orderRepository.findByKeyword(keyword,paymentStatusId, pageable);
     }
 
     @Override
@@ -165,4 +170,44 @@ public class OrderService implements IOrderService {
         }
     }
 
+    public OrderStatsDTO getOrderStats() {
+        OrderStatsDTO orderStatsDTO = new OrderStatsDTO();
+        long totalOrders = orderRepository.countTotalOrders();
+        orderStatsDTO.setTotalOrders(totalOrders);
+        double orderChangePercentage = orderRepository.calculateOrderChange();
+        orderStatsDTO.setOrderChangePercentage(orderChangePercentage);
+        return orderStatsDTO;
+    }
+
+    public RevenueDTO getRevenueStatistics() {
+        Double currentMonthRevenue = orderRepository.findTotalRevenueCurrentMonth();
+        Double lastMonthRevenue = orderRepository.findTotalRevenueLastMonth();
+
+        Double revenueChangePercentage = calculateRevenueChangePercentage(currentMonthRevenue, lastMonthRevenue);
+
+        return new RevenueDTO(currentMonthRevenue, lastMonthRevenue, revenueChangePercentage);
+    }
+
+    private Double calculateRevenueChangePercentage(Double currentMonthRevenue, Double lastMonthRevenue) {
+        if (lastMonthRevenue == null || lastMonthRevenue == 0) {
+            return currentMonthRevenue == null ? null : 100.0; // Assuming a 100% increase if last month revenue is 0
+        }
+        return ((currentMonthRevenue - lastMonthRevenue) / lastMonthRevenue) * 100;
+    }
+
+    public RevenueDayDTO getTotalSales() {
+        RevenueDayDTO totalSalesDTO = new RevenueDayDTO();
+        totalSalesDTO.setTotalSalesToday(orderRepository.getTotalAmountToday());
+        totalSalesDTO.setTotalSalesYesterday(orderRepository.getTotalAmountYesterday());
+        return totalSalesDTO;
+    }
+
+    @Override
+    public Integer countOrdersByProductId(Long productId) {
+        return orderDetailRepository.countOrderByProductId(productId);
+    }
+    @Override
+    public Optional<Double> getProductRevenue(Long productId) {
+        return orderDetailRepository.findTotalRevenueByProductId(productId);
+    }
 }
