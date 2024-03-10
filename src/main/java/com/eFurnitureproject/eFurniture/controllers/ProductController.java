@@ -153,5 +153,10 @@ public class ProductController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/top5")
+    private List<Product> top5(){
+        return productService.findtop5();
+    }
+
 
 }

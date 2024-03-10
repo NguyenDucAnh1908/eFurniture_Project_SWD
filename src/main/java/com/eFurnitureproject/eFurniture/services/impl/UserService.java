@@ -2,7 +2,7 @@ package com.eFurnitureproject.eFurniture.services.impl;
 
 import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
 import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
-import com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse.UpdateUserResponse;
+import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
 import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
@@ -62,6 +62,7 @@ public class UserService implements IUserService {
                 .phoneNumber(request.getPhoneNumber())
                 .dateOfBirth(request.getDateOfBirth())
                 .role(Role.USER)
+                .address(request.getAddress())
                 .build();
         var existedEmail = repository.findByEmail(user.getEmail()).orElse(null);
         if (existedEmail == null) {
@@ -87,8 +88,11 @@ public class UserService implements IUserService {
                 .dateOfBirth(user.getDateOfBirth())
                 .active(user.isActive())
                 .role(user.getRole())
+                .address(user.getAddress())
                 .build();
     }
+
+
 
 
     @Override
@@ -99,19 +103,29 @@ public class UserService implements IUserService {
                         request.getPassword()
                 )
         );
-        var user = repository.findByEmail(request.getEmail())
-                .orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefeshToken(user);
-        revokeAllUsserTokens(user);
-        saveToken(user, jwtToken);
-        return AuthenticationResponse.builder()
-                .staus("Success")
-                .messages("Login success")
-                .token(jwtToken)
-                .user(convertToUserResponse(user))
-                .refeshToken(refreshToken)
-                .build();
+        try{
+            var user = repository.findByEmail(request.getEmail())
+                    .orElseThrow();
+
+            var jwtToken = jwtService.generateToken(user);
+            var refreshToken = jwtService.generateRefeshToken(user);
+            revokeAllUsserTokens(user);
+            saveToken(user, jwtToken);
+            return AuthenticationResponse.builder()
+                    .staus("Success")
+                    .messages("Login success")
+                    .token(jwtToken)
+                    .user(convertToUserResponse(user))
+                    .refeshToken(refreshToken)
+                    .build();
+        }catch (Exception e){
+            return AuthenticationResponse.builder()
+                    .staus("Fail")
+                    .messages("Login fail")
+                    .user(null)
+                    .build();
+        }
+
     }
 
     @Override
@@ -161,13 +175,17 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User getUserById(Long id) {
+    public UserResponse getUserById(Long userId) {
+        var user = repository.findById(userId).orElse(null);
+        if(user != null){
+            return  convertToUserResponse(user);
+        }
         return null;
     }
 
     @Override
-    public ResponseEntity<ObjectResponse> deleteUser(String email) {
-        var user = repository.findByEmail(email).orElse(null);
+    public ResponseEntity<ObjectResponse> deleteUser(Long userId) {
+        var user = repository.findById(userId).orElse(null);
         if (user != null) {
             user.setActive(false);
             repository.save(user);
@@ -181,8 +199,8 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public ResponseEntity<UpdateUserResponse> updateUser(String email, UserDto updateUserRequest) {
-        var user = repository.findByEmail(email).orElse(null);
+    public ResponseEntity<UpdateUserResponse> updateUser(Long userId, UserDto updateUserRequest) {
+        var user = repository.findById(userId).orElse(null);
         if (user == null) {
             return ResponseEntity.badRequest().body(UpdateUserResponse.builder()
                     .status("Fail")
@@ -201,6 +219,9 @@ public class UserService implements IUserService {
         }
         if (updateUserRequest.getPassword() != null && !updateUserRequest.getPassword().isEmpty()) {
             user.setPassword(updateUserRequest.getPassword());
+        }
+        if (updateUserRequest.getAddress() != null && !updateUserRequest.getAddress().isEmpty()) {
+            user.setPassword(updateUserRequest.getAddress());
         }
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (servletRequestAttributes == null) {
