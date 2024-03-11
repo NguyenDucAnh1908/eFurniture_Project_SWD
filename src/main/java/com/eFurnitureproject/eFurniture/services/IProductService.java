@@ -2,6 +2,7 @@ package com.eFurnitureproject.eFurniture.services;
 
 import com.eFurnitureproject.eFurniture.Responses.ProductResponse;
 import com.eFurnitureproject.eFurniture.dtos.ProductDto;
+import com.eFurnitureproject.eFurniture.dtos.ProductImageDto;
 import com.eFurnitureproject.eFurniture.dtos.Top5ProductDto;
 import com.eFurnitureproject.eFurniture.dtos.analysis.OrderStatsDTO;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;

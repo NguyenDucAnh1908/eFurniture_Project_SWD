@@ -17,6 +17,12 @@ public class Design extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "code-design", length = 500, nullable = true)
+    private String codeDesign;
+
+    @Column(name = "staffName", length = 500, nullable = true)
+    private String staffName;
+
     @Column(name = "image_urls", columnDefinition = "TEXT", nullable = true)
     private String imageUrls;
 
@@ -27,8 +33,15 @@ public class Design extends BaseEntity{
     private String note;
 
 
-    @Column(name = "url_file_data",columnDefinition = "TEXT", nullable = true)
-    private String urlFileData;
+    @Lob
+    @Column(name = "file_data", columnDefinition = "LONGBLOB", nullable = true)
+    private byte[] fileData;
+
+    @Column(name = "file_name", nullable = true)
+    private String fileName;
+
+    @Column(name = "file_type", nullable = true)
+    private String fileType;
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "projectBooking_id")

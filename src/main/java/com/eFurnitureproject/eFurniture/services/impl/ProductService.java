@@ -3,13 +3,10 @@ package com.eFurnitureproject.eFurniture.services.impl;
 import com.eFurnitureproject.eFurniture.Responses.ProductResponse;
 import com.eFurnitureproject.eFurniture.converter.ProductConverter;
 import com.eFurnitureproject.eFurniture.dtos.ProductDto;
+import com.eFurnitureproject.eFurniture.dtos.ProductImageDto;
 import com.eFurnitureproject.eFurniture.dtos.Top5ProductDto;
-import com.eFurnitureproject.eFurniture.dtos.analysis.OrderStatsDTO;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
-import com.eFurnitureproject.eFurniture.models.Brand;
-import com.eFurnitureproject.eFurniture.models.Category;
-import com.eFurnitureproject.eFurniture.models.Product;
-import com.eFurnitureproject.eFurniture.models.TagsProduct;
+import com.eFurnitureproject.eFurniture.models.*;
 import com.eFurnitureproject.eFurniture.repositories.*;
 import com.eFurnitureproject.eFurniture.services.IProductService;
 import lombok.RequiredArgsConstructor;
@@ -32,13 +29,13 @@ public class ProductService implements IProductService {
     private final BrandRepository brandRepository;
     private final TagProductRepository tagProductRepository;
     private final FeedbackRepository feedbackRepository;
-    private final OrderDetailRepository orderDetailRepository;
+    private  final OrderDetailRepository orderDetailRepository;
     private final ModelMapper modelMapper;
 
     @Override
     public Product getProductById(long id) throws Exception {
         Optional<Product> optionalProduct = productRepository.findById(id);
-        if (optionalProduct.isPresent()) {
+        if(optionalProduct.isPresent()) {
             return optionalProduct.get();
         }
         throw new DataNotFoundException("Cannot find product with id =" + id);
@@ -74,6 +71,35 @@ public class ProductService implements IProductService {
         product.setBrand(existingBrand);
         product.setTagsProduct(existingProductTag);
         product = productRepository.save(product);
+        // Lưu thông tin ảnh sản phẩm vào cơ sở dữ liệu
+        if (productDto.getProductImages() != null && !productDto.getProductImages().isEmpty()) {
+            List<ProductImages> productImages = new ArrayList<>();
+            List<ProductImageDto> newImages = productDto.getProductImages();
+
+            // Kiểm tra số lượng hình ảnh hiện tại của sản phẩm
+            List<ProductImages> existingImages = product.getProductImages();
+            int currentImageCount = (existingImages != null) ? existingImages.size() : 0;
+            int maxImageCount = 2;
+
+            // Kiểm tra xem số lượng hình ảnh mới có vượt quá giới hạn không
+            int newImageCount = Math.min(maxImageCount - currentImageCount, newImages.size());
+
+            // Nếu số lượng hình ảnh mới vượt quá giới hạn, báo lỗi và không lưu vào cơ sở dữ liệu
+            if (newImages.size() > newImageCount) {
+                throw new DataNotFoundException("Exceeded maximum allowed images");
+            }
+
+            // Thêm hình ảnh mới vào sản phẩm
+            for (int i = 0; i < newImageCount; i++) {
+                ProductImageDto imageDto = newImages.get(i);
+                ProductImages productImage = new ProductImages();
+                productImage.setProduct(product);
+                productImage.setImageUrl(imageDto.getImageUrl());
+                productImages.add(productImage);
+            }
+
+            productImageRepository.saveAll(productImages);
+        }
         return product;
     }
 
@@ -108,13 +134,37 @@ public class ProductService implements IProductService {
             existingProduct.setBrand(existingBrand);
             existingProduct.setTagsProduct(existingProductTag);
             existingProduct = productRepository.save(existingProduct);
+
+            if (productDto.getProductImages() != null && !productDto.getProductImages().isEmpty()) {
+                for (ProductImageDto imageDto : productDto.getProductImages()) {
+                    if (imageDto.getId() != null) {
+                        // Nếu có id, cập nhật hình ảnh
+                        ProductImages existingImage = productImageRepository.findById(imageDto.getId())
+                                .orElseThrow(() -> new DataNotFoundException("Image not found with id: " + imageDto.getId()));
+                        if (imageDto.getImageUrl() == null || imageDto.getImageUrl().isEmpty()) {
+                            // Nếu ImageUrl rỗng hoặc null, lấy dữ liệu cũ
+                            imageDto.setImageUrl(existingImage.getImageUrl());
+                        } else {
+                            existingImage.setImageUrl(imageDto.getImageUrl());
+                        }
+                        productImageRepository.save(existingImage);
+                    } else {
+                        // Nếu không có id, thêm hình ảnh mới
+                        ProductImages newImage = new ProductImages();
+                        newImage.setProduct(existingProduct);
+                        newImage.setImageUrl(imageDto.getImageUrl());
+                        productImageRepository.save(newImage);
+                    }
+                }
+            }
+
             return existingProduct;
         }
         return null;
     }
 
     public Page<ProductResponse> getAllProducts(String keyword, PageRequest pageRequest,
-                                                Double minPrice, Double maxPrice,
+                                           Double minPrice, Double maxPrice,
                                                 List<Long> brandIds, List<Long> tagsProductIds, List<Long> categoryIds) {
         Page<Product> products;
         products = productRepository.searchProducts(
@@ -127,7 +177,7 @@ public class ProductService implements IProductService {
         });
     }
 
-    public List<ProductResponse> getAll() {
+    public List<ProductResponse> getAll(){
         List<Product> products = productRepository.findAll();
         return products.stream()
                 .map(product -> {
@@ -144,8 +194,7 @@ public class ProductService implements IProductService {
 //            return response;
 //        });
     }
-
-    public List<ProductResponse> getProductByCategory(Long id) {
+    public List<ProductResponse> getProductByCategory(Long id){
         List<Product> products = productRepository.findByCategoryId(id);
         return products.stream()
                 .map(product -> {
@@ -156,8 +205,7 @@ public class ProductService implements IProductService {
                 })
                 .collect(Collectors.toList());
     }
-
-    public List<Product> getAllProduct() {
+    public List<Product> getAllProduct(){
         return productRepository.findAll();
     }
 
@@ -183,6 +231,7 @@ public class ProductService implements IProductService {
         productDto.setTotalAmountSold((Double) result[2]);
         return productDto;
     }
+
 
 
     private String generateCodeFromName(String codeProduct) {

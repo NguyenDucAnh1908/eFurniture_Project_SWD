@@ -4,6 +4,7 @@ import com.eFurnitureproject.eFurniture.dtos.CartItemDto;
 import com.eFurnitureproject.eFurniture.models.OrderDetail;
 import com.eFurnitureproject.eFurniture.models.OrderStatus;
 import com.eFurnitureproject.eFurniture.models.PaymentStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -24,6 +25,8 @@ public class OrderResponse {
     @JsonProperty("total_amount")
     @Min(value = 1, message = "Total money must be >= 0")
     private double totalAmount;
+    @JsonProperty("sub_total")
+    private double subTotal;
     @JsonProperty("payment_method")
     private String paymentMethod;
 //    @JsonProperty("shipping_address")
@@ -32,6 +35,7 @@ public class OrderResponse {
 //    private String trackingNumber;
     @JsonProperty("shipping_method")
     private String shippingMethod;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @JsonProperty("shipping_date")
     private LocalDate shippingDate;
     private String notes;
@@ -52,6 +56,7 @@ public class OrderResponse {
     private PaymentStatus paymentStatus;
     @JsonProperty("cart_items")
     private List<CartItemDto> cartItems;
+    private Long couponId;
     //private int orderDetails;
     @JsonProperty("user_id")
     @Min(value = 1, message = "User's ID must be > 0")
