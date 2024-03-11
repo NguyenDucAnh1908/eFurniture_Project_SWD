@@ -139,4 +139,15 @@ public class BookingController {
         }
     }
 
+    @GetMapping("/getAllProjectBooking")
+    public ResponseEntity<?> getAllProjectBookings() {
+        try {
+            List<ProjectBookingDto> projectBookingDtos = projectBookingService.getAllProjectBookings();
+            return new ResponseEntity<>(projectBookingDtos, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }

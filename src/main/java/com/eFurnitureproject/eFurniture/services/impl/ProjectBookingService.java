@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class ProjectBookingService implements IProjectBookingService {
@@ -118,5 +120,19 @@ public class ProjectBookingService implements IProjectBookingService {
                 .orElseThrow(() -> new DataNotFoundException("ProjectBooking not found with code: " + code));
         return ProjectBookingConverter.toDTO(projectBooking);
     }
+
+    @Override
+    public ProjectBookingDto getProjectBookingByBookingId(String BookingId) {
+        return null;
+    }
+
+    @Override
+    public List<ProjectBookingDto> getAllProjectBookings() {
+        List<ProjectBooking> projectBookings = projectBookingRepository.findAll();
+        return projectBookings.stream()
+                .map(ProjectBookingConverter::toDTO)
+                .collect(Collectors.toList());
+    }
+
 
 }
