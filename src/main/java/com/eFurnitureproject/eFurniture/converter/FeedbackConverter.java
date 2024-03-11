@@ -7,6 +7,8 @@ import com.eFurnitureproject.eFurniture.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+
 @Component
 public class FeedbackConverter {
 
@@ -23,17 +25,24 @@ public class FeedbackConverter {
                 .rating(feedback.getRating())
                 .comment(feedback.getComment())
                 .status(feedback.getStatus())
-                .reply(feedback.getReply())
                 .updatedAt(feedback.getUpdatedAt())
                 .createdAt(feedback.getCreatedAt())
                 .userFullName(feedback.getUser().getFullName())
+                .replierName(feedback.getReplier() != null ? feedback.getReplier().getFullName() : null)
                 .productId(feedback.getProduct() != null ? feedback.getProduct().getId() : null);
-
 
         // Add user mapping
         if (feedback.getUser() != null) {
             builder.userId(feedback.getUser().getId());
         }
+
+        if (feedback.getReplier() != null) {
+            builder.replierId(feedback.getReplier().getId());
+        }
+        // Add mapping for replies
+        builder.replies(feedback.getReplies().stream()
+                .map(ReplyConverter::toDto)
+                .collect(Collectors.toList()));
 
         return builder.build();
     }
@@ -44,7 +53,6 @@ public class FeedbackConverter {
                 .rating(feedbackDto.getRating())
                 .comment(feedbackDto.getComment())
                 .status(feedbackDto.getStatus())
-                .reply(feedbackDto.getReply())
                 .user(userRepository.findById(feedbackDto.getUserId())
                         .orElseThrow(() -> new DataNotFoundException("Cannot find user with id: " + feedbackDto.getUserId())))
                 .build();

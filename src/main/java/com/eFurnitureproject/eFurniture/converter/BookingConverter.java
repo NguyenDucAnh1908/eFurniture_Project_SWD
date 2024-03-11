@@ -20,6 +20,9 @@ public class BookingConverter {
     public static BookingDto toDTO(Booking booking) {
         BookingDto.BookingDtoBuilder builder = BookingDto.builder()
                 .id(booking.getId())
+                .firstName(booking.getFirstName())
+                .lastName(booking.getLastName())
+                .phoneNumber(booking.getPhoneNumber())
                 .streetAddress(booking.getStreetAddress())
                 .wardCode(booking.getWardCode())
                 .districtCode(booking.getDistrictCode())
@@ -45,6 +48,9 @@ public class BookingConverter {
     public static Booking toEntity(BookingDto bookingDto) throws DataNotFoundException {
         return Booking.builder()
                 .id(bookingDto.getId())
+                .firstName(bookingDto.getFirstName())
+                .lastName(bookingDto.getLastName())
+                .phoneNumber(bookingDto.getPhoneNumber())
                 .streetAddress(bookingDto.getStreetAddress())
                 .wardCode(bookingDto.getWardCode())
                 .districtCode(bookingDto.getDistrictCode())

@@ -1,6 +1,7 @@
 package com.eFurnitureproject.eFurniture.controllers;
 
 import com.eFurnitureproject.eFurniture.dtos.FeedbackDto;
+import com.eFurnitureproject.eFurniture.dtos.ReplyDto;
 import com.eFurnitureproject.eFurniture.dtos.chartDto.FeedbackRatingCountDto;
 import com.eFurnitureproject.eFurniture.services.IFeedbackService;
 import jakarta.validation.Valid;
@@ -109,24 +110,29 @@ public class FeedbackController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PostMapping("/reply/{feedbackId}")
-    public ResponseEntity<?> replyToFeedback(@PathVariable Long feedbackId, @RequestParam String reply, @RequestParam Long replierId) {
-        try {
-            if (replierId == null || reply == null || reply.isEmpty()) {
-                return ResponseEntity.badRequest().body("Invalid replierId or reply");
-            }
-            feedbackService.replyToFeedback(feedbackId, reply, replierId);
-            return new ResponseEntity<>("Feedback replied successfully", HttpStatus.OK);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Internal Server Error: " + e.getMessage());
-
-        }
-    }
 
     @GetMapping("/feedback/count-by-rating")
     public List<FeedbackRatingCountDto> getFeedbackCountByRating() {
         return feedbackService.getFeedbackCountByRating();
+    }
+
+    @PostMapping("reply/{feedbackId}/")
+    public ResponseEntity<?> addReplyToFeedback(
+            @PathVariable Long feedbackId,
+            @RequestBody ReplyDto replyDto) {
+
+        try {
+            if (replyDto == null) {
+                return ResponseEntity.badRequest().body("Invalid replierId or reply");
+            }
+
+            ReplyDto replyDto1 =feedbackService.addReplyToFeedback(feedbackId, replyDto);
+
+            return new ResponseEntity<>(replyDto1, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Internal Server Error: " + e.getMessage());
+        }
     }
 }
     

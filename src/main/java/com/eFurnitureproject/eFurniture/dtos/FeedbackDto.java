@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data//toString
 @Getter
@@ -30,12 +31,14 @@ public class FeedbackDto extends BaseDto{
 
     private String status;
 
-    private String reply;
+    private List<ReplyDto> replies;
 
     @NotNull(message = "ProductId is required")
     private Long productId;
 
     private Long userId;
+
+    private Long replyId;
 
     private Long replierId;
 

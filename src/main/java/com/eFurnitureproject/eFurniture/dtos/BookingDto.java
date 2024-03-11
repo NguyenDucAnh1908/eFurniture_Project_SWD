@@ -2,6 +2,7 @@ package com.eFurnitureproject.eFurniture.dtos;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Column;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -14,7 +15,9 @@ import java.time.LocalDateTime;
 @Builder
 public class BookingDto extends BaseDto{
     private Long id;
-
+    private String firstName;
+    private String lastName;
+    private String phoneNumber;
     private String streetAddress;
     private String wardCode;
     private String districtCode;

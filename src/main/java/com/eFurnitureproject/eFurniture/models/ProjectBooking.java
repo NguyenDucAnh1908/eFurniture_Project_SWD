@@ -53,7 +53,4 @@ public class ProjectBooking extends BaseEntity{
     @OneToOne (cascade = {CascadeType.ALL})
     @JoinColumn(name = "booking_project_id",nullable = false)
     private Booking booking;
-
-
-
 }

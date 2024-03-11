@@ -267,8 +267,6 @@ public class UserService implements IUserService {
                 .orElseThrow(() -> new DataNotFoundException("Booking request not found with ID: " + id));
         User designer = repository.findById(additionalInfoDto.getDesignerId())
                 .orElseThrow(() -> new DataNotFoundException("Designer not found with ID: " + additionalInfoDto.getDesignerId()));
-        booking.setNote(additionalInfoDto.getNotes());
-
         booking.setStatus("Confirmed");
         booking.setDesigner(designer);
 
