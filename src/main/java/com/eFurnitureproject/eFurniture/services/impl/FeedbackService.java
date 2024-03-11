@@ -181,6 +181,12 @@ public class FeedbackService implements IFeedbackService {
         }
     }
 
+    public Page<FeedbackDto> getAllFeedback(Pageable pageable) {
+        Page<Feedback> feedbackPage = feedbackRepository.findAll(pageable);
+        return feedbackPage.map(FeedbackConverter::toDto);
+    }
+
+
     @Transactional(readOnly = true)
     public Page<FeedbackDto> getAllFeedbacksForProduct(Long productId, int page, int size, Integer rating, boolean hasImage, boolean hasComment) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());

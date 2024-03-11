@@ -7,6 +7,7 @@ import com.eFurnitureproject.eFurniture.services.IFeedbackService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -133,6 +134,15 @@ public class FeedbackController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Internal Server Error: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<Page<FeedbackDto>> getAllFeedback(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<FeedbackDto> feedbackPage = feedbackService.getAllFeedback(PageRequest.of(page, size));
+        return new ResponseEntity<>(feedbackPage, HttpStatus.OK);
     }
 }
     
