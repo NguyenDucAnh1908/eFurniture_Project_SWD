@@ -3,16 +3,21 @@ package com.eFurnitureproject.eFurniture.controllers;
 import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
 import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
 import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
+import com.eFurnitureproject.eFurniture.Responses.UserListResponse;
 import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
 import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
+import com.eFurnitureproject.eFurniture.models.Enum.Role;
 import com.eFurnitureproject.eFurniture.models.User;
 import com.eFurnitureproject.eFurniture.services.impl.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -83,10 +88,110 @@ public class UserController {
         }
     }
 
-    @GetMapping("")
-    private List<User> getAll() {
-        return userService.findAllUser();
+//    @GetMapping("")
+//    public ResponseEntity<UserListResponse> getAllUser(
+//            @RequestParam(value = "page", defaultValue = "0") int page,
+////            @RequestParam(value = "limit", defaultValue = "10") int limit,
+//            @RequestParam(value = "role", required = false) Role role
+//    ) {
+////        PageRequest pageRequest = PageRequest.of(
+////                page, limit,
+////                Sort.by("id").descending()
+////        );
+//        Page<UserResponse> userPage = userService.getAllUsers(pageRequest,role);
+//        int totalPages = userPage.getTotalPages();
+//        Long totalUsers = userPage.getTotalElements();
+//        List<UserResponse> users = userPage.getContent();
+//        return ResponseEntity.ok(UserListResponse.builder()
+//                .userResponses(users)
+//                .totalPages(totalPages)
+//                .totalUser(totalUsers)
+//                .build());
+//    }
+
+    @GetMapping("get-all-user")
+    public ResponseEntity<UserListResponse> getAllUser(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "limit", defaultValue = "10") int limit
+    ) {
+        PageRequest pageRequest = PageRequest.of(
+                page, limit,
+                Sort.by("id").descending()
+        );
+        Page<UserResponse> userPage = userService.getAllUsers(pageRequest, Role.USER);
+        int totalPages = userPage.getTotalPages();
+        Long totalUsers = userPage.getTotalElements();
+        List<UserResponse> users = userPage.getContent();
+        return ResponseEntity.ok(UserListResponse.builder()
+                .userResponses(users)
+                .totalPages(totalPages)
+                .totalUser(totalUsers)
+                .build());
     }
+
+    @GetMapping("get-all-staff")
+    public ResponseEntity<UserListResponse> getAllStaff(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "limit", defaultValue = "10") int limit
+    ) {
+        PageRequest pageRequest = PageRequest.of(
+                page, limit,
+                Sort.by("id").descending()
+        );
+        Page<UserResponse> userPage = userService.getAllUsers(pageRequest, Role.STAFF);
+        int totalPages = userPage.getTotalPages();
+        Long totalUsers = userPage.getTotalElements();
+        List<UserResponse> users = userPage.getContent();
+        return ResponseEntity.ok(UserListResponse.builder()
+                .userResponses(users)
+                .totalPages(totalPages)
+                .totalUser(totalUsers)
+                .build());
+    }
+
+    @GetMapping("get-all-staff-delivery")
+    public ResponseEntity<UserListResponse> getAllStaffDelivery(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "limit", defaultValue = "10") int limit
+    ) {
+        PageRequest pageRequest = PageRequest.of(
+                page, limit,
+                Sort.by("id").descending()
+        );
+        Page<UserResponse> userPage = userService.getAllUsers(pageRequest, Role.STAFF_DELIVERY);
+        int totalPages = userPage.getTotalPages();
+        Long totalUsers = userPage.getTotalElements();
+        List<UserResponse> users = userPage.getContent();
+        return ResponseEntity.ok(UserListResponse.builder()
+                .userResponses(users)
+                .totalPages(totalPages)
+                .totalUser(totalUsers)
+                .build());
+    }
+
+    @GetMapping("get-all-designer")
+    public ResponseEntity<UserListResponse> getAllDesigner(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "limit", defaultValue = "10") int limit
+    ) {
+        PageRequest pageRequest = PageRequest.of(
+                page, limit,
+                Sort.by("id").descending()
+        );
+        Page<UserResponse> userPage = userService.getAllUsers(pageRequest, Role.DESIGNER);
+        int totalPages = userPage.getTotalPages();
+        Long totalUsers = userPage.getTotalElements();
+        List<UserResponse> users = userPage.getContent();
+        return ResponseEntity.ok(UserListResponse.builder()
+                .userResponses(users)
+                .totalPages(totalPages)
+                .totalUser(totalUsers)
+                .build());
+    }
+
+
+
+
 
     @PutMapping("/updateUser/{userId}")
     public ResponseEntity<UpdateUserResponse> updateStaff(

@@ -31,7 +31,7 @@ public class ProductService implements IProductService {
     private final FeedbackRepository feedbackRepository;
     private  final OrderDetailRepository orderDetailRepository;
     private final ModelMapper modelMapper;
-
+    private final ProductImageRepository productImageRepository;
     @Override
     public Product getProductById(long id) throws Exception {
         Optional<Product> optionalProduct = productRepository.findById(id);

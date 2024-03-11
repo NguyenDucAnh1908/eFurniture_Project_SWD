@@ -1,6 +1,5 @@
 package com.eFurnitureproject.eFurniture.models.Enum;
 
-import com.eFurnitureproject.eFurniture.models.Enum.Permission;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,12 +12,6 @@ import static com.eFurnitureproject.eFurniture.models.Enum.Permission.*;
 
 @RequiredArgsConstructor
 public enum Role {
-//    Customer,
-//    Guest,
-//    Staff,
-//    Staff_Delivery,
-//    Addmin
-
     USER(
             Set.of(
             USER_VIEW,
@@ -48,8 +41,23 @@ public enum Role {
             STAFF_UPDATE,
             STAFF_DELETE
             )
-    )
-    ;
+    ),
+    STAFF_DELIVERY(
+            Set.of(
+                    STAFF_DELIVERY_VIEW,
+                    STAFF_DELIVERY_CREATE,
+                    STAFF_DELIVERY_UPDATE,
+                    STAFF_DELIVERY_DELETE
+            )
+    ),
+    DESIGNER(
+            Set.of(
+                    DESIGNER_VIEW,
+                    DESIGNER_CREATE,
+                    DESIGNER_UPDATE,
+                    DESIGNER_DELETE
+            )
+    );
 
     @Getter
     private final Set<Permission> permissions;

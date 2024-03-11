@@ -18,6 +18,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -165,14 +167,14 @@ public class UserService implements IUserService {
         return repository.save(user);
     }
 
-    @Override
-    public List<User> findAllUser() {
-        try {
-            return repository.findAll();
-        } catch (Exception e) {
-            return Collections.emptyList();
-        }
-    }
+//    @Override
+//    public List<User> findAllUser(int page,Role role) {
+//        try {
+//            return repository.findAll();
+//        } catch (Exception e) {
+//            return Collections.emptyList();
+//        }
+//    }
 
     @Override
     public UserResponse getUserById(Long userId) {
@@ -230,8 +232,11 @@ public class UserService implements IUserService {
                     .message("ServletRequestAttributes not found")
                     .build());
         }
-
+        if (updateUserRequest.getRole() != null ) {
+            user.setRole(updateUserRequest.getRole());
+        }
         user.setActive(updateUserRequest.isActive());
+        repository.save(user);
         return ResponseEntity.ok(UpdateUserResponse.builder()
                 .status("Success")
                 .message("Update User Success")
@@ -273,6 +278,43 @@ public class UserService implements IUserService {
         }
 
         return new UserStatsDTO(usersThisMonth, usersLastMonth, percentageChange);
+    }
+
+//    @Override
+//    public Page<UserResponse> getAllUsers(PageRequest pageRequest, Role role) {
+//        Page<User> userPage;
+//        if (role != null) {
+//            userPage = repository.findByRole(role, pageRequest);
+//        } else {
+//            userPage = repository.findAll(pageRequest);
+//        }
+//
+//        return userPage.map(this::convertToUserResponse);
+//    }
+
+//    @Override
+//    public ResponseEntity<UserListResponse> findAllUsers() {
+//        List<User> list = repository.findAll();
+//
+//        return (ResponseEntity<UserListResponse>) list;
+//    }
+
+    @Override
+    public List<User> getAllUser() {
+
+        return repository.findAll();
+    }
+
+    @Override
+    public Page<UserResponse> getAllUsers(PageRequest pageRequest, Role role) {
+        Page<User> userPage;
+        if (role != null) {
+            userPage = repository.findByRole(role, pageRequest);
+        } else {
+            userPage = repository.findAll(pageRequest);
+        }
+
+        return userPage.map(this::convertToUserResponse);
     }
 
 }
