@@ -18,6 +18,9 @@ public class ProductCreateResponse{
     @JsonProperty("errors")
     private List<String> errors;
     private Product product;
+
+    @JsonProperty("status")
+    private String status;
 //    private Long id;
 //    private String name;
 //    private String description;
