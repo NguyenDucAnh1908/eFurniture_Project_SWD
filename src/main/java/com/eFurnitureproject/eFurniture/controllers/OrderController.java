@@ -5,9 +5,7 @@ import com.eFurnitureproject.eFurniture.Responses.OrderResponse;
 import com.eFurnitureproject.eFurniture.components.LocalizationUtils;
 import com.eFurnitureproject.eFurniture.converter.OrderConverter;
 import com.eFurnitureproject.eFurniture.dtos.OrderDto;
-import com.eFurnitureproject.eFurniture.dtos.analysis.OrderStatsDTO;
-import com.eFurnitureproject.eFurniture.dtos.analysis.RevenueDTO;
-import com.eFurnitureproject.eFurniture.dtos.analysis.RevenueDayDTO;
+import com.eFurnitureproject.eFurniture.dtos.analysis.*;
 import com.eFurnitureproject.eFurniture.models.Order;
 import com.eFurnitureproject.eFurniture.services.IOrderService;
 import com.eFurnitureproject.eFurniture.utils.MessageKeys;
@@ -22,6 +20,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin
@@ -57,7 +56,8 @@ public class OrderController {
     public ResponseEntity<OrderListResponse> getOrdersByKeyword(
             @RequestParam(defaultValue = "", required = false) String keyword,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int limit
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(value = "categoryIds", required = false) Long paymentStatusId
     ) {
         // Tạo Pageable từ thông tin trang và giới hạn
         PageRequest pageRequest = PageRequest.of(
@@ -66,7 +66,7 @@ public class OrderController {
                 Sort.by("id").ascending()
         );
         Page<OrderResponse> orderPage = orderService
-                .getOrdersByKeyword(keyword, pageRequest)
+                .getOrdersByKeyword(keyword, paymentStatusId, pageRequest)
                 .map(OrderConverter::fromOrder);
         // Lấy tổng số trang
         int totalPages = orderPage.getTotalPages();
@@ -142,4 +142,28 @@ public class OrderController {
         return ResponseEntity.ok(totalSalesDTO);
     }
 
+    @GetMapping("/count/{productId}")
+    public ResponseEntity<OrderCountDto> countOrdersByProductId(@PathVariable Long productId) {
+        Integer orderCount = orderService.countOrdersByProductId(productId);
+        OrderCountDto orderCountDto = new OrderCountDto();
+        orderCountDto.setProductId(productId);
+        orderCountDto.setOrderCount(orderCount);
+        return ResponseEntity.ok(orderCountDto);
+    }
+
+    @GetMapping("/revenue/{productId}")
+    public ResponseEntity<ProductRevenueDto> getProductRevenue(@PathVariable Long productId) {
+        Optional<Double> revenue = orderService.getProductRevenue(productId);
+        if (revenue.isPresent()) {
+            ProductRevenueDto productRevenueDto = new ProductRevenueDto();
+            productRevenueDto.setTotalRevenue(revenue.get());
+            productRevenueDto.setProductId(productId);
+            return ResponseEntity.ok(productRevenueDto);
+        } else {
+            ProductRevenueDto productRevenueDto = new ProductRevenueDto();
+            productRevenueDto.setTotalRevenue(0.0); // Set total revenue to 0
+            productRevenueDto.setProductId(productId);
+            return ResponseEntity.ok(productRevenueDto);
+        }
+    }
 }
