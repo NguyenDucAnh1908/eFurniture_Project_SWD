@@ -17,7 +17,7 @@ public class AuthenticationResponse {
     private UserResponse user;
     @JsonProperty("token")
     private String token;
-
+    private String role;
     @JsonProperty("refesh_token")
     private String refeshToken;
 }
