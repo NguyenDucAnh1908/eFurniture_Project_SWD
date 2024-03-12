@@ -10,7 +10,6 @@ import com.eFurnitureproject.eFurniture.dtos.UserDto;
 import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Booking;
-import com.eFurnitureproject.eFurniture.models.Design;
 import com.eFurnitureproject.eFurniture.models.Enum.Role;
 import com.eFurnitureproject.eFurniture.models.Enum.TokenType;
 import com.eFurnitureproject.eFurniture.models.Token;
@@ -32,7 +31,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.awt.print.Book;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -128,31 +126,10 @@ public class UserService implements IUserService {
                 .role(String.valueOf(user.getRole()))
                 .build();
 
-        try{
-            var user = repository.findByEmail(request.getEmail())
-                    .orElseThrow();
-
-            var jwtToken = jwtService.generateToken(user);
-            var refreshToken = jwtService.generateRefeshToken(user);
-            revokeAllUsserTokens(user);
-            saveToken(user, jwtToken);
-            return AuthenticationResponse.builder()
-                    .staus("Success")
-                    .messages("Login success")
-                    .token(jwtToken)
-                    .user(convertToUserResponse(user))
-                    .refeshToken(refreshToken)
-                    .build();
-        }catch (Exception e){
-            return AuthenticationResponse.builder()
-                    .staus("Fail")
-                    .messages("Login fail")
-                    .user(null)
-                    .build();
         }
 
 
-    }
+
 
     @Override
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -223,6 +200,10 @@ public class UserService implements IUserService {
                     .build());
         }
     }
+
+
+
+
 
     @Override
     public ResponseEntity<UpdateUserResponse> updateUser(Long userId, UserDto updateUserRequest) {

@@ -221,6 +221,11 @@ public class ProductService implements IProductService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Product> findtop5() {
+        return null;
+    }
+
 
     private Top5ProductDto mapToProductDto(Object[] result) {
         Top5ProductDto productDto = new Top5ProductDto();
