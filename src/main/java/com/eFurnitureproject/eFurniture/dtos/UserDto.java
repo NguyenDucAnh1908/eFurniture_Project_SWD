@@ -20,6 +20,5 @@ public class UserDto {
     private Date dateOfBirth;
     private String email;
     private Role role;
-    private String address;
 
 }

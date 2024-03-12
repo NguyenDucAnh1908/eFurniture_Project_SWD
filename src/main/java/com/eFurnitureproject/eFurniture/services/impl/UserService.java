@@ -2,7 +2,7 @@ package com.eFurnitureproject.eFurniture.services.impl;
 
 import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
 import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
-import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
+import com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse.UpdateUserResponse;
 import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AdditionalInfoDto;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
@@ -69,7 +69,7 @@ public class UserService implements IUserService {
                 .phoneNumber(request.getPhoneNumber())
                 .dateOfBirth(request.getDateOfBirth())
                 .role(Role.USER)
-                .address(request.getAddress())
+
                 .build();
         var existedEmail = repository.findByEmail(user.getEmail()).orElse(null);
         if (existedEmail == null) {
@@ -227,9 +227,9 @@ public class UserService implements IUserService {
         if (updateUserRequest.getPassword() != null && !updateUserRequest.getPassword().isEmpty()) {
             user.setPassword(updateUserRequest.getPassword());
         }
-        if (updateUserRequest.getAddress() != null && !updateUserRequest.getAddress().isEmpty()) {
-            user.setPassword(updateUserRequest.getAddress());
-        }
+//        if (updateUserRequest.getAddress() != null && !updateUserRequest.getAddress().isEmpty()) {
+//            user.setPassword(updateUserRequest.getAddress());
+//        }
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (servletRequestAttributes == null) {
             return ResponseEntity.badRequest().body(UpdateUserResponse.builder()
