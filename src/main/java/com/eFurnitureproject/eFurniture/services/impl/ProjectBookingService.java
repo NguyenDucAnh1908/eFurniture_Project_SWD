@@ -116,8 +116,10 @@ public class ProjectBookingService implements IProjectBookingService {
         return projectBookingRepository.findByUserId(userId);
     }
     public ProjectBookingDto getProjectBookingByCode(String code) throws DataNotFoundException {
-        ProjectBooking projectBooking = projectBookingRepository.findByCode(code)
-                .orElseThrow(() -> new DataNotFoundException("ProjectBooking not found with code: " + code));
+        ProjectBooking projectBooking = projectBookingRepository.findByCode(code);
+        if (projectBooking == null) {
+            throw new DataNotFoundException("ProjectBooking with code " + code + " not found");
+        }
         return ProjectBookingConverter.toDTO(projectBooking);
     }
 
@@ -132,6 +134,13 @@ public class ProjectBookingService implements IProjectBookingService {
         return projectBookings.stream()
                 .map(ProjectBookingConverter::toDTO)
                 .collect(Collectors.toList());
+    }
+    public ProjectBookingDto getProjectBookingByBookingId(Long bookingId) throws DataNotFoundException {
+        ProjectBooking projectBooking = projectBookingRepository.findByBookingId(bookingId);
+        if (projectBooking == null) {
+            throw new DataNotFoundException("ProjectBooking with bookingId " + bookingId + " not found");
+        }
+        return ProjectBookingConverter.toDTO(projectBooking);
     }
 
 

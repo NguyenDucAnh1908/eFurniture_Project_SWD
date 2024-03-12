@@ -16,4 +16,5 @@ public interface IProjectBookingService {
     ProjectBookingDto getProjectBookingByCode(String code) throws DataNotFoundException;
     ProjectBookingDto getProjectBookingByBookingId(String BookingId);
     List<ProjectBookingDto> getAllProjectBookings();
+    ProjectBookingDto getProjectBookingByBookingId(Long bookingId) throws DataNotFoundException;
 }

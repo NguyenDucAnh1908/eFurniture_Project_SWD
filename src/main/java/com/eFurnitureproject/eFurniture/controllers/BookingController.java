@@ -102,7 +102,7 @@ public class BookingController {
             return ResponseEntity.notFound().build();
         }
     }*/
-   @PutMapping("updateProjectBooking    /{id}")
+   @PutMapping("updateProjectBooking/{id}")
    public ResponseEntity<?> updateProjectBooking(@PathVariable("id") Long id, @RequestBody ProjectBookingDto projectBookingDto) {
        try {
            ProjectBooking updatedProjectBooking = projectBookingService.updateProjectBooking(id, projectBookingDto);
@@ -148,6 +148,17 @@ public class BookingController {
             return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    @GetMapping("/by-booking-id/{bookingId}")
+    public ResponseEntity<?> getProjectBookingByBookingId(@PathVariable Long bookingId) {
+        try {
+            ProjectBookingDto projectBookingDto = projectBookingService.getProjectBookingByBookingId(bookingId);
+            return new ResponseEntity<>(projectBookingDto, HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 
 }
