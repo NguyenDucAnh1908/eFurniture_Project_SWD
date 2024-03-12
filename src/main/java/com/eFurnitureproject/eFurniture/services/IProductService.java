@@ -18,4 +18,5 @@ public interface IProductService {
     List<Product> getAllProduct();
     List<Top5ProductDto> getTop5BestSellingProducts();
 
+    List<Product> findtop5();
 }
