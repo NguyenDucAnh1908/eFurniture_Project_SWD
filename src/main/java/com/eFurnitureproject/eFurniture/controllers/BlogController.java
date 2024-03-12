@@ -5,7 +5,9 @@
     import com.eFurnitureproject.eFurniture.converter.BlogConverter;
     import com.eFurnitureproject.eFurniture.dtos.BlogDto;
     import com.eFurnitureproject.eFurniture.models.Blog;
+    import com.eFurnitureproject.eFurniture.models.User;
     import com.eFurnitureproject.eFurniture.repositories.BlogRepository;
+    import com.eFurnitureproject.eFurniture.repositories.UserRepository;
     import com.eFurnitureproject.eFurniture.services.impl.BlogService;
     import jakarta.persistence.EntityNotFoundException;
     import jakarta.validation.Valid;
@@ -25,18 +27,20 @@
     @RequiredArgsConstructor
     public class BlogController {
         private final BlogService blogService;
-        private final BlogRepository blogRepository;
+        private final UserRepository userRepository;
 
         @CrossOrigin
         @GetMapping("/get-blog-detail/{id}")
         public ResponseEntity<?> getBlogById(@PathVariable("id") Long id) {
             try {
                 Blog blog = blogService.getBlogById(id);
-                return new ResponseEntity<>(blog, HttpStatus.OK);
+                BlogResponse blogResponse = BlogConverter.toResponse(blog); // Chuyển đổi từ Blog sang BlogResponse
+                return new ResponseEntity<>(blogResponse, HttpStatus.OK);
             } catch (Exception e) {
                 return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
             }
         }
+
         @CrossOrigin
         @GetMapping("/get_all_blogs")
         public ResponseEntity<BlogListResponse> getAllBlogs(
@@ -45,8 +49,19 @@
                 @RequestParam(value = "size", defaultValue = "10") int size) {
             PageRequest pageRequest = PageRequest.of(page, size);
             Page<BlogResponse> blogsPage = blogService.getAllBlogs(keyword, pageRequest, null);
-            int totalPages = blogsPage.getTotalPages();
+
+
             List<BlogResponse> blogList = blogsPage.getContent();
+
+            for (BlogResponse blog : blogList) {
+                Long userBlogId = blog.getUserBlogId();
+                User user = userRepository.findById(userBlogId).orElse(null);
+                if (user != null) {
+                    blog.setUserFullName(user.getFullName());
+                }
+            }
+
+            int totalPages = blogsPage.getTotalPages();
             return ResponseEntity.ok(BlogListResponse.builder()
                     .blogs(blogList)
                     .totalPages(totalPages)

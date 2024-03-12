@@ -1,15 +1,16 @@
 package com.eFurnitureproject.eFurniture.converter;
 
 import com.eFurnitureproject.eFurniture.dtos.FeedbackDto;
-import com.eFurnitureproject.eFurniture.dtos.FeedbackImageDto;
+import com.eFurnitureproject.eFurniture.dtos.ReplyDto;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Feedback;
-import com.eFurnitureproject.eFurniture.models.FeedbackImages;
-import com.eFurnitureproject.eFurniture.repositories.UserRepository;  // Import UserRepository
+import com.eFurnitureproject.eFurniture.models.Reply;
+import com.eFurnitureproject.eFurniture.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Component
@@ -27,58 +28,64 @@ public class FeedbackConverter {
                 .id(feedback.getId())
                 .rating(feedback.getRating())
                 .comment(feedback.getComment())
-                .dateFeedback(feedback.getDateFeedback())
                 .status(feedback.getStatus())
-                .reply(feedback.getReply())
+                .updatedAt(feedback.getUpdatedAt())
+                .createdAt(feedback.getCreatedAt())
+                .parentId(feedback.getParentId())
+                .userFullName(feedback.getUser().getFullName())
+//                .replierName(feedback.getReplier() != null ? feedback.getReplier().getFullName() : null)
                 .productId(feedback.getProduct() != null ? feedback.getProduct().getId() : null);
-        if (feedback.getFeedbackImages() != null) {
-            builder.images(toImageDtoList(feedback.getFeedbackImages()));
-        }
 
         // Add user mapping
         if (feedback.getUser() != null) {
             builder.userId(feedback.getUser().getId());
         }
 
+
+        // Add mapping for replies
+        if(feedback.getReplies() != null) {
+            builder.replies(feedback.getReplies().stream()
+                    .map(ReplyConverter::toDto)
+                    .collect(Collectors.toList()));
+        }
+
         return builder.build();
     }
 
-    public static Feedback toEntity(FeedbackDto feedbackDto) throws DataNotFoundException {
-        return Feedback.builder()
-                .id(feedbackDto.getId())
-                .rating(feedbackDto.getRating())
-                .comment(feedbackDto.getComment())
-                .dateFeedback(feedbackDto.getDateFeedback())
-                .status(feedbackDto.getStatus())
-                .reply(feedbackDto.getReply())
-                .user(userRepository.findById(feedbackDto.getUserId())
-                        .orElseThrow(() -> new DataNotFoundException("Cannot find user with id: " + feedbackDto.getUserId())))
-                .build();
+    public static Feedback toEntity(FeedbackDto feedbackDto) {
+        try {
+            List<ReplyDto> replyDtos = feedbackDto.getReplies();
+            List<Reply> replies = replyDtos.stream()
+                    .map(replyDto -> {
+                        try {
+                            Reply reply = ReplyConverter.toEntity(replyDto);
+                            reply.setParentId(feedbackDto.getParentId()); // Set parentId for replies
+                            return reply;
+                        } catch (DataNotFoundException e) {
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+
+            return Feedback.builder()
+                    .id(feedbackDto.getId())
+                    .rating(feedbackDto.getRating())
+                    .comment(feedbackDto.getComment())
+                    .status(feedbackDto.getStatus())
+                    .replies(replies)
+                    .user(userRepository.findById(feedbackDto.getUserId())
+                            .orElseThrow(() -> new DataNotFoundException("Cannot find user with id: " + feedbackDto.getUserId())))
+                    .build();
+        } catch (DataNotFoundException e) {
+            throw new RuntimeException("Error converting FeedbackDto to Feedback", e);
+        }
     }
 
-    public static List<FeedbackImageDto> toImageDtoList(List<FeedbackImages> feedbackImages) {
-        return feedbackImages.stream()
-                .map(FeedbackConverter::toImageDto)
+
+    public static List<FeedbackDto> toDtoList(List<Feedback> feedbackList) {
+        return feedbackList.stream()
+                .map(FeedbackConverter::toDto)
                 .collect(Collectors.toList());
-    }
-
-    public static FeedbackImageDto toImageDto(FeedbackImages feedbackImage) {
-        return FeedbackImageDto.builder()
-                .id(feedbackImage.getId())
-                .imageUrl(feedbackImage.getImageUrl())
-                .build();
-    }
-
-    public static List<FeedbackImages> toImageEntityList(List<FeedbackImageDto> feedbackImageDtos) {
-        return feedbackImageDtos.stream()
-                .map(FeedbackConverter::toImageEntity)
-                .collect(Collectors.toList());
-    }
-
-    public static FeedbackImages toImageEntity(FeedbackImageDto feedbackImageDto) {
-        return FeedbackImages.builder()
-                .id(feedbackImageDto.getId())
-                .imageUrl(feedbackImageDto.getImageUrl())
-                .build();
     }
 }

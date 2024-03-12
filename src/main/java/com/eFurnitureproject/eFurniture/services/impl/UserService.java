@@ -2,15 +2,20 @@ package com.eFurnitureproject.eFurniture.services.impl;
 
 import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
 import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
-import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
+import com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse.UpdateUserResponse;
 import com.eFurnitureproject.eFurniture.Responses.UserResponse;
+import com.eFurnitureproject.eFurniture.dtos.AdditionalInfoDto;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
 import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
+import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
+import com.eFurnitureproject.eFurniture.models.Booking;
+import com.eFurnitureproject.eFurniture.models.Design;
 import com.eFurnitureproject.eFurniture.models.Enum.Role;
 import com.eFurnitureproject.eFurniture.models.Enum.TokenType;
 import com.eFurnitureproject.eFurniture.models.Token;
 import com.eFurnitureproject.eFurniture.models.User;
+import com.eFurnitureproject.eFurniture.repositories.BookingRepository;
 import com.eFurnitureproject.eFurniture.repositories.TokenRepository;
 import com.eFurnitureproject.eFurniture.repositories.UserRepository;
 import com.eFurnitureproject.eFurniture.services.IUserService;
@@ -18,8 +23,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -105,30 +108,23 @@ public class UserService implements IUserService {
                         request.getPassword()
                 )
         );
-        try{
-            var user = repository.findByEmail(request.getEmail())
-                    .orElseThrow();
-
-            var jwtToken = jwtService.generateToken(user);
-            var refreshToken = jwtService.generateRefeshToken(user);
-            revokeAllUsserTokens(user);
-            saveToken(user, jwtToken);
-            return AuthenticationResponse.builder()
-                    .staus("Success")
-                    .messages("Login success")
-                    .token(jwtToken)
-                    .user(convertToUserResponse(user))
-                    .refeshToken(refreshToken)
-                    .build();
-        }catch (Exception e){
-            return AuthenticationResponse.builder()
-                    .staus("Fail")
-                    .messages("Login fail")
-                    .user(null)
-                    .build();
-        }
-
+        var user = repository.findByEmail(request.getEmail())
+                .orElseThrow();
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefeshToken(user);
+        revokeAllUsserTokens(user);
+        saveToken(user, jwtToken);
+        return AuthenticationResponse.builder()
+                .staus("Success")
+                .messages("Login success")
+                .token(jwtToken)
+                .user(convertToUserResponse(user))
+                .refeshToken(refreshToken)
+                .role(String.valueOf(user.getRole()))
+                .build();
     }
+
+
 
     @Override
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -167,14 +163,14 @@ public class UserService implements IUserService {
         return repository.save(user);
     }
 
-//    @Override
-//    public List<User> findAllUser(int page,Role role) {
-//        try {
-//            return repository.findAll();
-//        } catch (Exception e) {
-//            return Collections.emptyList();
-//        }
-//    }
+    @Override
+    public List<User> findAllUser() {
+        try {
+            return repository.findAll();
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
+    }
 
     @Override
     public UserResponse getUserById(Long userId) {
@@ -280,42 +276,35 @@ public class UserService implements IUserService {
         return new UserStatsDTO(usersThisMonth, usersLastMonth, percentageChange);
     }
 
-//    @Override
-//    public Page<UserResponse> getAllUsers(PageRequest pageRequest, Role role) {
-//        Page<User> userPage;
-//        if (role != null) {
-//            userPage = repository.findByRole(role, pageRequest);
-//        } else {
-//            userPage = repository.findAll(pageRequest);
-//        }
-//
-//        return userPage.map(this::convertToUserResponse);
-//    }
-
-//    @Override
-//    public ResponseEntity<UserListResponse> findAllUsers() {
-//        List<User> list = repository.findAll();
-//
-//        return (ResponseEntity<UserListResponse>) list;
-//    }
-
-    @Override
-    public List<User> getAllUser() {
-
-        return repository.findAll();
+    public void receiveAndConfirmConsultation(Long id, AdditionalInfoDto additionalInfoDto) throws DataNotFoundException {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Booking request not found with ID: " + id));
+        User designer = repository.findById(additionalInfoDto.getDesignerId())
+                .orElseThrow(() -> new DataNotFoundException("Designer not found with ID: " + additionalInfoDto.getDesignerId()));
+        booking.setStatus("Confirmed");
+        booking.setDesigner(designer);
+        booking.setSchedule(additionalInfoDto.getSchedule());
+        bookingRepository.save(booking);
     }
 
     @Override
-    public Page<UserResponse> getAllUsers(PageRequest pageRequest, Role role) {
-        Page<User> userPage;
-        if (role != null) {
-            userPage = repository.findByRole(role, pageRequest);
+    public void cancelBooking(Long bookingId) throws DataNotFoundException {
+        Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
+        if (optionalBooking.isPresent()) {
+            Booking booking = optionalBooking.get();
+            // Check if the booking status is not "Confirmed" before canceling
+            if (!"Confirmed".equals(booking.getStatus())) {
+                throw new DataNotFoundException("Booking cannot be canceled because it is not in the Confirmed status.");
+            }
+
+            // Update the booking status to "Cancel"
+            booking.setStatus("Cancel");
+            bookingRepository.save(booking);
         } else {
-            userPage = repository.findAll(pageRequest);
+            throw new DataNotFoundException("Booking not found with ID: " + bookingId);
         }
-
-        return userPage.map(this::convertToUserResponse);
     }
+
 
 }
 

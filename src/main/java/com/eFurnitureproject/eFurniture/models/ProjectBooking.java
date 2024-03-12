@@ -20,7 +20,7 @@ public class ProjectBooking extends BaseEntity{
     @Column(name = "project_name", length = 255)
     private String projectName;
 
-    //phong ngu, phong khach, ban cong, ....
+
     @Column(name = "project_type", length = 255)
     private String projectType;
 
@@ -53,7 +53,4 @@ public class ProjectBooking extends BaseEntity{
     @OneToOne (cascade = {CascadeType.ALL})
     @JoinColumn(name = "booking_project_id",nullable = false)
     private Booking booking;
-
-
-
 }

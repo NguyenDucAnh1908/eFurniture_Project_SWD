@@ -21,6 +21,15 @@ public enum Role {
 
             )
     ),
+    DESIGNER(
+            Set.of(
+                    DESIGNER_VIEW,
+                    DESIGNER_CREATE,
+                    DESIGNER_UPDATE,
+                    DESIGNER_DELETE
+
+            )
+    ),
     ADMIN(
             Set.of(
             ADMIN_VIEW,
@@ -58,6 +67,8 @@ public enum Role {
                     DESIGNER_DELETE
             )
     );
+
+
 
     @Getter
     private final Set<Permission> permissions;

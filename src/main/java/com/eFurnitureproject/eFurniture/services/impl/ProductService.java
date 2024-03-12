@@ -30,8 +30,9 @@ public class ProductService implements IProductService {
     private final TagProductRepository tagProductRepository;
     private final FeedbackRepository feedbackRepository;
     private  final OrderDetailRepository orderDetailRepository;
-    private final ModelMapper modelMapper;
     private final ProductImageRepository productImageRepository;
+    private final ModelMapper modelMapper;
+
     @Override
     public Product getProductById(long id) throws Exception {
         Optional<Product> optionalProduct = productRepository.findById(id);
@@ -217,13 +218,6 @@ public class ProductService implements IProductService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<Product> findtop5() {
-        List<Product> top5 = productRepository.findTop5ProductsByTotalSold();
-        return top5;
-    }
-
-
     private Top5ProductDto mapToProductDto(Object[] result) {
         Top5ProductDto productDto = new Top5ProductDto();
         productDto.setProduct((Product) result[0]);
@@ -231,6 +225,10 @@ public class ProductService implements IProductService {
         productDto.setTotalAmountSold((Double) result[2]);
         return productDto;
     }
+
+//    public List<Product> getTop5Products() {
+//        return productRepository.findTop5ByOrderByQuantitySoldDesc();
+//    }
 
 
 

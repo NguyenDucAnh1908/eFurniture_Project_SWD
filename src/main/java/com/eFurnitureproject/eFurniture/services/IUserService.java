@@ -2,13 +2,11 @@ package com.eFurnitureproject.eFurniture.services;
 
 import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
 import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
-import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
-import com.eFurnitureproject.eFurniture.Responses.UserListResponse;
+import com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse.UpdateUserResponse;
 import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
 import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
-import com.eFurnitureproject.eFurniture.models.Enum.Role;
 import com.eFurnitureproject.eFurniture.models.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,20 +30,17 @@ public interface IUserService {
 
     User saveUserForMail(User user);
 
-//    List<User> findAllUser(int page, Role role);
+    List<User> findAllUser();
 
-    UserResponse getUserById(Long userId);
+    User getUserById(Long id);
 
-    ResponseEntity<ObjectResponse> deleteUser(Long userId);
+    ResponseEntity<ObjectResponse> deleteUser(String email);
 
-    ResponseEntity<UpdateUserResponse> updateUser(Long userId, UserDto updateUserRequest);
+    ResponseEntity<UpdateUserResponse> updateUser(String email, UserDto updateUserRequest);
+
     UserStatsDTO getUserStats();
 
-//    Page<UserResponse> getAllUsers(PageRequest pageRequest, Role role);
+    void receiveAndConfirmConsultation(Long id, AdditionalInfoDto additionalInfoDto) throws DataNotFoundException;
 
-//    ResponseEntity<UserListResponse> findAllUsers();
-
-    List<User> getAllUser();
-
-    Page<UserResponse> getAllUsers(PageRequest pageRequest, Role role);
+    void cancelBooking(Long bookingId) throws DataNotFoundException;
 }
