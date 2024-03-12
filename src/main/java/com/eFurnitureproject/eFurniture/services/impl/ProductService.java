@@ -232,6 +232,11 @@ public class ProductService implements IProductService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Product> findtop5() {
+        return null;
+    }
+
 
     @Override
     public ResponseEntity<ProductListFavorite> findTopFavoriteProducts() {
