@@ -21,6 +21,7 @@ public interface IProductService {
     List<Product> getAllProduct();
     List<Top5ProductDto> getTop5BestSellingProducts();
 
+<<<<<<< HEAD
 
 
 
@@ -29,4 +30,6 @@ public interface IProductService {
     List<ProductDto> findTop5FavoriteProducts();
 
     List<Product> findtop5();
+=======
+>>>>>>> parent of d4fd3dc (Merge branch 'ducanh' into main)
 }

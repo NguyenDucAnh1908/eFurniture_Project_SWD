@@ -152,14 +152,18 @@ public class ProductController {
                 .collect(Collectors.toList());
     }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> parent of d4fd3dc (Merge branch 'ducanh' into main)
 //    @GetMapping("/top-5-products-best-rating")
 //    public List<Product> getTop5Products() {
 //        return productService.getTop5Products();
 //    }
 
 
+<<<<<<< HEAD
     @GetMapping("/get-wish-list")
     public ResponseEntity<ProductListFavorite> getWishList() {
         return productService.findTopFavoriteProducts();
@@ -172,6 +176,8 @@ public class ProductController {
         List<ProductDto> top5FavoriteProducts = productService.findTop5FavoriteProducts();
         return ResponseEntity.ok().body(top5FavoriteProducts);
     }
+=======
+>>>>>>> parent of d4fd3dc (Merge branch 'ducanh' into main)
 }
 
 

@@ -45,6 +45,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("tagsProductIds") List<Long> tagsProductIds,
             @Param("categoryIds") List<Long> categoryIds);
 
+<<<<<<< HEAD
 
     @Query("SELECT p FROM Product p " +
             "JOIN ProductFavorite pf ON p.id = pf.product.id " +
@@ -61,4 +62,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "ORDER BY COUNT(pf.product_id) DESC " +
             "LIMIT 5", nativeQuery = true)
     List<Product> findTop5FavoriteProducts();
+=======
+>>>>>>> parent of d4fd3dc (Merge branch 'ducanh' into main)
 }
