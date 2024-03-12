@@ -23,7 +23,10 @@ public interface IProductService {
 
 
 
+
     ResponseEntity<ProductListFavorite> findTopFavoriteProducts();
 
     List<ProductDto> findTop5FavoriteProducts();
+
+    List<Product> findtop5();
 }

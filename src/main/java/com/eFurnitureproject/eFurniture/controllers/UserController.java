@@ -6,6 +6,13 @@ import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
 import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
 import com.eFurnitureproject.eFurniture.models.Enum.Role;
+import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
+import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
+import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
+import com.eFurnitureproject.eFurniture.Responses.UserResponse;
+import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
+import com.eFurnitureproject.eFurniture.dtos.UserDto;
+import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
 import com.eFurnitureproject.eFurniture.models.User;
 import com.eFurnitureproject.eFurniture.services.impl.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -84,6 +91,7 @@ public class UserController {
                     .build());
         }
     }
+
 
 //    @GetMapping("")
 //    public ResponseEntity<UserListResponse> getAllUser(
@@ -190,6 +198,13 @@ public class UserController {
 
 
 
+
+    @GetMapping("")
+    private List<User> getAll() {
+        return userService.findAllUser();
+    }
+
+
     @PutMapping("/updateUser/{userId}")
     public ResponseEntity<UpdateUserResponse> updateStaff(
             @PathVariable Long userId,
@@ -221,6 +236,7 @@ public class UserController {
         userStatsDTO.setPercentageChange(formattedPercentageChange != null ? Double.valueOf(formattedPercentageChange) : null);
         return ResponseEntity.ok(userStatsDTO);
     }
+
 
     @GetMapping("/user-detail/{id}")
     private ResponseEntity<UserDetailResponse> userDetail(@PathVariable Long id){
