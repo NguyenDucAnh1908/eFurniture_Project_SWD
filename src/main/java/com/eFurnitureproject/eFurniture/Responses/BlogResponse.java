@@ -20,11 +20,17 @@ public class BlogResponse {
     private String imageUrls;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Long userBlogId;
+    private String userFullName;
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDateTime createdAt;
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDateTime updatedAt;
+    private List<String> categoryNames;
+    private List<String> tagsBlogName;
 
     private List<Long> categoryBlogIds;
     private List<Long> tagBlogIds;
     private boolean active;
+
 
 }

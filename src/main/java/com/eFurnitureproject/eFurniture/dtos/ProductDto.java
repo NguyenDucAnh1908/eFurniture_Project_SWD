@@ -7,6 +7,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.List;
+
 @Data//toString
 @Getter
 @Setter
@@ -43,4 +45,5 @@ public class ProductDto extends BaseDto{
     private Long brandId;     // Field to represent Brand ID
     @JsonProperty("tags_product_id")
     private Long tagsProductId; // Field to represent TagsProduct ID
+    private List<ProductImageDto> productImages;
 }

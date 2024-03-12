@@ -1,22 +1,22 @@
 package com.eFurnitureproject.eFurniture.dtos;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
+
 @Data//toString
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FeedbackDto {
+public class FeedbackDto extends BaseDto{
     private Long id;
 
     @NotNull(message = "Rating is required")
@@ -27,18 +27,37 @@ public class FeedbackDto {
     @NotBlank(message = "Comment cannot be blank")
     private String comment;
 
-    private LocalDate dateFeedback;
+    private String imageUrls;
 
     private String status;
 
-    private String reply;
+    private List<ReplyDto> replies;
 
     @NotNull(message = "ProductId is required")
     private Long productId;
 
+    private Long parentId;
+
     private Long userId;
 
-    @JsonProperty("images")
-    private List<FeedbackImageDto> images = new ArrayList<>();
+//    private Long replyId;
 
+//    private Long replierId;
+
+    private String userFullName;
+
+//    private String replierName;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updatedAt;
+
+    public FeedbackDto(Long id, String userFullName, String comment, Long parentId) {
+        this.id = id;
+        this.userFullName = userFullName;
+        this.comment = comment;
+        this.parentId = parentId;
+    }
 }
