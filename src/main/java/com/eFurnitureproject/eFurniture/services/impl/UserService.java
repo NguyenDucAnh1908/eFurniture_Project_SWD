@@ -120,6 +120,7 @@ public class UserService implements IUserService {
                 .token(jwtToken)
                 .user(convertToUserResponse(user))
                 .refeshToken(refreshToken)
+                .role(String.valueOf(user.getRole()))
                 .build();
     }
 

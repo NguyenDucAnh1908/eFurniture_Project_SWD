@@ -218,6 +218,7 @@ public class ProductService implements IProductService {
                 .collect(Collectors.toList());
     }
 
+
     private Top5ProductDto mapToProductDto(Object[] result) {
         Top5ProductDto productDto = new Top5ProductDto();
         productDto.setProduct((Product) result[0]);
@@ -225,6 +226,10 @@ public class ProductService implements IProductService {
         productDto.setTotalAmountSold((Double) result[2]);
         return productDto;
     }
+
+//    public List<Product> getTop5Products() {
+//        return productRepository.findTop5ByOrderByQuantitySoldDesc();
+//    }
 
 
 

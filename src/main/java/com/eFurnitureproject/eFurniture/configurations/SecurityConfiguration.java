@@ -56,23 +56,23 @@ public class SecurityConfiguration {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable);
-                    http.cors(new Customizer<CorsConfigurer<HttpSecurity>>() {
-                        @Override
-                        public void customize(CorsConfigurer<HttpSecurity> httpSecurityCorsConfigurer) {
-                            CorsConfiguration configuration = new CorsConfiguration();
-                            configuration.setAllowedOrigins(List.of("*"));
-                            configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-                            configuration.setAllowedHeaders(
-                                    Arrays.asList("Authorization", "content-type", "x-auth-token", "Accept",
-                                            "Accept-Encoding", "Connection", "Access-Control-Request-Method", "Access-Control-Request-Headers")
-                            );
-                            configuration.setExposedHeaders(List.of("x-auth-token"));
-                            UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-                            source.registerCorsConfiguration("/**", configuration);
-                            httpSecurityCorsConfigurer.configurationSource(source);
-                        }
-
-                    });
+//                    http.cors(new Customizer<CorsConfigurer<HttpSecurity>>() {
+//                        @Override
+//                        public void customize(CorsConfigurer<HttpSecurity> httpSecurityCorsConfigurer) {
+//                            CorsConfiguration configuration = new CorsConfiguration();
+//                            configuration.setAllowedOrigins(List.of("*"));
+//                            configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+//                            configuration.setAllowedHeaders(
+//                                    Arrays.asList("Authorization", "content-type", "x-auth-token", "Accept",
+//                                            "Accept-Encoding", "Connection", "Access-Control-Request-Method", "Access-Control-Request-Headers")
+//                            );
+//                            configuration.setExposedHeaders(List.of("x-auth-token"));
+//                            UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//                            source.registerCorsConfiguration("/**", configuration);
+//                            httpSecurityCorsConfigurer.configurationSource(source);
+//                        }
+//
+//                    });
 //                .oauth2Login(o -> o
 //                        .successHandler(customOAuth2AuthenticationSuccessHandler)
 //                        .failureHandler((request, response, exception) -> {
