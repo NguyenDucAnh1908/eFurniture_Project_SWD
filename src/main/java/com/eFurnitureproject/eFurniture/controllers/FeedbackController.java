@@ -1,25 +1,27 @@
 package com.eFurnitureproject.eFurniture.controllers;
 
 import com.eFurnitureproject.eFurniture.dtos.FeedbackDto;
+import com.eFurnitureproject.eFurniture.dtos.ReplyDto;
 import com.eFurnitureproject.eFurniture.dtos.chartDto.FeedbackRatingCountDto;
 import com.eFurnitureproject.eFurniture.services.IFeedbackService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+@CrossOrigin
 @RestController
 @RequestMapping("${api.prefix}/feedbacks")
 @RequiredArgsConstructor
-@CrossOrigin
 public class FeedbackController {
 
     private final IFeedbackService feedbackService;
@@ -29,13 +31,12 @@ public class FeedbackController {
         ResponseEntity<?> validationErrors = getResponseEntity(bindingResult);
         if (validationErrors != null) return validationErrors;
         try {
-            FeedbackDto createdFeedback = feedbackService.createFeedback(feedbackDto);
-            return new ResponseEntity<>(createdFeedback, HttpStatus.CREATED);
+            feedbackService.createFeedback(feedbackDto);
+            return new ResponseEntity<>("Feedback created successfully", HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateFeedback(
             @PathVariable Long id,
@@ -47,8 +48,8 @@ public class FeedbackController {
 
         try {
             // Call the service method to update feedback
-            FeedbackDto updatedFeedback = feedbackService.updateFeedback(id, updatedFeedbackDto);
-            return new ResponseEntity<>(updatedFeedback, HttpStatus.OK);
+            feedbackService.updateFeedback(id, updatedFeedbackDto);
+            return new ResponseEntity<>("Feedback updated successfully", HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -67,7 +68,7 @@ public class FeedbackController {
     }
 
     @GetMapping("/product/{productId}")
-    public ResponseEntity<Page<FeedbackDto>> getAllFeedbacksForProduct(
+    public ResponseEntity<?> getAllFeedbacksForProduct(
             @PathVariable Long productId,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size,
@@ -80,7 +81,7 @@ public class FeedbackController {
             Page<FeedbackDto> feedbacks = feedbackService.getAllFeedbacksForProduct(productId, page, size, rating, hasImage, hasComment);
             return new ResponseEntity<>(feedbacks, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
@@ -112,18 +113,70 @@ public class FeedbackController {
         }
     }
 
-    @PostMapping("/reply/{feedbackId}")
-    public ResponseEntity<FeedbackDto> replyToFeedback(@PathVariable Long feedbackId, @RequestParam String reply) {
-        try {
-            FeedbackDto repliedFeedback = feedbackService.replyToFeedback(feedbackId, reply);
-            return new ResponseEntity<>(repliedFeedback, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     @GetMapping("/feedback/count-by-rating")
     public List<FeedbackRatingCountDto> getFeedbackCountByRating() {
         return feedbackService.getFeedbackCountByRating();
     }
+
+    @PostMapping("reply/{feedbackId}/")
+    public ResponseEntity<?> addReplyToFeedback(
+            @PathVariable Long feedbackId,
+            @RequestBody ReplyDto replyDto) {
+
+        try {
+            if (replyDto == null) {
+                return ResponseEntity.badRequest().body("Invalid replierId or reply");
+            }
+
+            ReplyDto replyDto1 = feedbackService.addReplyToFeedback(feedbackId, replyDto);
+
+            return new ResponseEntity<>(replyDto1, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Internal Server Error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<Page<FeedbackDto>> getAllFeedback(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<FeedbackDto> feedbackPage = feedbackService.getAllFeedback(PageRequest.of(page, size));
+        return new ResponseEntity<>(feedbackPage, HttpStatus.OK);
+    }
+
+    @GetMapping("/comments")
+    @ResponseBody
+    public List<FeedbackDto> getAllComments() {
+        return feedbackService.getAllFeedback();
+    }
+
+
+    @GetMapping(value = "/test")
+    @ResponseBody
+    public ResponseEntity<List<ReplyDto>> test() {
+        List<ReplyDto> replies = new ArrayList<>();
+        List<FeedbackDto> feedback = feedbackService.getAllFeedback();
+
+        for (FeedbackDto f : feedback) {
+            if (f.getParentId() == null) {
+                replies.add(new ReplyDto(f.getId(), f.getUserFullName(), f.getComment(), 0));
+                parser(f.getId(), 1, replies);
+            }
+        }
+
+        return ResponseEntity.ok(replies);
+    }
+
+    public void parser(Long parentId, int level, List<ReplyDto> replies) {
+        List<FeedbackDto> feedbackDtos = feedbackService.getByParentId(parentId);
+
+        for (FeedbackDto feedbackDto : feedbackDtos) {
+            replies.add(new ReplyDto(feedbackDto.getId(), feedbackDto.getUserFullName(), feedbackDto.getComment(), level));
+            parser(feedbackDto.getId(), level + 1, replies);
+        }
+    }
+
 }
+    

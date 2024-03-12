@@ -1,5 +1,6 @@
 package com.eFurnitureproject.eFurniture.repositories;
 
+import com.eFurnitureproject.eFurniture.dtos.FeedbackDto;
 import com.eFurnitureproject.eFurniture.models.Feedback;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,4 +25,10 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
             "WHERE f.rating BETWEEN 1 AND 5 " +
             "GROUP BY f.rating")
     List<Object[]> findFeedbackCountByRating();
+
+    @Query("SELECT NEW  com.eFurnitureproject.eFurniture.dtos.FeedbackDto(f.id, f.user.fullName, f.comment, f.parentId)" +
+            "FROM Feedback as f WHERE f.parentId = :parent_id")
+     List<FeedbackDto> findByParent(@Param("parent_id") Long parent_id);
+
+
 }

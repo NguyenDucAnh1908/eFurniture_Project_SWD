@@ -1,6 +1,5 @@
 package com.eFurnitureproject.eFurniture.models.Enum;
 
-import com.eFurnitureproject.eFurniture.models.Enum.Permission;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,6 +27,15 @@ public enum Role {
 
             )
     ),
+    DESIGNER(
+            Set.of(
+                    DESIGNER_VIEW,
+                    DESIGNER_CREATE,
+                    DESIGNER_UPDATE,
+                    DESIGNER_DELETE
+
+            )
+    ),
     ADMIN(
             Set.of(
             ADMIN_VIEW,
@@ -50,6 +58,8 @@ public enum Role {
             )
     )
     ;
+
+
 
     @Getter
     private final Set<Permission> permissions;
