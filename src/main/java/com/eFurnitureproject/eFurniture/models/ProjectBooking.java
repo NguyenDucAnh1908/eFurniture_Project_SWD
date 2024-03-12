@@ -20,7 +20,7 @@ public class ProjectBooking extends BaseEntity{
     @Column(name = "project_name", length = 255)
     private String projectName;
 
-    //phong ngu, phong khach, ban cong, ....
+
     @Column(name = "project_type", length = 255)
     private String projectType;
 
