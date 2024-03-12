@@ -106,12 +106,12 @@ public class ProjectBookingService implements IProjectBookingService {
    }
 
 
-    @Override
-    public ProjectBooking getProjectBookingById(Long projectBookingId) {
-
-        Optional<ProjectBooking> bookingOptional = projectBookingRepository.findById(projectBookingId);
-        return bookingOptional.orElse(null);
-    }
+//    @Override
+//    public ProjectBooking getProjectBookingById(Long projectBookingId) {
+//
+//        Optional<ProjectBooking> bookingOptional = projectBookingRepository.findById(projectBookingId);
+//        return bookingOptional.orElse(null);
+//    }
     public List<ProjectBooking> getProjectBookingsByUserId(Long userId) {
         return projectBookingRepository.findByUserId(userId);
     }
@@ -140,6 +140,11 @@ public class ProjectBookingService implements IProjectBookingService {
         if (projectBooking == null) {
             throw new DataNotFoundException("ProjectBooking with bookingId " + bookingId + " not found");
         }
+        return ProjectBookingConverter.toDTO(projectBooking);
+    }
+    public ProjectBookingDto getProjectBookingById(Long projectBookingId) {
+        ProjectBooking projectBooking = projectBookingRepository.findById(projectBookingId)
+                .orElseThrow(() -> new EntityNotFoundException("ProjectBooking with id: " + projectBookingId + " not found"));
         return ProjectBookingConverter.toDTO(projectBooking);
     }
 

@@ -10,8 +10,8 @@ public interface IProjectBookingService {
     ProjectBookingDto createProjectBooking(ProjectBookingDto projectBookingDto) throws DataNotFoundException;
    /* ProjectBooking updateProjectBooking(ProjectBooking projectBooking);*/
     ProjectBooking updateProjectBooking(Long id, ProjectBookingDto projectBookingDto) throws DataNotFoundException;
-
-    ProjectBooking getProjectBookingById(Long projectBookingId);
+    ProjectBookingDto getProjectBookingById(Long projectBookingId);
+//    ProjectBooking getProjectBookingById(Long projectBookingId);
     List<ProjectBooking> getProjectBookingsByUserId(Long userId);
     ProjectBookingDto getProjectBookingByCode(String code) throws DataNotFoundException;
     ProjectBookingDto getProjectBookingByBookingId(String BookingId);

@@ -113,15 +113,20 @@ public class BookingController {
            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred: " + e.getMessage());
        }
    }
-    @GetMapping("getProjectBookingbyId/{projectbookingId}")
-    public ResponseEntity<ProjectBooking> getProjectBookingById(@PathVariable Long projectbookingId) {
-        ProjectBooking projectBooking = projectBookingService.getProjectBookingById(projectbookingId);
-        if (projectBooking != null) {
-            return new ResponseEntity<>(projectBooking, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
+//    @GetMapping("getProjectBookingbyId/{projectbookingId}")
+//    public ResponseEntity<ProjectBooking> getProjectBookingById(@PathVariable Long projectbookingId) {
+//        ProjectBooking projectBooking = projectBookingService.getProjectBookingById(projectbookingId);
+//        if (projectBooking != null) {
+//            return new ResponseEntity<>(projectBooking, HttpStatus.OK);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//    }
+@GetMapping("/getProjectBooking/{projectBookingId}")
+public ResponseEntity<ProjectBookingDto> getProjectBookingById(@PathVariable Long projectBookingId) {
+    ProjectBookingDto projectBookingDto = projectBookingService.getProjectBookingById(projectBookingId);
+    return ResponseEntity.ok(projectBookingDto);
+}
     @GetMapping("/getProjectBookingbyUserid/{userId}")
     public ResponseEntity<?> getProjectBookingsByUserId(@PathVariable("userId") Long userId) {
         List<ProjectBooking> projectBookings = projectBookingService.getProjectBookingsByUserId(userId);
