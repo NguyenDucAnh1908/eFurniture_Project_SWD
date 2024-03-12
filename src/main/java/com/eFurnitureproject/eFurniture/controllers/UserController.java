@@ -1,8 +1,11 @@
 <<<<<<< HEAD
 package com.eFurnitureproject.eFurniture.controllers;
 
-import com.eFurnitureproject.eFurniture.Responses.*;
+import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
+import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
 import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
+import com.eFurnitureproject.eFurniture.Responses.UserListResponse;
+import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
 import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
@@ -219,7 +222,6 @@ public class UserController {
                     .build());
         }
     }
-
     @GetMapping("{userId}")
     private UserResponse getUserById(@PathVariable Long userId){
         return userService.getUserById(userId);
@@ -237,12 +239,15 @@ public class UserController {
         userStatsDTO.setPercentageChange(formattedPercentageChange != null ? Double.valueOf(formattedPercentageChange) : null);
         return ResponseEntity.ok(userStatsDTO);
     }
+<<<<<<< HEAD
 
 
     @GetMapping("/user-detail/{id}")
     private ResponseEntity<UserDetailResponse> userDetail(@PathVariable Long id){
         return userService.findUserDetail(id);
     }
+=======
+>>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
 }
 =======
 package com.eFurnitureproject.eFurniture.controllers;

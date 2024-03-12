@@ -9,8 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Optional;
-
 public interface AddressRepository extends JpaRepository<Address, Long> {
     Page<Address> findAllByUser_Id(Long userId, Pageable pageable);
 
@@ -20,7 +18,4 @@ public interface AddressRepository extends JpaRepository<Address, Long> {
     Page<Address> searchAddress(
             @Param("keyword") String keyword, Pageable pageable,
             @Param("user_address") Long user_address);
-
-    @Query("SELECT a FROM Address a INNER JOIN a.user u WHERE u.id = :userId")
-    Optional<Address> findByUserId(Long userId);
 }

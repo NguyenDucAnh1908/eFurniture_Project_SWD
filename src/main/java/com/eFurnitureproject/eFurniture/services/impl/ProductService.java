@@ -1,6 +1,5 @@
 package com.eFurnitureproject.eFurniture.services.impl;
 
-import com.eFurnitureproject.eFurniture.Responses.ProductListFavorite;
 import com.eFurnitureproject.eFurniture.Responses.ProductResponse;
 import com.eFurnitureproject.eFurniture.converter.ProductConverter;
 import com.eFurnitureproject.eFurniture.dtos.ProductDto;
@@ -14,11 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +30,7 @@ public class ProductService implements IProductService {
     private final TagProductRepository tagProductRepository;
     private final FeedbackRepository feedbackRepository;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     private final OrderDetailRepository orderDetailRepository;
 
@@ -43,10 +41,11 @@ public class ProductService implements IProductService {
     private final ProductImageRepository productImageRepository;
 
     private final ModelMapper modelMapper;
+=======
+    private  final OrderDetailRepository orderDetailRepository;
+>>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
     private final ProductImageRepository productImageRepository;
-    private final ProductFavoriteRepository productFavoriteRepository;
-
-
+    private final ModelMapper modelMapper;
 
     @Override
     public Product getProductById(long id) throws Exception {
@@ -233,6 +232,7 @@ public class ProductService implements IProductService {
                 .collect(Collectors.toList());
     }
 
+<<<<<<< HEAD
     @Override
     public List<Product> findtop5() {
         return null;
@@ -323,6 +323,8 @@ public class ProductService implements IProductService {
 //    }
 
 
+=======
+>>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
     private Top5ProductDto mapToProductDto(Object[] result) {
         Top5ProductDto productDto = new Top5ProductDto();
         productDto.setProduct((Product) result[0]);

@@ -3,28 +3,35 @@ package com.eFurnitureproject.eFurniture.services.impl;
 import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
 import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
 import com.eFurnitureproject.eFurniture.Responses.UserDetailResponse;
 =======
 import com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse.UpdateUserResponse;
 >>>>>>> parent of d4fd3dc (Merge branch 'ducanh' into main)
+=======
+import com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse.UpdateUserResponse;
+>>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
 import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AdditionalInfoDto;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
 import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
-import com.eFurnitureproject.eFurniture.models.*;
+import com.eFurnitureproject.eFurniture.models.Booking;
+import com.eFurnitureproject.eFurniture.models.Design;
 import com.eFurnitureproject.eFurniture.models.Enum.Role;
 import com.eFurnitureproject.eFurniture.models.Enum.TokenType;
-import com.eFurnitureproject.eFurniture.repositories.*;
+import com.eFurnitureproject.eFurniture.models.Token;
+import com.eFurnitureproject.eFurniture.models.User;
+import com.eFurnitureproject.eFurniture.repositories.BookingRepository;
+import com.eFurnitureproject.eFurniture.repositories.TokenRepository;
+import com.eFurnitureproject.eFurniture.repositories.UserRepository;
 import com.eFurnitureproject.eFurniture.services.IUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,8 +42,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,9 +55,6 @@ public class UserService implements IUserService {
     private final TokenRepository tokenRepository;
     private final JwtServiceImpl jwtService;
     private final AuthenticationManager authenticationManager;
-    private final AddressRepository addressRepository;
-    private final OrderRepository orderRepository;
-    private final BookingRepository bookingRepository;
     private final String emailRegex = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
             + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
     Pattern pattern = Pattern.compile(emailRegex);
@@ -89,7 +93,7 @@ public class UserService implements IUserService {
         }
     }
 
-    private UserResponse convertToUserResponse(User user) {
+    private UserResponse convertToUserResponse(User user){
         return UserResponse.builder()
                 .id(user.getId())
                 .fullName(user.getFullName())
@@ -101,6 +105,8 @@ public class UserService implements IUserService {
     }
 
 
+
+
     @Override
     public AuthenticationResponse authenticate(AuthenticationDTO request) {
         authenticationManager.authenticate(
@@ -110,12 +116,15 @@ public class UserService implements IUserService {
                 )
         );
 <<<<<<< HEAD
+<<<<<<< HEAD
 
         try {
 
 
 =======
 >>>>>>> parent of d4fd3dc (Merge branch 'ducanh' into main)
+=======
+>>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
@@ -130,6 +139,7 @@ public class UserService implements IUserService {
                 .refeshToken(refreshToken)
                 .role(String.valueOf(user.getRole()))
                 .build();
+<<<<<<< HEAD
 <<<<<<< HEAD
 
         try{
@@ -161,7 +171,10 @@ public class UserService implements IUserService {
 
 =======
 >>>>>>> parent of d4fd3dc (Merge branch 'ducanh' into main)
+=======
+>>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
     }
+
 
 
     @Override
@@ -203,18 +216,24 @@ public class UserService implements IUserService {
 
     @Override
     public List<User> findAllUser() {
-        return null;
+        try {
+            return repository.findAll();
+        } catch (Exception e) {
+            return Collections.emptyList();
+        }
     }
-
 
     @Override
 <<<<<<< HEAD
     public UserResponse getUserById(Long userId) {
         var user = repository.findById(userId).orElse(null);
+<<<<<<< HEAD
 
         if (user != null) {
             return convertToUserResponse(user);
 
+=======
+>>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
         if(user != null){
             return  convertToUserResponse(user);
         }
@@ -225,6 +244,7 @@ public class UserService implements IUserService {
     }
 
     @Override
+<<<<<<< HEAD
     public ResponseEntity<ObjectResponse> deleteUser(String email) {
 <<<<<<< HEAD
         return null;
@@ -238,6 +258,8 @@ public class UserService implements IUserService {
     @Override
 
 
+=======
+>>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
     public ResponseEntity<ObjectResponse> deleteUser(Long userId) {
         var user = repository.findById(userId).orElse(null);
 =======
@@ -246,7 +268,7 @@ public class UserService implements IUserService {
         if (user != null) {
             user.setActive(false);
             repository.save(user);
-            return ResponseEntity.ok().body(new ObjectResponse("Success", "User deleted successfully", convertToUserResponse(user)));
+            return ResponseEntity.ok().body(new ObjectResponse("Success","User deleted successfully",convertToUserResponse(user)));
         } else {
             return ResponseEntity.badRequest().body(ObjectResponse.builder()
                     .status("Fail")
@@ -284,7 +306,7 @@ public class UserService implements IUserService {
                     .message("ServletRequestAttributes not found")
                     .build());
         }
-        if (updateUserRequest.getRole() != null) {
+        if (updateUserRequest.getRole() != null ) {
             user.setRole(updateUserRequest.getRole());
         }
         user.setActive(updateUserRequest.isActive());
@@ -307,7 +329,7 @@ public class UserService implements IUserService {
         tokenRepository.save(token);
     }
 
-    private void revokeAllUsserTokens(User user) {
+    private void revokeAllUsserTokens (User user){
         var vaildUserToken = tokenRepository.findAllVaildTokenByUser(user.getId());
         if (vaildUserToken.isEmpty())
             return;
@@ -359,47 +381,10 @@ public class UserService implements IUserService {
         } else {
             throw new DataNotFoundException("Booking not found with ID: " + bookingId);
         }
-        return ;
-//        return userPage.map(this::convertToUserResponse);
-    }
-
-    @Override
-    public List<User> getAllUser() {
-        return null;
-    }
-
-    @Override
-    public Page<UserResponse> getAllUsers(PageRequest pageRequest, Role role) {
-        return null;
     }
 
 
-    @Override
-    public ResponseEntity<UserDetailResponse> findUserDetail(Long userId) {
-        User userDetail = repository.findById(userId).orElse(null);
-        if (userDetail != null) {
-            Optional<Address> address = addressRepository.findByUserId(userId);
-            List<Order> orders = orderRepository.findByUserId(userId);
-            UserResponse userResponse = UserResponse.builder()
-                    .id(userDetail.getId())
-                    .fullName(userDetail.getFullName())
-                    .phoneNumber(userDetail.getPhoneNumber())
-                    .dateOfBirth(userDetail.getDateOfBirth())
-                    .build();
-
-            return ResponseEntity.ok().body(UserDetailResponse.builder()
-                    .userdetail(userResponse)
-                    .address(address.orElse(null))
-                    .order(orders)
-                    .build());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-
-
-    }
 }
-
 
 
 

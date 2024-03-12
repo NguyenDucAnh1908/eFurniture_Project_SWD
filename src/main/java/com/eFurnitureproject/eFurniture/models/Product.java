@@ -46,6 +46,7 @@ public class Product extends BaseEntity{
     @Column(name = "color")
     private int color;
 
+
 //    @Column(name = "rating")
 //    private Double rating;
 

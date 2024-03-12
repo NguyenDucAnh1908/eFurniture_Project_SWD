@@ -1,9 +1,13 @@
 package com.eFurnitureproject.eFurniture.controllers;
 
-import com.eFurnitureproject.eFurniture.Responses.*;
+import com.eFurnitureproject.eFurniture.Responses.ProductCreateResponse;
+import com.eFurnitureproject.eFurniture.Responses.ProductListResponse;
+import com.eFurnitureproject.eFurniture.Responses.ProductResponse;
 import com.eFurnitureproject.eFurniture.components.LocalizationUtils;
 import com.eFurnitureproject.eFurniture.dtos.ProductDto;
+import com.eFurnitureproject.eFurniture.dtos.ProductImageDto;
 import com.eFurnitureproject.eFurniture.dtos.Top5ProductDto;
+import com.eFurnitureproject.eFurniture.dtos.analysis.OrderStatsDTO;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Product;
 import com.eFurnitureproject.eFurniture.services.impl.ProductService;
@@ -13,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -73,8 +76,7 @@ public class ProductController {
         productCreateResponse.setProduct(tagsProduct);
         return ResponseEntity.ok(productCreateResponse);
     }
-
-    //    @CrossOrigin
+//    @CrossOrigin
     @GetMapping("")
     public ResponseEntity<ProductListResponse> getAllProduct(
             @RequestParam(value = "keyword", required = false) String keyword,
@@ -106,21 +108,20 @@ public class ProductController {
     }
 
 
-    //    @CrossOrigin
+//    @CrossOrigin
     @GetMapping("{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Long id) throws Exception {
         Product product = productService.getProductById(id);
-        return ResponseEntity.ok(product);
+        return  ResponseEntity.ok(product);
     }
 
-    //    @CrossOrigin
+//    @CrossOrigin
     @GetMapping("/get_all")
-    public ResponseEntity<List<ProductResponse>> getAll() {
+    public ResponseEntity<List<ProductResponse>> getAll(){
         List<ProductResponse> productResponses = productService.getAll();
         return ResponseEntity.ok(productResponses);
     }
-
-    //    @CrossOrigin
+//    @CrossOrigin
     @GetMapping("/category")
     public ResponseEntity<?> getCategoryProduct(
             @Valid @RequestParam(value = "category_id", required = false) Long categoryId) {
@@ -153,14 +154,18 @@ public class ProductController {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 =======
 >>>>>>> parent of d4fd3dc (Merge branch 'ducanh' into main)
+=======
+>>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
 //    @GetMapping("/top-5-products-best-rating")
 //    public List<Product> getTop5Products() {
 //        return productService.getTop5Products();
 //    }
+<<<<<<< HEAD
 
 
 <<<<<<< HEAD
@@ -178,9 +183,8 @@ public class ProductController {
     }
 =======
 >>>>>>> parent of d4fd3dc (Merge branch 'ducanh' into main)
+=======
+
+
+>>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
 }
-
-
-
-
-

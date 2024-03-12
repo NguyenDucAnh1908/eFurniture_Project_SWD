@@ -46,6 +46,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("categoryIds") List<Long> categoryIds);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
     @Query("SELECT p FROM Product p " +
             "JOIN ProductFavorite pf ON p.id = pf.product.id " +
@@ -64,4 +65,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findTop5FavoriteProducts();
 =======
 >>>>>>> parent of d4fd3dc (Merge branch 'ducanh' into main)
+=======
+>>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
 }
