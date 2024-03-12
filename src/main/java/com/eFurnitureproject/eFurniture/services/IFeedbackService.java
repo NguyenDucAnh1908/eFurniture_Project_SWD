@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IFeedbackService {
     FeedbackDto createFeedback(FeedbackDto feedbackDto);
@@ -25,4 +26,8 @@ public interface IFeedbackService {
     ReplyDto addReplyToFeedback(Long feedbackId, ReplyDto replyDto);
 
     Page<FeedbackDto> getAllFeedback(Pageable pageable);
+
+    List<FeedbackDto> getAllFeedback();
+
+    List<FeedbackDto> getByParentId(Long parentId);
 }

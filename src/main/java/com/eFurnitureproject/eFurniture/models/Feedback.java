@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Feedback  extends  BaseEntity {
+public class Feedback extends  BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,12 +28,12 @@ public class Feedback  extends  BaseEntity {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "parent_id")
+    private Long parentId;
+
     @OneToMany(mappedBy = "feedback", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reply> replies = new ArrayList<>();
 
-    @ManyToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "replier_id")
-    private User replier;
 
     @Column(name = "image_urls", columnDefinition = "TEXT")
     private String imageUrls;

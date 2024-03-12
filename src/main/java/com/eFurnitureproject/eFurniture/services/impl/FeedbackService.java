@@ -73,7 +73,7 @@ public class FeedbackService implements IFeedbackService {
             Feedback feedback = Feedback.builder()
                     .rating(feedbackDto.getRating())
                     .status(feedbackDto.getStatus())
-                    .replies(new ArrayList<>())
+                    .parentId(feedbackDto.getParentId())
                     .build();
             feedback.setProduct(existingProduct);
             feedback.setUser(user);
@@ -156,17 +156,8 @@ public class FeedbackService implements IFeedbackService {
                 Feedback feedback = optionalFeedback.get();
 
                 // Tạo một đối tượng Reply
-                Reply replyEntity = new Reply();
-                replyEntity.setReplyText(replyDto.getReply());
-
-                Optional<User> optionalReplier = userRepository.findById(replyDto.getReplierId());
-                if (optionalReplier.isPresent()) {
-                    replyEntity.setReplier(optionalReplier.get());
-                    replyEntity.setFeedback(feedback);
-                } else {
-                    throw new RuntimeException("Replier not found with ID: " + replyDto.getReplierId());
-                }
-
+                Reply replyEntity = ReplyConverter.toEntity(replyDto);
+                replyEntity.setFeedback(feedback);
                 feedback.getReplies().add(replyEntity);
                 feedback = feedbackRepository.save(feedback);
                 replyRepository.save(replyEntity);
@@ -184,6 +175,17 @@ public class FeedbackService implements IFeedbackService {
     public Page<FeedbackDto> getAllFeedback(Pageable pageable) {
         Page<Feedback> feedbackPage = feedbackRepository.findAll(pageable);
         return feedbackPage.map(FeedbackConverter::toDto);
+    }
+
+    @Override
+    public List<FeedbackDto> getAllFeedback() {
+        List<Feedback> feedback = feedbackRepository.findAll();
+        return FeedbackConverter.toDtoList(feedback);
+    }
+
+    @Override
+    public List<FeedbackDto> getByParentId(Long parentId) {
+        return feedbackRepository.findByParent(parentId);
     }
 
 

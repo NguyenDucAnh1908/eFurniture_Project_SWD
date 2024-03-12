@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,7 +128,7 @@ public class FeedbackController {
                 return ResponseEntity.badRequest().body("Invalid replierId or reply");
             }
 
-            ReplyDto replyDto1 =feedbackService.addReplyToFeedback(feedbackId, replyDto);
+            ReplyDto replyDto1 = feedbackService.addReplyToFeedback(feedbackId, replyDto);
 
             return new ResponseEntity<>(replyDto1, HttpStatus.OK);
         } catch (Exception e) {
@@ -144,5 +145,38 @@ public class FeedbackController {
         Page<FeedbackDto> feedbackPage = feedbackService.getAllFeedback(PageRequest.of(page, size));
         return new ResponseEntity<>(feedbackPage, HttpStatus.OK);
     }
+
+    @GetMapping("/comments")
+    @ResponseBody
+    public List<FeedbackDto> getAllComments() {
+        return feedbackService.getAllFeedback();
+    }
+
+
+    @GetMapping(value = "/test")
+    @ResponseBody
+    public ResponseEntity<List<ReplyDto>> test() {
+        List<ReplyDto> replies = new ArrayList<>();
+        List<FeedbackDto> feedback = feedbackService.getAllFeedback();
+
+        for (FeedbackDto f : feedback) {
+            if (f.getParentId() == null) {
+                replies.add(new ReplyDto(f.getId(), f.getUserFullName(), f.getComment(), 0));
+                parser(f.getId(), 1, replies);
+            }
+        }
+
+        return ResponseEntity.ok(replies);
+    }
+
+    public void parser(Long parentId, int level, List<ReplyDto> replies) {
+        List<FeedbackDto> feedbackDtos = feedbackService.getByParentId(parentId);
+
+        for (FeedbackDto feedbackDto : feedbackDtos) {
+            replies.add(new ReplyDto(feedbackDto.getId(), feedbackDto.getUserFullName(), feedbackDto.getComment(), level));
+            parser(feedbackDto.getId(), level + 1, replies);
+        }
+    }
+
 }
     

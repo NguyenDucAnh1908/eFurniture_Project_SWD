@@ -14,16 +14,25 @@ import java.time.LocalDateTime;
 public class ReplyDto extends BaseDto{
     private Long id;
 
-    @NotBlank(message = "Reply cannot be blank")
-    private String reply;
+    private String userFullName;
 
-    private Long replierId;
+    private String comment;
 
-    private String replierName;
+    private int level;
+
+    private Long parentId;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
+
+    public ReplyDto(Long id, String userFullName, String comment, int level) {
+        this.id = id;
+        this.userFullName = userFullName;
+        this.comment = comment;
+        this.level = level;
+
+    }
 }
