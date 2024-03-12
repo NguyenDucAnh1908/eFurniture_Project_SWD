@@ -3,26 +3,24 @@ package com.eFurnitureproject.eFurniture.services.impl;
 import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
 import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
 import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
+import com.eFurnitureproject.eFurniture.Responses.UserDetailResponse;
 import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AdditionalInfoDto;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
 import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
-import com.eFurnitureproject.eFurniture.models.Booking;
-import com.eFurnitureproject.eFurniture.models.Design;
+import com.eFurnitureproject.eFurniture.models.*;
 import com.eFurnitureproject.eFurniture.models.Enum.Role;
 import com.eFurnitureproject.eFurniture.models.Enum.TokenType;
-import com.eFurnitureproject.eFurniture.models.Token;
-import com.eFurnitureproject.eFurniture.models.User;
-import com.eFurnitureproject.eFurniture.repositories.BookingRepository;
-import com.eFurnitureproject.eFurniture.repositories.TokenRepository;
-import com.eFurnitureproject.eFurniture.repositories.UserRepository;
+import com.eFurnitureproject.eFurniture.repositories.*;
 import com.eFurnitureproject.eFurniture.services.IUserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,9 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.awt.print.Book;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -48,8 +44,9 @@ public class UserService implements IUserService {
     private final TokenRepository tokenRepository;
     private final JwtServiceImpl jwtService;
     private final AuthenticationManager authenticationManager;
+    private final AddressRepository addressRepository;
+    private final OrderRepository orderRepository;
     private final BookingRepository bookingRepository;
-
     private final String emailRegex = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
             + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
     Pattern pattern = Pattern.compile(emailRegex);
@@ -89,7 +86,7 @@ public class UserService implements IUserService {
         }
     }
 
-    private UserResponse convertToUserResponse(User user){
+    private UserResponse convertToUserResponse(User user) {
         return UserResponse.builder()
                 .id(user.getId())
                 .fullName(user.getFullName())
@@ -113,6 +110,9 @@ public class UserService implements IUserService {
                 )
         );
 
+        try {
+
+
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
@@ -129,6 +129,7 @@ public class UserService implements IUserService {
                 .build();
 
         try{
+
             var user = repository.findByEmail(request.getEmail())
                     .orElseThrow();
 
@@ -143,7 +144,10 @@ public class UserService implements IUserService {
                     .user(convertToUserResponse(user))
                     .refeshToken(refreshToken)
                     .build();
+        } catch (Exception e) {
+
         }catch (Exception e){
+
             return AuthenticationResponse.builder()
                     .staus("Fail")
                     .messages("Login fail")
@@ -151,8 +155,8 @@ public class UserService implements IUserService {
                     .build();
         }
 
-
     }
+
 
     @Override
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -193,16 +197,17 @@ public class UserService implements IUserService {
 
     @Override
     public List<User> findAllUser() {
-        try {
-            return repository.findAll();
-        } catch (Exception e) {
-            return Collections.emptyList();
-        }
+        return null;
     }
+
 
     @Override
     public UserResponse getUserById(Long userId) {
         var user = repository.findById(userId).orElse(null);
+
+        if (user != null) {
+            return convertToUserResponse(user);
+
         if(user != null){
             return  convertToUserResponse(user);
         }
@@ -210,12 +215,24 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public ResponseEntity<ObjectResponse> deleteUser(String email) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<UpdateUserResponse> updateUser(String email, UserDto updateUserRequest) {
+        return null;
+    }
+
+    @Override
+
+
     public ResponseEntity<ObjectResponse> deleteUser(Long userId) {
         var user = repository.findById(userId).orElse(null);
         if (user != null) {
             user.setActive(false);
             repository.save(user);
-            return ResponseEntity.ok().body(new ObjectResponse("Success","User deleted successfully",convertToUserResponse(user)));
+            return ResponseEntity.ok().body(new ObjectResponse("Success", "User deleted successfully", convertToUserResponse(user)));
         } else {
             return ResponseEntity.badRequest().body(ObjectResponse.builder()
                     .status("Fail")
@@ -256,8 +273,11 @@ public class UserService implements IUserService {
                     .message("ServletRequestAttributes not found")
                     .build());
         }
-
+        if (updateUserRequest.getRole() != null) {
+            user.setRole(updateUserRequest.getRole());
+        }
         user.setActive(updateUserRequest.isActive());
+        repository.save(user);
         return ResponseEntity.ok(UpdateUserResponse.builder()
                 .status("Success")
                 .message("Update User Success")
@@ -276,7 +296,7 @@ public class UserService implements IUserService {
         tokenRepository.save(token);
     }
 
-    private void revokeAllUsserTokens (User user){
+    private void revokeAllUsserTokens(User user) {
         var vaildUserToken = tokenRepository.findAllVaildTokenByUser(user.getId());
         if (vaildUserToken.isEmpty())
             return;
@@ -328,10 +348,47 @@ public class UserService implements IUserService {
         } else {
             throw new DataNotFoundException("Booking not found with ID: " + bookingId);
         }
+        return ;
+//        return userPage.map(this::convertToUserResponse);
+    }
+
+    @Override
+    public List<User> getAllUser() {
+        return null;
+    }
+
+    @Override
+    public Page<UserResponse> getAllUsers(PageRequest pageRequest, Role role) {
+        return null;
     }
 
 
+    @Override
+    public ResponseEntity<UserDetailResponse> findUserDetail(Long userId) {
+        User userDetail = repository.findById(userId).orElse(null);
+        if (userDetail != null) {
+            Optional<Address> address = addressRepository.findByUserId(userId);
+            List<Order> orders = orderRepository.findByUserId(userId);
+            UserResponse userResponse = UserResponse.builder()
+                    .id(userDetail.getId())
+                    .fullName(userDetail.getFullName())
+                    .phoneNumber(userDetail.getPhoneNumber())
+                    .dateOfBirth(userDetail.getDateOfBirth())
+                    .build();
+
+            return ResponseEntity.ok().body(UserDetailResponse.builder()
+                    .userdetail(userResponse)
+                    .address(address.orElse(null))
+                    .order(orders)
+                    .build());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+
+
+    }
 }
+
 
 
 
