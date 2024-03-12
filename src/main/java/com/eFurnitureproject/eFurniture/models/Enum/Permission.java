@@ -17,7 +17,11 @@ public enum Permission {
     USER_VIEW("user:read"),
     USER_UPDATE("user:update"),
     USER_CREATE("user:create"),
-    USER_DELETE("user:delete");
+    USER_DELETE("user:delete"),
+    DESIGNER_VIEW("designer:read"),
+    DESIGNER_UPDATE("designer:update"),
+    DESIGNER_DELETE("designer:delete"),
+    DESIGNER_CREATE("designer:create");
 
 
     @Getter

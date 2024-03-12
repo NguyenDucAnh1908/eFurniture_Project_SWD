@@ -4,13 +4,18 @@ import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
 import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
 import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
 import com.eFurnitureproject.eFurniture.Responses.UserResponse;
+import com.eFurnitureproject.eFurniture.dtos.AdditionalInfoDto;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
 import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
+import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
+import com.eFurnitureproject.eFurniture.models.Booking;
+import com.eFurnitureproject.eFurniture.models.Design;
 import com.eFurnitureproject.eFurniture.models.Enum.Role;
 import com.eFurnitureproject.eFurniture.models.Enum.TokenType;
 import com.eFurnitureproject.eFurniture.models.Token;
 import com.eFurnitureproject.eFurniture.models.User;
+import com.eFurnitureproject.eFurniture.repositories.BookingRepository;
 import com.eFurnitureproject.eFurniture.repositories.TokenRepository;
 import com.eFurnitureproject.eFurniture.repositories.UserRepository;
 import com.eFurnitureproject.eFurniture.services.IUserService;
@@ -27,9 +32,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.awt.print.Book;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,6 +48,8 @@ public class UserService implements IUserService {
     private final TokenRepository tokenRepository;
     private final JwtServiceImpl jwtService;
     private final AuthenticationManager authenticationManager;
+    private final BookingRepository bookingRepository;
+
     private final String emailRegex = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
             + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
     Pattern pattern = Pattern.compile(emailRegex);
@@ -103,6 +112,22 @@ public class UserService implements IUserService {
                         request.getPassword()
                 )
         );
+
+        var user = repository.findByEmail(request.getEmail())
+                .orElseThrow();
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefeshToken(user);
+        revokeAllUsserTokens(user);
+        saveToken(user, jwtToken);
+        return AuthenticationResponse.builder()
+                .staus("Success")
+                .messages("Login success")
+                .token(jwtToken)
+                .user(convertToUserResponse(user))
+                .refeshToken(refreshToken)
+                .role(String.valueOf(user.getRole()))
+                .build();
+
         try{
             var user = repository.findByEmail(request.getEmail())
                     .orElseThrow();
@@ -125,6 +150,7 @@ public class UserService implements IUserService {
                     .user(null)
                     .build();
         }
+
 
     }
 
@@ -274,6 +300,36 @@ public class UserService implements IUserService {
 
         return new UserStatsDTO(usersThisMonth, usersLastMonth, percentageChange);
     }
+
+    public void receiveAndConfirmConsultation(Long id, AdditionalInfoDto additionalInfoDto) throws DataNotFoundException {
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Booking request not found with ID: " + id));
+        User designer = repository.findById(additionalInfoDto.getDesignerId())
+                .orElseThrow(() -> new DataNotFoundException("Designer not found with ID: " + additionalInfoDto.getDesignerId()));
+        booking.setStatus("Confirmed");
+        booking.setDesigner(designer);
+        booking.setSchedule(additionalInfoDto.getSchedule());
+        bookingRepository.save(booking);
+    }
+
+    @Override
+    public void cancelBooking(Long bookingId) throws DataNotFoundException {
+        Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
+        if (optionalBooking.isPresent()) {
+            Booking booking = optionalBooking.get();
+            // Check if the booking status is not "Confirmed" before canceling
+            if (!"Confirmed".equals(booking.getStatus())) {
+                throw new DataNotFoundException("Booking cannot be canceled because it is not in the Confirmed status.");
+            }
+
+            // Update the booking status to "Cancel"
+            booking.setStatus("Cancel");
+            bookingRepository.save(booking);
+        } else {
+            throw new DataNotFoundException("Booking not found with ID: " + bookingId);
+        }
+    }
+
 
 }
 

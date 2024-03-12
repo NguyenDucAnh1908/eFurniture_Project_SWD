@@ -45,7 +45,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("tagsProductIds") List<Long> tagsProductIds,
             @Param("categoryIds") List<Long> categoryIds);
 
-    @Query("SELECT p FROM Product p JOIN p.orderDetails od GROUP BY p.id ORDER BY SUM(od.quantity) DESC")
-    List<Product> findTop5ProductsByTotalSold();
+
+
 
 }
