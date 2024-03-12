@@ -1,5 +1,7 @@
 package com.eFurnitureproject.eFurniture.services;
 
+import com.eFurnitureproject.eFurniture.Responses.ProductListFavorite;
+import com.eFurnitureproject.eFurniture.Responses.ProductListResponse;
 import com.eFurnitureproject.eFurniture.Responses.ProductResponse;
 import com.eFurnitureproject.eFurniture.dtos.ProductDto;
 import com.eFurnitureproject.eFurniture.dtos.ProductImageDto;
@@ -7,6 +9,7 @@ import com.eFurnitureproject.eFurniture.dtos.Top5ProductDto;
 import com.eFurnitureproject.eFurniture.dtos.analysis.OrderStatsDTO;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Product;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -18,5 +21,9 @@ public interface IProductService {
     List<Product> getAllProduct();
     List<Top5ProductDto> getTop5BestSellingProducts();
 
-    List<Product> findtop5();
+
+
+    ResponseEntity<ProductListFavorite> findTopFavoriteProducts();
+
+    List<ProductDto> findTop5FavoriteProducts();
 }

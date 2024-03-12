@@ -23,4 +23,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Long countUsersLastMonth();
 
     Page<User> findByRole(Role role, PageRequest pageRequest);
+
+    Optional<Object> findUserByEmail(String userEmail);
 }

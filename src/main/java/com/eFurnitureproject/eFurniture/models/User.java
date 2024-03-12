@@ -55,9 +55,6 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "email")
     private String email;
 
-//    @OneToMany(mappedBy = "user")
-//    @JsonManagedReference
-//    private List<Token> tokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
