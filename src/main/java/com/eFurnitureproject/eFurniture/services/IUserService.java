@@ -1,8 +1,9 @@
+
 package com.eFurnitureproject.eFurniture.services;
 
 import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
 import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
-import com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse.UpdateUserResponse;
+import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
 import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AdditionalInfoDto;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
@@ -32,11 +33,11 @@ public interface IUserService {
 
     List<User> findAllUser();
 
-    User getUserById(Long id);
+    UserResponse getUserById(Long id);
 
-    ResponseEntity<ObjectResponse> deleteUser(String email);
+    ResponseEntity<ObjectResponse> deleteUser(Long userId);
 
-    ResponseEntity<UpdateUserResponse> updateUser(String email, UserDto updateUserRequest);
+    ResponseEntity<UpdateUserResponse> updateUser(Long userId, UserDto updateUserRequest);
 
     UserStatsDTO getUserStats();
 
@@ -44,3 +45,6 @@ public interface IUserService {
 
     void cancelBooking(Long bookingId) throws DataNotFoundException;
 }
+
+
+

@@ -80,4 +80,7 @@ public class Product extends BaseEntity{
     @JsonManagedReference
     private List<ProductImages> productImages;
 
+    @OneToMany(mappedBy = "product")
+    private List<OrderDetail> orderDetails;
+
 }
