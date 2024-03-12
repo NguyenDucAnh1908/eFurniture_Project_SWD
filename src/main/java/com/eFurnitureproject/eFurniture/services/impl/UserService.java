@@ -68,7 +68,6 @@ public class UserService implements IUserService {
                 .phoneNumber(request.getPhoneNumber())
                 .dateOfBirth(request.getDateOfBirth())
                 .role(Role.USER)
-                .address(request.getAddress())
                 .build();
         var existedEmail = repository.findByEmail(user.getEmail()).orElse(null);
         if (existedEmail == null) {
@@ -231,9 +230,6 @@ public class UserService implements IUserService {
         if (updateUserRequest.getPassword() != null && !updateUserRequest.getPassword().isEmpty()) {
             user.setPassword(updateUserRequest.getPassword());
         }
-        if (updateUserRequest.getAddress() != null && !updateUserRequest.getAddress().isEmpty()) {
-            user.setPassword(updateUserRequest.getAddress());
-        }
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (servletRequestAttributes == null) {
             return ResponseEntity.badRequest().body(UpdateUserResponse.builder()
@@ -327,8 +323,17 @@ public class UserService implements IUserService {
 
     @Override
     public Page<UserResponse> getAllUsers(PageRequest pageRequest, Role role) {
-        return null;
+        Page<User> userPage;
+        if (role != null) {
+            userPage = repository.findByRole(role, pageRequest);
+        } else {
+            userPage = repository.findAll(pageRequest);
+        }
+
+        return userPage.map(this::convertToUserResponse);
     }
+
+
 
 
     @Override
