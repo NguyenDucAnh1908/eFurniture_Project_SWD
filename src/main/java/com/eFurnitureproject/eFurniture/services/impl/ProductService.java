@@ -32,7 +32,13 @@ public class ProductService implements IProductService {
     private final BrandRepository brandRepository;
     private final TagProductRepository tagProductRepository;
     private final FeedbackRepository feedbackRepository;
+
     private final OrderDetailRepository orderDetailRepository;
+
+
+    private  final OrderDetailRepository orderDetailRepository;
+    private final ProductImageRepository productImageRepository;
+
     private final ModelMapper modelMapper;
     private final ProductImageRepository productImageRepository;
     private final ProductFavoriteRepository productFavoriteRepository;
@@ -322,7 +328,6 @@ public class ProductService implements IProductService {
 //    public List<Product> getTop5Products() {
 //        return productRepository.findTop5ByOrderByQuantitySoldDesc();
 //    }
-
 
 
     private String generateCodeFromName(String codeProduct) {

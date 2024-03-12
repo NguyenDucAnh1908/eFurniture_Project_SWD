@@ -98,6 +98,8 @@ public class UserService implements IUserService {
     }
 
 
+
+
     @Override
     public AuthenticationResponse authenticate(AuthenticationDTO request) {
         authenticationManager.authenticate(
@@ -106,7 +108,27 @@ public class UserService implements IUserService {
                         request.getPassword()
                 )
         );
+
         try {
+
+
+        var user = repository.findByEmail(request.getEmail())
+                .orElseThrow();
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefeshToken(user);
+        revokeAllUsserTokens(user);
+        saveToken(user, jwtToken);
+        return AuthenticationResponse.builder()
+                .staus("Success")
+                .messages("Login success")
+                .token(jwtToken)
+                .user(convertToUserResponse(user))
+                .refeshToken(refreshToken)
+                .role(String.valueOf(user.getRole()))
+                .build();
+
+        try{
+
             var user = repository.findByEmail(request.getEmail())
                     .orElseThrow();
 
@@ -122,12 +144,16 @@ public class UserService implements IUserService {
                     .refeshToken(refreshToken)
                     .build();
         } catch (Exception e) {
+
+        }catch (Exception e){
+
             return AuthenticationResponse.builder()
                     .staus("Fail")
                     .messages("Login fail")
                     .user(null)
                     .build();
         }
+
     }
 
 
@@ -177,8 +203,12 @@ public class UserService implements IUserService {
     @Override
     public UserResponse getUserById(Long userId) {
         var user = repository.findById(userId).orElse(null);
+
         if (user != null) {
             return convertToUserResponse(user);
+
+        if(user != null){
+            return  convertToUserResponse(user);
         }
         return null;
     }
@@ -194,6 +224,8 @@ public class UserService implements IUserService {
     }
 
     @Override
+
+
     public ResponseEntity<ObjectResponse> deleteUser(Long userId) {
         var user = repository.findById(userId).orElse(null);
         if (user != null) {

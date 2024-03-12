@@ -153,10 +153,18 @@ public class ProductController {
     }
 
 
+
+//    @GetMapping("/top-5-products-best-rating")
+//    public List<Product> getTop5Products() {
+//        return productService.getTop5Products();
+//    }
+
+
     @GetMapping("/get-wish-list")
     public ResponseEntity<ProductListFavorite> getWishList() {
         return productService.findTopFavoriteProducts();
     }
+
 
 
     @GetMapping("/top5-favorites")
