@@ -18,10 +18,17 @@ public enum Permission {
     USER_UPDATE("user:update"),
     USER_CREATE("user:create"),
     USER_DELETE("user:delete"),
+
+    STAFF_DELIVERY_VIEW("staffDelivery:read"),
+    STAFF_DELIVERY_UPDATE("staffDelivery:update"),
+    STAFF_DELIVERY_CREATE("staffDelivery:create"),
+    STAFF_DELIVERY_DELETE("staffDelivery:delete"),
+
     DESIGNER_VIEW("designer:read"),
     DESIGNER_UPDATE("designer:update"),
-    DESIGNER_DELETE("designer:delete"),
-    DESIGNER_CREATE("designer:create");
+    DESIGNER_CREATE("designer:create"),
+    DESIGNER_DELETE("designer:delete");
+
 
 
     @Getter
