@@ -59,8 +59,15 @@ public class BlogConverter {
                 .map(TagsBlog::getId)
                 .collect(Collectors.toList());
 
-        List<TagsBlog> tagsBlog = blog.getTagsBlog();
-        List<CategoryBlog> categories = blog.getCategories();
+        List<String> categoryNames = blog.getCategories().stream()
+                .map(CategoryBlog::getName)
+                .collect(Collectors.toList());
+
+        List<String> tagsBlogName = blog.getTagsBlog().stream()
+                .map(TagsBlog::getTagName)
+                .collect(Collectors.toList());
+
+
 
         BlogResponse blogResponse = BlogResponse.builder()
                 .id(blog.getId())
@@ -71,6 +78,9 @@ public class BlogConverter {
                 .userBlogId(blog.getUser().getId())
                 .tagBlogIds(tagBlogIds)
                 .categoryBlogIds(categoryIds)
+                .categoryNames(categoryNames)
+                .tagsBlogName(tagsBlogName)
+                .userFullName(blog.getUser().getFullName())
                 .active(blog.isActive())
                 .createdAt(blog.getCreatedAt())
                 .updatedAt(blog.getUpdatedAt())
