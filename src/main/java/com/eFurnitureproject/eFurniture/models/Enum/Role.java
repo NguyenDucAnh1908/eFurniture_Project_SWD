@@ -58,15 +58,16 @@ public enum Role {
                     STAFF_DELIVERY_UPDATE,
                     STAFF_DELIVERY_DELETE
             )
-    ),
-    DESIGNER(
-            Set.of(
-                    DESIGNER_VIEW,
-                    DESIGNER_CREATE,
-                    DESIGNER_UPDATE,
-                    DESIGNER_DELETE
-            )
     );
+//    ,
+//    DESIGNER(
+//            Set.of(
+//                    DESIGNER_VIEW,
+//                    DESIGNER_CREATE,
+//                    DESIGNER_UPDATE,
+//                    DESIGNER_DELETE
+//            )
+//    );
 
 
 

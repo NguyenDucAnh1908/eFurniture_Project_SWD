@@ -29,23 +29,16 @@ public class ProductService implements IProductService {
     private final BrandRepository brandRepository;
     private final TagProductRepository tagProductRepository;
     private final FeedbackRepository feedbackRepository;
-<<<<<<< HEAD
-<<<<<<< HEAD
+
 
     private final OrderDetailRepository orderDetailRepository;
 
 
-=======
->>>>>>> parent of d4fd3dc (Merge branch 'ducanh' into main)
-    private  final OrderDetailRepository orderDetailRepository;
+
     private final ProductImageRepository productImageRepository;
 
     private final ModelMapper modelMapper;
-=======
-    private  final OrderDetailRepository orderDetailRepository;
->>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
-    private final ProductImageRepository productImageRepository;
-    private final ModelMapper modelMapper;
+
 
     @Override
     public Product getProductById(long id) throws Exception {
@@ -232,57 +225,57 @@ public class ProductService implements IProductService {
                 .collect(Collectors.toList());
     }
 
-<<<<<<< HEAD
-    @Override
-    public List<Product> findtop5() {
-        return null;
-    }
+
+//    @Override
+//    public List<Product> findtop5() {
+//        return null;
+//    }
 
 
-    @Override
-    public ResponseEntity<ProductListFavorite> findTopFavoriteProducts() {
-        List<Product> productList = productRepository.findTopFavoriteProducts();
+//    @Override
+//    public ResponseEntity<ProductListFavorite> findTopFavoriteProducts() {
+//        List<Product> productList = productRepository.findTopFavoriteProducts();
+//
+//        List<ProductResponse> productResponseList = new ArrayList<>();
+//        for (Product product : productList) {
+//            ProductResponse productResponse = new ProductResponse();
+//            productResponse.setId(product.getId());
+//            productResponse.setProductImages(product.getProductImages());
+//            productResponse.setPrice(product.getPrice());
+//            productResponse.setDescription(product.getDescription());
+//            productResponse.setThumbnail(product.getThumbnail());
+//            productResponse.setCategoryId(product.getCategory());
+//            productResponse.setDiscount(product.getDiscount());
+//            productResponse.setCreatedAt(LocalDateTime.now());
+//            productResponse.setUpdatedAt(LocalDateTime.now());
+//            productResponse.setMaterial(product.getMaterial());
+//            productResponse.setName(product.getName());
+//            productResponse.setSize(product.getSize());
+//            productResponse.setBrandId(product.getBrand());
+//            productResponse.setCodeProduct(product.getCodeProduct());
+//            productResponseList.add(productResponse);
+//        }
+//
+//        ProductListFavorite productListFavorite = ProductListFavorite.builder()
+//                .productResponseList(productResponseList)
+//                .message("List wish list")
+//                .build();
+//
+//        return ResponseEntity.ok().body(productListFavorite);
+//    }
 
-        List<ProductResponse> productResponseList = new ArrayList<>();
-        for (Product product : productList) {
-            ProductResponse productResponse = new ProductResponse();
-            productResponse.setId(product.getId());
-            productResponse.setProductImages(product.getProductImages());
-            productResponse.setPrice(product.getPrice());
-            productResponse.setDescription(product.getDescription());
-            productResponse.setThumbnail(product.getThumbnail());
-            productResponse.setCategoryId(product.getCategory());
-            productResponse.setDiscount(product.getDiscount());
-            productResponse.setCreatedAt(LocalDateTime.now());
-            productResponse.setUpdatedAt(LocalDateTime.now());
-            productResponse.setMaterial(product.getMaterial());
-            productResponse.setName(product.getName());
-            productResponse.setSize(product.getSize());
-            productResponse.setBrandId(product.getBrand());
-            productResponse.setCodeProduct(product.getCodeProduct());
-            productResponseList.add(productResponse);
-        }
-
-        ProductListFavorite productListFavorite = ProductListFavorite.builder()
-                .productResponseList(productResponseList)
-                .message("List wish list")
-                .build();
-
-        return ResponseEntity.ok().body(productListFavorite);
-    }
-
-    @Override
-    public List<ProductDto> findTop5FavoriteProducts() {
-        List<Product> top5FavoriteProducts = productRepository.findTop5FavoriteProducts();
-        List<ProductDto> top5FavoriteProductDtos = new ArrayList<>();
-
-        for (Product product : top5FavoriteProducts) {
-            ProductDto productDto = convertToDto(product);
-            top5FavoriteProductDtos.add(productDto);
-        }
-
-        return top5FavoriteProductDtos;
-    }
+//    @Override
+//    public List<ProductDto> findTop5FavoriteProducts() {
+//        List<Product> top5FavoriteProducts = productRepository.findTop5FavoriteProducts();
+//        List<ProductDto> top5FavoriteProductDtos = new ArrayList<>();
+//
+//        for (Product product : top5FavoriteProducts) {
+//            ProductDto productDto = convertToDto(product);
+//            top5FavoriteProductDtos.add(productDto);
+//        }
+//
+//        return top5FavoriteProductDtos;
+//    }
 
     private ProductDto convertToDto(Product product) {
         ProductDto productDto = new ProductDto();
@@ -323,8 +316,6 @@ public class ProductService implements IProductService {
 //    }
 
 
-=======
->>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
     private Top5ProductDto mapToProductDto(Object[] result) {
         Top5ProductDto productDto = new Top5ProductDto();
         productDto.setProduct((Product) result[0]);

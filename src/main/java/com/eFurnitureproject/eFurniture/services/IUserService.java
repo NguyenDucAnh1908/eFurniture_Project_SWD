@@ -10,9 +10,12 @@ import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
 import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
+import com.eFurnitureproject.eFurniture.models.Enum.Role;
 import com.eFurnitureproject.eFurniture.models.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -44,6 +47,7 @@ public interface IUserService {
     void receiveAndConfirmConsultation(Long id, AdditionalInfoDto additionalInfoDto) throws DataNotFoundException;
 
     void cancelBooking(Long bookingId) throws DataNotFoundException;
+    Page<UserResponse> getAllUsers(PageRequest pageRequest, Role role);
 }
 
 

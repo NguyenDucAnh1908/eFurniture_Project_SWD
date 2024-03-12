@@ -45,26 +45,21 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("tagsProductIds") List<Long> tagsProductIds,
             @Param("categoryIds") List<Long> categoryIds);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-    @Query("SELECT p FROM Product p " +
-            "JOIN ProductFavorite pf ON p.id = pf.product.id " +
-            "WHERE pf.favorite = true " +
-            "GROUP BY p.id " +
-            "ORDER BY COUNT(pf.product.id) DESC")
-    List<Product> findTopFavoriteProducts();
+//    @Query("SELECT p FROM Product p " +
+//            "JOIN ProductFavorite pf ON p.id = pf.product.id " +
+//            "WHERE pf.favorite = true " +
+//            "GROUP BY p.id " +
+//            "ORDER BY COUNT(pf.product.id) DESC")
+//    List<Product> findTopFavoriteProducts();
 
-    @Query(value = "SELECT p.* " +
-            "FROM products p " +
-            "JOIN favorite_product pf ON p.id = pf.product_id " +
-            "WHERE pf.favorite = true " +
-            "GROUP BY p.id " +
-            "ORDER BY COUNT(pf.product_id) DESC " +
-            "LIMIT 5", nativeQuery = true)
-    List<Product> findTop5FavoriteProducts();
-=======
->>>>>>> parent of d4fd3dc (Merge branch 'ducanh' into main)
-=======
->>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
+//    @Query(value = "SELECT p.* " +
+//            "FROM products p " +
+//            "JOIN favorite_product pf ON p.id = pf.product_id " +
+//            "WHERE pf.favorite = true " +
+//            "GROUP BY p.id " +
+//            "ORDER BY COUNT(pf.product_id) DESC " +
+//            "LIMIT 5", nativeQuery = true)
+//    List<Product> findTop5FavoriteProducts();
+
 }

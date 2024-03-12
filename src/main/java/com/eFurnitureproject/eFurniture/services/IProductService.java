@@ -17,20 +17,4 @@ public interface IProductService {
     List<ProductResponse> getProductByCategory(Long id);
     List<Product> getAllProduct();
     List<Top5ProductDto> getTop5BestSellingProducts();
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-
-
-    ResponseEntity<ProductListFavorite> findTopFavoriteProducts();
-
-    List<ProductDto> findTop5FavoriteProducts();
-
-    List<Product> findtop5();
-=======
->>>>>>> parent of d4fd3dc (Merge branch 'ducanh' into main)
-=======
-    List<Product> findtop5();
->>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
 }

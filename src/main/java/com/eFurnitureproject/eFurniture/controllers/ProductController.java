@@ -153,38 +153,28 @@ public class ProductController {
                 .collect(Collectors.toList());
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-
-=======
->>>>>>> parent of d4fd3dc (Merge branch 'ducanh' into main)
-=======
->>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
 //    @GetMapping("/top-5-products-best-rating")
 //    public List<Product> getTop5Products() {
 //        return productService.getTop5Products();
 //    }
-<<<<<<< HEAD
-
-
-<<<<<<< HEAD
-    @GetMapping("/get-wish-list")
-    public ResponseEntity<ProductListFavorite> getWishList() {
-        return productService.findTopFavoriteProducts();
-    }
 
 
 
-    @GetMapping("/top5-favorites")
-    public ResponseEntity<List<ProductDto>> getTop5FavoriteProducts() {
-        List<ProductDto> top5FavoriteProducts = productService.findTop5FavoriteProducts();
-        return ResponseEntity.ok().body(top5FavoriteProducts);
-    }
-=======
->>>>>>> parent of d4fd3dc (Merge branch 'ducanh' into main)
-=======
+
+//    @GetMapping("/get-wish-list")
+//    public ResponseEntity<ProductListFavorite> getWishList() {
+//        return productService.findTopFavoriteProducts();
+//    }
 
 
->>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
+
+//    @GetMapping("/top5-favorites")
+//    public ResponseEntity<List<ProductDto>> getTop5FavoriteProducts() {
+//        List<ProductDto> top5FavoriteProducts = productService.findTop5FavoriteProducts();
+//        return ResponseEntity.ok().body(top5FavoriteProducts);
+//    }
+
+
+
+
 }

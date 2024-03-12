@@ -22,6 +22,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -311,6 +313,18 @@ public class UserService implements IUserService {
         }
     }
 
+
+    @Override
+    public Page<UserResponse> getAllUsers(PageRequest pageRequest, Role role) {
+        Page<User> userPage;
+        if (role != null) {
+            userPage = repository.findByRole(role, pageRequest);
+        } else {
+            userPage = repository.findAll(pageRequest);
+        }
+
+        return userPage.map(this::convertToUserResponse);
+    }
 
 }
 
