@@ -2,16 +2,7 @@ package com.eFurnitureproject.eFurniture.services.impl;
 
 import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
 import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
-<<<<<<< HEAD
-<<<<<<< HEAD
-import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
-import com.eFurnitureproject.eFurniture.Responses.UserDetailResponse;
-=======
 import com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse.UpdateUserResponse;
->>>>>>> parent of d4fd3dc (Merge branch 'ducanh' into main)
-=======
-import com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse.UpdateUserResponse;
->>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
 import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AdditionalInfoDto;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
@@ -19,7 +10,6 @@ import com.eFurnitureproject.eFurniture.dtos.UserDto;
 import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Booking;
-import com.eFurnitureproject.eFurniture.models.Design;
 import com.eFurnitureproject.eFurniture.models.Enum.Role;
 import com.eFurnitureproject.eFurniture.models.Enum.TokenType;
 import com.eFurnitureproject.eFurniture.models.Token;
@@ -44,6 +34,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,6 +46,8 @@ public class UserService implements IUserService {
     private final TokenRepository tokenRepository;
     private final JwtServiceImpl jwtService;
     private final AuthenticationManager authenticationManager;
+    private final BookingRepository bookingRepository;
+
     private final String emailRegex = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"
             + "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
     Pattern pattern = Pattern.compile(emailRegex);
@@ -76,6 +69,7 @@ public class UserService implements IUserService {
                 .phoneNumber(request.getPhoneNumber())
                 .dateOfBirth(request.getDateOfBirth())
                 .role(Role.USER)
+
                 .build();
         var existedEmail = repository.findByEmail(user.getEmail()).orElse(null);
         if (existedEmail == null) {
@@ -101,6 +95,7 @@ public class UserService implements IUserService {
                 .dateOfBirth(user.getDateOfBirth())
                 .active(user.isActive())
                 .role(user.getRole())
+                .address(user.getAddress())
                 .build();
     }
 
@@ -115,16 +110,7 @@ public class UserService implements IUserService {
                         request.getPassword()
                 )
         );
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-        try {
-
-
-=======
->>>>>>> parent of d4fd3dc (Merge branch 'ducanh' into main)
-=======
->>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
         var user = repository.findByEmail(request.getEmail())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
@@ -139,41 +125,9 @@ public class UserService implements IUserService {
                 .refeshToken(refreshToken)
                 .role(String.valueOf(user.getRole()))
                 .build();
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-        try{
-
-            var user = repository.findByEmail(request.getEmail())
-                    .orElseThrow();
-
-            var jwtToken = jwtService.generateToken(user);
-            var refreshToken = jwtService.generateRefeshToken(user);
-            revokeAllUsserTokens(user);
-            saveToken(user, jwtToken);
-            return AuthenticationResponse.builder()
-                    .staus("Success")
-                    .messages("Login success")
-                    .token(jwtToken)
-                    .user(convertToUserResponse(user))
-                    .refeshToken(refreshToken)
-                    .build();
-        } catch (Exception e) {
-
-        }catch (Exception e){
-
-            return AuthenticationResponse.builder()
-                    .staus("Fail")
-                    .messages("Login fail")
-                    .user(null)
-                    .build();
         }
 
-=======
->>>>>>> parent of d4fd3dc (Merge branch 'ducanh' into main)
-=======
->>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
-    }
 
 
 
@@ -224,47 +178,17 @@ public class UserService implements IUserService {
     }
 
     @Override
-<<<<<<< HEAD
     public UserResponse getUserById(Long userId) {
         var user = repository.findById(userId).orElse(null);
-<<<<<<< HEAD
-
-        if (user != null) {
-            return convertToUserResponse(user);
-
-=======
->>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
         if(user != null){
             return  convertToUserResponse(user);
         }
-=======
-    public User getUserById(Long id) {
->>>>>>> parent of d4fd3dc (Merge branch 'ducanh' into main)
         return null;
     }
 
     @Override
-<<<<<<< HEAD
-    public ResponseEntity<ObjectResponse> deleteUser(String email) {
-<<<<<<< HEAD
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<UpdateUserResponse> updateUser(String email, UserDto updateUserRequest) {
-        return null;
-    }
-
-    @Override
-
-
-=======
->>>>>>> parent of 1b0d20f (user detail + favoriteProduct)
     public ResponseEntity<ObjectResponse> deleteUser(Long userId) {
         var user = repository.findById(userId).orElse(null);
-=======
-        var user = repository.findByEmail(email).orElse(null);
->>>>>>> parent of d4fd3dc (Merge branch 'ducanh' into main)
         if (user != null) {
             user.setActive(false);
             repository.save(user);
@@ -277,9 +201,13 @@ public class UserService implements IUserService {
         }
     }
 
+
+
+
+
     @Override
-    public ResponseEntity<UpdateUserResponse> updateUser(String email, UserDto updateUserRequest) {
-        var user = repository.findByEmail(email).orElse(null);
+    public ResponseEntity<UpdateUserResponse> updateUser(Long userId, UserDto updateUserRequest) {
+        var user = repository.findById(userId).orElse(null);
         if (user == null) {
             return ResponseEntity.badRequest().body(UpdateUserResponse.builder()
                     .status("Fail")
@@ -299,6 +227,9 @@ public class UserService implements IUserService {
         if (updateUserRequest.getPassword() != null && !updateUserRequest.getPassword().isEmpty()) {
             user.setPassword(updateUserRequest.getPassword());
         }
+//        if (updateUserRequest.getAddress() != null && !updateUserRequest.getAddress().isEmpty()) {
+//            user.setPassword(updateUserRequest.getAddress());
+//        }
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (servletRequestAttributes == null) {
             return ResponseEntity.badRequest().body(UpdateUserResponse.builder()
@@ -306,11 +237,8 @@ public class UserService implements IUserService {
                     .message("ServletRequestAttributes not found")
                     .build());
         }
-        if (updateUserRequest.getRole() != null ) {
-            user.setRole(updateUserRequest.getRole());
-        }
+
         user.setActive(updateUserRequest.isActive());
-        repository.save(user);
         return ResponseEntity.ok(UpdateUserResponse.builder()
                 .status("Success")
                 .message("Update User Success")
