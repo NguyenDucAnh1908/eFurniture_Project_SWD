@@ -7,15 +7,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface BlogRepository extends JpaRepository<Blog, Long> {
     boolean existsByTitle(String title);
     Page<Blog> findAll(Pageable pageable);
     Optional<Blog> findByIdAndActive(Long id, boolean active);
-
-    List<Blog> findTop3ByOrderByCreatedAtDesc();
 
 
     @Query("SELECT b FROM Blog b " +

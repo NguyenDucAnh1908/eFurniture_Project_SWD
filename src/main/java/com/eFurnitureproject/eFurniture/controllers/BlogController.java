@@ -115,16 +115,4 @@
         }
 
 
-
-        @CrossOrigin
-        @GetMapping("/latest-three-blogs")
-        public ResponseEntity<List<BlogResponse>> getLatestThreeBlogs() {
-            try {
-                List<BlogResponse> latestBlogs = blogService.getLatestThreeBlogs();
-                return new ResponseEntity<>(latestBlogs, HttpStatus.OK);
-            } catch (Exception e) {
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-
     }

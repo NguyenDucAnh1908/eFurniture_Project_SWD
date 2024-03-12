@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 public interface IBlogService {
      Page<BlogResponse> getAllBlogs(String keyword, Pageable pageable,
@@ -20,5 +19,4 @@ public interface IBlogService {
      String uploadThumbnailToCloudinary(Long blogId, MultipartFile image) throws IOException;
 
      Blog getBlogById(Long blogId) throws Exception;
-     public List<BlogResponse> getLatestThreeBlogs();
 }
