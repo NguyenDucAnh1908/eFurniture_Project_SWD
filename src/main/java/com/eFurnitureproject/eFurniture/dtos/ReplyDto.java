@@ -28,7 +28,7 @@ public class ReplyDto extends BaseDto{
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
 
-    public ReplyDto(Long id, String userFullName, String comment, int level) {
+    public ReplyDto(Long id, String userFullName, String comment, int level ) {
         this.id = id;
         this.userFullName = userFullName;
         this.comment = comment;

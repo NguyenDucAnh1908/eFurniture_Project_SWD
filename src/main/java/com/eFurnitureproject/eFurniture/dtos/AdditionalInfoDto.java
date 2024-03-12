@@ -11,7 +11,6 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 public class AdditionalInfoDto {
-
     private Date schedule;
     private Long designerId;
 }

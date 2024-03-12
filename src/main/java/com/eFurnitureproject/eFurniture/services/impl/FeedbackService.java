@@ -158,6 +158,8 @@ public class FeedbackService implements IFeedbackService {
                 // Tạo một đối tượng Reply
                 Reply replyEntity = ReplyConverter.toEntity(replyDto);
                 replyEntity.setFeedback(feedback);
+                replyEntity.setUserFullName(feedback.getUser().getFullName());
+                replyEntity.setParentId(feedback.getId());
                 feedback.getReplies().add(replyEntity);
                 feedback = feedbackRepository.save(feedback);
                 replyRepository.save(replyEntity);

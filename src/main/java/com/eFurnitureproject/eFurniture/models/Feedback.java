@@ -34,7 +34,6 @@ public class Feedback extends  BaseEntity{
     @OneToMany(mappedBy = "feedback", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reply> replies = new ArrayList<>();
 
-
     @Column(name = "image_urls", columnDefinition = "TEXT")
     private String imageUrls;
 

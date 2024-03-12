@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @Getter
@@ -29,6 +30,7 @@ public class BookingDto extends BaseDto{
     private String note;
     private Long userId;
     private Long designerId;
+    private Date schedule;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 

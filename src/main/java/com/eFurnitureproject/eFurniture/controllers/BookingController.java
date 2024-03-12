@@ -9,6 +9,8 @@ import com.eFurnitureproject.eFurniture.services.impl.BookingService;
 import com.eFurnitureproject.eFurniture.services.impl.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -47,11 +49,10 @@ public class BookingController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<BookingDto>> getAllBookings() {
-        List<BookingDto> bookingDtos = bookingService.getAllBookingDtos();
+    public ResponseEntity<Page<BookingDto>> getAllBookings(Pageable pageable) {
+        Page<BookingDto> bookingDtos = bookingService.getAllBookingDtos(pageable);
         return new ResponseEntity<>(bookingDtos, HttpStatus.OK);
     }
-
 
     @PostMapping("/design")
     public ResponseEntity<Design> createDesign(@RequestBody Design design) {
@@ -65,6 +66,18 @@ public class BookingController {
             return new ResponseEntity<>("Booking request received and confirmed successfully", HttpStatus.OK);
         } catch (DataNotFoundException e) {
             return new ResponseEntity<>("Booking request not found: " + e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @DeleteMapping("/cancel-booking/{bookingId}")
+    public ResponseEntity<?> cancelBooking(@PathVariable Long bookingId) {
+        try {
+            userService.cancelBooking(bookingId);
+            return new ResponseEntity<>("Booking canceled successfully", HttpStatus.OK);
+        } catch (DataNotFoundException e) {
+            return new ResponseEntity<>("Booking not found: " + e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }

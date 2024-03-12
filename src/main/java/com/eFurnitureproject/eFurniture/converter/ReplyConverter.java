@@ -14,12 +14,14 @@ public class ReplyConverter {
         return ReplyDto.builder()
                 .id(reply.getId())
                 .comment(reply.getComment())
-                .userFullName(reply.getFeedback().getUser().getFullName())
+                .userFullName(reply.getUserFullName())
                 .level(reply.getLevel())
                 .parentId(reply.getFeedback().getParentId())
                 .createdAt(reply.getCreatedAt())
                 .updatedAt(reply.getUpdatedAt())
+                .parentId(reply.getFeedback().getParentId())
                 .build();
+
     }
 
     public static Reply toEntity(ReplyDto replyDto) throws DataNotFoundException {

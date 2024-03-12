@@ -31,6 +31,7 @@ public class BookingConverter {
                 .districtName(booking.getDistrictName())
                 .provinceName(booking.getProvinceName())
                 .status(booking.getStatus())
+                .schedule(booking.getSchedule())
                 .createdAt(booking.getCreatedAt())
                 .updatedAt(booking.getUpdatedAt())
                 .note(booking.getNote());
@@ -57,6 +58,7 @@ public class BookingConverter {
                 .provinceCode(bookingDto.getProvinceCode())
                 .wardName(bookingDto.getWardName())
                 .districtName(bookingDto.getDistrictName())
+                .schedule(bookingDto.getSchedule())
                 .provinceName(bookingDto.getProvinceName())
                 .status("Unconfirmed")
                 .note(bookingDto.getNote())

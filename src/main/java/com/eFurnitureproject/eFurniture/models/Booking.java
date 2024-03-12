@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "booking")
 @Getter
@@ -49,6 +51,9 @@ public class Booking extends BaseEntity{
 
     @Column(name = "status")
     private String status;
+
+    @Column(name = "schedule")
+    private Date schedule;
 
     @Column(name = "note")
     private String note;
