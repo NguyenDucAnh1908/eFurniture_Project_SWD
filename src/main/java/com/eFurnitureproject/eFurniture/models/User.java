@@ -55,9 +55,6 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "email")
     private String email;
 
-//    @OneToMany(mappedBy = "user")
-//    @JsonManagedReference
-//    private List<Token> tokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -95,13 +92,7 @@ public class User extends BaseEntity implements UserDetails {
     }
 
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JsonManagedReference
-//    private List<Address> addresses;
-//
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JsonManagedReference
-//    private List<Blog> blogs;
+
 
 
 }

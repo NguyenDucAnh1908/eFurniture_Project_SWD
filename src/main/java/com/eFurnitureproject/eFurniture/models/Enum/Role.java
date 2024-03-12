@@ -12,12 +12,6 @@ import static com.eFurnitureproject.eFurniture.models.Enum.Permission.*;
 
 @RequiredArgsConstructor
 public enum Role {
-//    Customer,
-//    Guest,
-//    Staff,
-//    Staff_Delivery,
-//    Addmin
-
     USER(
             Set.of(
             USER_VIEW,
@@ -56,8 +50,16 @@ public enum Role {
             STAFF_UPDATE,
             STAFF_DELETE
             )
-    )
-    ;
+    ),
+    STAFF_DELIVERY(
+            Set.of(
+                    STAFF_DELIVERY_VIEW,
+                    STAFF_DELIVERY_CREATE,
+                    STAFF_DELIVERY_UPDATE,
+                    STAFF_DELIVERY_DELETE
+            )
+    );
+
 
 
 
