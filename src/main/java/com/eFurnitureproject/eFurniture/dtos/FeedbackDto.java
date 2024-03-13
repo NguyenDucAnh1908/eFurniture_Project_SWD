@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data//toString
 @Getter
@@ -30,22 +31,33 @@ public class FeedbackDto extends BaseDto{
 
     private String status;
 
-    private String reply;
+    private List<ReplyDto> replies;
 
     @NotNull(message = "ProductId is required")
     private Long productId;
 
+    private Long parentId;
+
     private Long userId;
 
-    private Long replierId;
+//    private Long replyId;
+
+//    private Long replierId;
 
     private String userFullName;
 
-    private String replierName;
+//    private String replierName;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedAt;
+
+    public FeedbackDto(Long id, String userFullName, String comment, Long parentId) {
+        this.id = id;
+        this.userFullName = userFullName;
+        this.comment = comment;
+        this.parentId = parentId;
+    }
 }

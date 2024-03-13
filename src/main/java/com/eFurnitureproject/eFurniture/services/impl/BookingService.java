@@ -14,6 +14,8 @@ import com.eFurnitureproject.eFurniture.repositories.UserRepository;
 import com.eFurnitureproject.eFurniture.services.IBookingService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -59,11 +61,9 @@ public class BookingService implements IBookingService {
     }
 
     @Override
-    public List<BookingDto> getAllBookingDtos() {
-        List<Booking> bookings = bookingRepository.findAll();
-        return bookings.stream()
-                .map(BookingConverter::toDTO)
-                .collect(Collectors.toList());
+    public Page<BookingDto> getAllBookingDtos(Pageable pageable) {
+        Page<Booking> bookingsPage = bookingRepository.findAll(pageable);
+        return bookingsPage.map(BookingConverter::toDTO);
     }
 
 

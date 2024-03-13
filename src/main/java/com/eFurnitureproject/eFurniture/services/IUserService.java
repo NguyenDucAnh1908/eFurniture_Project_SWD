@@ -41,4 +41,6 @@ public interface IUserService {
     UserStatsDTO getUserStats();
 
     void receiveAndConfirmConsultation(Long id, AdditionalInfoDto additionalInfoDto) throws DataNotFoundException;
+
+    void cancelBooking(Long bookingId) throws DataNotFoundException;
 }

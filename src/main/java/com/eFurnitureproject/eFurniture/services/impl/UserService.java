@@ -36,6 +36,7 @@ import java.awt.print.Book;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -267,12 +268,28 @@ public class UserService implements IUserService {
                 .orElseThrow(() -> new DataNotFoundException("Booking request not found with ID: " + id));
         User designer = repository.findById(additionalInfoDto.getDesignerId())
                 .orElseThrow(() -> new DataNotFoundException("Designer not found with ID: " + additionalInfoDto.getDesignerId()));
-        booking.setNote(additionalInfoDto.getNotes());
-
         booking.setStatus("Confirmed");
         booking.setDesigner(designer);
-
+        booking.setSchedule(additionalInfoDto.getSchedule());
         bookingRepository.save(booking);
+    }
+
+    @Override
+    public void cancelBooking(Long bookingId) throws DataNotFoundException {
+        Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
+        if (optionalBooking.isPresent()) {
+            Booking booking = optionalBooking.get();
+            // Check if the booking status is not "Confirmed" before canceling
+            if (!"Confirmed".equals(booking.getStatus())) {
+                throw new DataNotFoundException("Booking cannot be canceled because it is not in the Confirmed status.");
+            }
+
+            // Update the booking status to "Cancel"
+            booking.setStatus("Cancel");
+            bookingRepository.save(booking);
+        } else {
+            throw new DataNotFoundException("Booking not found with ID: " + bookingId);
+        }
     }
 
 

@@ -2,6 +2,8 @@ package com.eFurnitureproject.eFurniture.dtos;
 
 import lombok.*;
 
+import java.util.Date;
+
 @Data
 @Getter
 @Setter
@@ -9,8 +11,6 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class AdditionalInfoDto {
-
-    private String schedule;
-    private String notes;
+    private Date schedule;
     private Long designerId;
 }

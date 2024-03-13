@@ -1,17 +1,20 @@
 package com.eFurnitureproject.eFurniture.controllers;
 
 import com.eFurnitureproject.eFurniture.dtos.FeedbackDto;
+import com.eFurnitureproject.eFurniture.dtos.ReplyDto;
 import com.eFurnitureproject.eFurniture.dtos.chartDto.FeedbackRatingCountDto;
 import com.eFurnitureproject.eFurniture.services.IFeedbackService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,24 +112,71 @@ public class FeedbackController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PostMapping("/reply/{feedbackId}")
-    public ResponseEntity<?> replyToFeedback(@PathVariable Long feedbackId, @RequestParam String reply, @RequestParam Long replierId) {
-        try {
-            if (replierId == null || reply == null || reply.isEmpty()) {
-                return ResponseEntity.badRequest().body("Invalid replierId or reply");
-            }
-            feedbackService.replyToFeedback(feedbackId, reply, replierId);
-            return new ResponseEntity<>("Feedback replied successfully", HttpStatus.OK);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Internal Server Error: " + e.getMessage());
-
-        }
-    }
 
     @GetMapping("/feedback/count-by-rating")
     public List<FeedbackRatingCountDto> getFeedbackCountByRating() {
         return feedbackService.getFeedbackCountByRating();
     }
+
+    @PostMapping("reply/{feedbackId}/")
+    public ResponseEntity<?> addReplyToFeedback(
+            @PathVariable Long feedbackId,
+            @RequestBody ReplyDto replyDto) {
+
+        try {
+            if (replyDto == null) {
+                return ResponseEntity.badRequest().body("Invalid replierId or reply");
+            }
+
+            ReplyDto replyDto1 = feedbackService.addReplyToFeedback(feedbackId, replyDto);
+
+            return new ResponseEntity<>(replyDto1, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Internal Server Error: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<Page<FeedbackDto>> getAllFeedback(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Page<FeedbackDto> feedbackPage = feedbackService.getAllFeedback(PageRequest.of(page, size));
+        return new ResponseEntity<>(feedbackPage, HttpStatus.OK);
+    }
+
+    @GetMapping("/comments")
+    @ResponseBody
+    public List<FeedbackDto> getAllComments() {
+        return feedbackService.getAllFeedback();
+    }
+
+
+    @GetMapping(value = "/test")
+    @ResponseBody
+    public ResponseEntity<List<ReplyDto>> test() {
+        List<ReplyDto> replies = new ArrayList<>();
+        List<FeedbackDto> feedback = feedbackService.getAllFeedback();
+
+        for (FeedbackDto f : feedback) {
+            if (f.getParentId() == null) {
+                replies.add(new ReplyDto(f.getId(), f.getUserFullName(), f.getComment(), 0));
+                parser(f.getId(), 1, replies);
+            }
+        }
+
+        return ResponseEntity.ok(replies);
+    }
+
+    public void parser(Long parentId, int level, List<ReplyDto> replies) {
+        List<FeedbackDto> feedbackDtos = feedbackService.getByParentId(parentId);
+
+        for (FeedbackDto feedbackDto : feedbackDtos) {
+            replies.add(new ReplyDto(feedbackDto.getId(), feedbackDto.getUserFullName(), feedbackDto.getComment(), level));
+            parser(feedbackDto.getId(), level + 1, replies);
+        }
+    }
+
 }
     

@@ -5,6 +5,8 @@ import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Booking;
 import com.eFurnitureproject.eFurniture.models.Design;
 import com.eFurnitureproject.eFurniture.models.ProjectBooking;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -16,5 +18,5 @@ public interface IBookingService {
 
     BookingDto registerBooking(BookingDto bookingDto) throws DataNotFoundException;
 
-    List<BookingDto> getAllBookingDtos();
+    Page<BookingDto> getAllBookingDtos(Pageable pageable);
 }

@@ -3,14 +3,18 @@ package com.eFurnitureproject.eFurniture.services.impl;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.eFurnitureproject.eFurniture.converter.FeedbackConverter;
+import com.eFurnitureproject.eFurniture.converter.ReplyConverter;
 import com.eFurnitureproject.eFurniture.dtos.FeedbackDto;
+import com.eFurnitureproject.eFurniture.dtos.ReplyDto;
 import com.eFurnitureproject.eFurniture.dtos.chartDto.FeedbackRatingCountDto;
 import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
 import com.eFurnitureproject.eFurniture.models.Feedback;
 import com.eFurnitureproject.eFurniture.models.Product;
+import com.eFurnitureproject.eFurniture.models.Reply;
 import com.eFurnitureproject.eFurniture.models.User;
 import com.eFurnitureproject.eFurniture.repositories.FeedbackRepository;
 import com.eFurnitureproject.eFurniture.repositories.ProductRepository;
+import com.eFurnitureproject.eFurniture.repositories.ReplyRepository;
 import com.eFurnitureproject.eFurniture.repositories.UserRepository;
 import com.eFurnitureproject.eFurniture.services.IFeedbackService;
 import org.jsoup.Jsoup;
@@ -36,6 +40,7 @@ public class FeedbackService implements IFeedbackService {
     private final FeedbackRepository feedbackRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final ReplyRepository replyRepository;
     private final Cloudinary cloudinary;
 
 
@@ -43,10 +48,11 @@ public class FeedbackService implements IFeedbackService {
     public FeedbackService(FeedbackRepository feedbackRepository,
                            UserRepository userRepository,
                            ProductRepository productRepository,
-                           Cloudinary cloudinary) {
+                           ReplyRepository replyRepository, Cloudinary cloudinary) {
         this.feedbackRepository = feedbackRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
+        this.replyRepository = replyRepository;
         this.cloudinary = cloudinary;
     }
 
@@ -63,16 +69,14 @@ public class FeedbackService implements IFeedbackService {
                     .orElseThrow(() ->
                             new DataNotFoundException(
                                     "Cannot find user with id: " + feedbackDto.getUserId()));
-
             // Convert DTO to entity
             Feedback feedback = Feedback.builder()
                     .rating(feedbackDto.getRating())
                     .status(feedbackDto.getStatus())
-                    .reply(feedbackDto.getReply())
+                    .parentId(feedbackDto.getParentId())
                     .build();
             feedback.setProduct(existingProduct);
             feedback.setUser(user);
-
 
             // Analyze HTML content to extract image URLs
             Document doc = Jsoup.parse(feedbackDto.getComment());
@@ -117,7 +121,6 @@ public class FeedbackService implements IFeedbackService {
                 existingFeedback.setRating(updatedFeedbackDto.getRating());
                 existingFeedback.setComment(updatedFeedbackDto.getComment());
                 existingFeedback.setStatus(updatedFeedbackDto.getStatus());
-                existingFeedback.setReply(updatedFeedbackDto.getReply());
 
                 // Save the updated feedback to the database
                 existingFeedback = feedbackRepository.save(existingFeedback);
@@ -143,6 +146,50 @@ public class FeedbackService implements IFeedbackService {
                 })
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public ReplyDto addReplyToFeedback(Long feedbackId, ReplyDto replyDto) {
+        try {
+            Optional<Feedback> optionalFeedback = feedbackRepository.findById(feedbackId);
+
+            if (optionalFeedback.isPresent()) {
+                Feedback feedback = optionalFeedback.get();
+
+                // Tạo một đối tượng Reply
+                Reply replyEntity = ReplyConverter.toEntity(replyDto);
+                replyEntity.setFeedback(feedback);
+                replyEntity.setUserFullName(feedback.getUser().getFullName());
+                replyEntity.setParentId(feedback.getId());
+                feedback.getReplies().add(replyEntity);
+                feedback = feedbackRepository.save(feedback);
+                replyRepository.save(replyEntity);
+                FeedbackConverter.toDto(feedback);
+                return ReplyConverter.toDto(replyEntity);
+            } else {
+                throw new DataNotFoundException("Feedback not found with ID: " + feedbackId);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error replying to feedback: " + e.getMessage());
+        }
+    }
+
+    public Page<FeedbackDto> getAllFeedback(Pageable pageable) {
+        Page<Feedback> feedbackPage = feedbackRepository.findAll(pageable);
+        return feedbackPage.map(FeedbackConverter::toDto);
+    }
+
+    @Override
+    public List<FeedbackDto> getAllFeedback() {
+        List<Feedback> feedback = feedbackRepository.findAll();
+        return FeedbackConverter.toDtoList(feedback);
+    }
+
+    @Override
+    public List<FeedbackDto> getByParentId(Long parentId) {
+        return feedbackRepository.findByParent(parentId);
+    }
+
 
     @Transactional(readOnly = true)
     public Page<FeedbackDto> getAllFeedbacksForProduct(Long productId, int page, int size, Integer rating, boolean hasImage, boolean hasComment) {
@@ -200,26 +247,6 @@ public class FeedbackService implements IFeedbackService {
         return Math.round(averageRating * 10.0) / 10.0;
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public FeedbackDto replyToFeedback(Long feedbackId, String reply, Long replierId){
-        Optional<Feedback> optionalFeedback = feedbackRepository.findById(feedbackId);
-
-        if (optionalFeedback.isPresent()) {
-            Feedback feedback = optionalFeedback.get();
-            feedback.setReply(reply);
-            Optional<User> optionalReplier = userRepository.findById(replierId);
-            if (optionalReplier.isPresent()) {
-                feedback.setReplier(optionalReplier.get());
-            } else {
-                throw new RuntimeException("Replier not found with ID: " + replierId);
-            }
-            feedback = feedbackRepository.save(feedback);
-
-            return FeedbackConverter.toDto(feedback);
-        } else {
-            throw new RuntimeException("Feedback not found with ID: " + feedbackId);
-        }
-    }
 
     private String uploadToCloudinaryAndReturnURL(String imageURL) {
         try {
