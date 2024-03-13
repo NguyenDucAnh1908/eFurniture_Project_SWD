@@ -16,7 +16,7 @@ public interface IBlogService {
                                           Long userBlogId);
      Blog createBlog(BlogDto blogDto) throws EntityNotFoundException;
      Blog updateBlog(Long blogId, BlogDto updatedBlogDto) throws EntityNotFoundException;
-     BlogResponse DeactivateBlog(Long blogId) throws EntityNotFoundException;
+     void deleteBlog(Long blogId) throws EntityNotFoundException ;
      String uploadThumbnailToCloudinary(Long blogId, MultipartFile image) throws IOException;
 
      Blog getBlogById(Long blogId) throws Exception;

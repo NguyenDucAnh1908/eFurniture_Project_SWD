@@ -108,11 +108,16 @@
         }
 
 
-        @CrossOrigin
+
+
         @DeleteMapping("/delete_blog/{blogId}")
-        public ResponseEntity<BlogResponse> deleteBlog(@PathVariable Long blogId) throws EntityNotFoundException {
-            BlogResponse deletedBlog = blogService.DeactivateBlog(blogId);
-            return new ResponseEntity<>(deletedBlog, HttpStatus.OK);
+        public ResponseEntity<?> deleteBlog(@PathVariable Long blogId) {
+            try {
+                blogService.deleteBlog(blogId);
+                return ResponseEntity.ok().build();
+            } catch (EntityNotFoundException e) {
+                return ResponseEntity.notFound().build();
+            }
         }
 
 

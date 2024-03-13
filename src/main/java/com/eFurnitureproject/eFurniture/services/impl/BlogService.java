@@ -174,7 +174,6 @@ public class BlogService implements IBlogService {
                 existingBlog.setThumbnail(updatedBlogDto.getThumbnail());
             }
 
-            // Cập nhật danh sách các danh mục
             if (updatedBlogDto.getCategoryBlogIds() != null && !updatedBlogDto.getCategoryBlogIds().isEmpty()) {
                 List<CategoryBlog> existingCategories = new ArrayList<>();
                 for (Long categoryId : updatedBlogDto.getCategoryBlogIds()) {
@@ -185,7 +184,6 @@ public class BlogService implements IBlogService {
                 existingBlog.setCategories(existingCategories);
             }
 
-            // Cập nhật danh sách các thẻ
             if (updatedBlogDto.getTagBlogIds() != null && !updatedBlogDto.getTagBlogIds().isEmpty()) {
                 List<TagsBlog> existingTags = new ArrayList<>();
                 for (Long tagId : updatedBlogDto.getTagBlogIds()) {
@@ -229,15 +227,21 @@ public class BlogService implements IBlogService {
 
 
     @Override
-    public BlogResponse DeactivateBlog(Long blogId) throws EntityNotFoundException {
+    public void deleteBlog(Long blogId) throws EntityNotFoundException {
         Blog existingBlog = blogRepository.findById(blogId)
                 .orElseThrow(() -> new EntityNotFoundException("Cannot find blog with id: " + blogId));
 
-        existingBlog.setActive(false);
-        Blog deletedBlog = blogRepository.save(existingBlog);
+        existingBlog.getCategories().clear();
+        existingBlog.getTagsBlog().clear();
 
-        return BlogConverter.toResponse(deletedBlog);
+        blogRepository.save(existingBlog);
+
+        blogRepository.delete(existingBlog);
     }
+
+
+
+
 
 
 }
