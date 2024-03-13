@@ -21,4 +21,5 @@ public interface IBlogService {
 
      Blog getBlogById(Long blogId) throws Exception;
      public List<BlogResponse> getLatestThreeBlogs();
+
 }

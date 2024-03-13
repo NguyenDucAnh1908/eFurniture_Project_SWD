@@ -45,6 +45,8 @@ public class ProjectBooking extends BaseEntity{
 
     @Column(name = "projectPrice", length = 255)
     private String projectPrice;
+    @Column(name = "code", nullable = false, unique = true)
+    private String code;
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "user_project_id",nullable = false)

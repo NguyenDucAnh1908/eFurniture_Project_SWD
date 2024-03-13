@@ -1,14 +1,14 @@
+
 package com.eFurnitureproject.eFurniture.controllers;
 
 import com.eFurnitureproject.eFurniture.Responses.*;
-import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
 import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
 import com.eFurnitureproject.eFurniture.models.Enum.Role;
 import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
 import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
-import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
+import com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse.UpdateUserResponse;
 import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
 import com.eFurnitureproject.eFurniture.dtos.UserDto;
@@ -218,7 +218,6 @@ public class UserController {
                     .build());
         }
     }
-
     @GetMapping("{userId}")
     private UserResponse getUserById(@PathVariable Long userId){
         return userService.getUserById(userId);
@@ -238,8 +237,11 @@ public class UserController {
     }
 
 
-    @GetMapping("/user-detail/{id}")
-    private ResponseEntity<UserDetailResponse> userDetail(@PathVariable Long id){
-        return userService.findUserDetail(id);
-    }
+
+//    @GetMapping("/user-detail/{id}")
+//    private ResponseEntity<UserDetailResponse> userDetail(@PathVariable Long id){
+//        return userService.findUserDetail(id);
+//    }
+
 }
+

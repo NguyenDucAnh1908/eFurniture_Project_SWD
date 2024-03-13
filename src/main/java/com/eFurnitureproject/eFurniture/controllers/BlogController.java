@@ -73,7 +73,7 @@
         public ResponseEntity<?> createBlog(@RequestBody @Valid BlogDto blogDto) {
             try {
                 Blog createdBlog = blogService.createBlog(blogDto);
-                return ResponseEntity.status(HttpStatus.CREATED).body(createdBlog); // Trả về HTTP status code 201 CREATED khi tạo blog thành công
+                return ResponseEntity.status(HttpStatus.CREATED).body(createdBlog);
             } catch (EntityNotFoundException e) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
             }
@@ -113,7 +113,6 @@
             BlogResponse deletedBlog = blogService.DeactivateBlog(blogId);
             return new ResponseEntity<>(deletedBlog, HttpStatus.OK);
         }
-
 
 
         @CrossOrigin

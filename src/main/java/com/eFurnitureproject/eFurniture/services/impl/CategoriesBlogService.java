@@ -5,6 +5,7 @@ import com.eFurnitureproject.eFurniture.repositories.CategoryBlogRepository;
 import com.eFurnitureproject.eFurniture.services.ICategoriesBlogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
 public class CategoriesBlogService implements ICategoriesBlogService {
    private final CategoryBlogRepository categoryBlogRepository;
 
+   @CrossOrigin
     @Override
     public List<CategoryBlog> getAllCategoriesBlog() {
         return categoryBlogRepository.findAll();

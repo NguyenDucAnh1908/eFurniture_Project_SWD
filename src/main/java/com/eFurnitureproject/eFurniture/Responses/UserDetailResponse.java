@@ -1,7 +1,6 @@
 package com.eFurnitureproject.eFurniture.Responses;
 
 import com.eFurnitureproject.eFurniture.models.Address;
-
 import com.eFurnitureproject.eFurniture.models.Order;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

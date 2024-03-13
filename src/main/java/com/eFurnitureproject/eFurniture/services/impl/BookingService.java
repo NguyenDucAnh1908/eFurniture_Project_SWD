@@ -12,6 +12,7 @@ import com.eFurnitureproject.eFurniture.repositories.DesignRepository;
 import com.eFurnitureproject.eFurniture.repositories.ProjectBookingRepository;
 import com.eFurnitureproject.eFurniture.repositories.UserRepository;
 import com.eFurnitureproject.eFurniture.services.IBookingService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,10 +30,7 @@ public class BookingService implements IBookingService {
     private final DesignRepository designRepository;
     private final ProjectBookingRepository projectBookingRepository;
     private final UserRepository userRepository;
-    @Override
-    public ProjectBooking createProjectBooking(ProjectBooking projectBooking) {
-        return projectBookingRepository.save(projectBooking);
-    }
+
 
     public BookingDto registerBooking(BookingDto bookingDto) throws DataNotFoundException {
         try {
@@ -67,4 +65,9 @@ public class BookingService implements IBookingService {
         Page<Booking> bookingsPage = bookingRepository.findAll(pageable);
         return bookingsPage.map(BookingConverter::toDTO);
     }
+
+
+
+
+
 }

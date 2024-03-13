@@ -46,6 +46,7 @@ public class Product extends BaseEntity{
     @Column(name = "color")
     private int color;
 
+
 //    @Column(name = "rating")
 //    private Double rating;
 
@@ -79,8 +80,5 @@ public class Product extends BaseEntity{
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<ProductImages> productImages;
-
-    @OneToMany(mappedBy = "product")
-    private List<OrderDetail> orderDetails;
 
 }

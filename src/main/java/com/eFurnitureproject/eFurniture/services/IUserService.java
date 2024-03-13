@@ -1,10 +1,9 @@
 
 package com.eFurnitureproject.eFurniture.services;
 
-import com.eFurnitureproject.eFurniture.Responses.*;
-import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
 import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
 import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
+import com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse.UpdateUserResponse;
 import com.eFurnitureproject.eFurniture.Responses.UserResponse;
 import com.eFurnitureproject.eFurniture.dtos.AdditionalInfoDto;
 import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
@@ -39,10 +38,6 @@ public interface IUserService {
 
     UserResponse getUserById(Long id);
 
-    ResponseEntity<ObjectResponse> deleteUser(String email);
-
-    ResponseEntity<UpdateUserResponse> updateUser(String email, UserDto updateUserRequest);
-
     ResponseEntity<ObjectResponse> deleteUser(Long userId);
 
     ResponseEntity<UpdateUserResponse> updateUser(Long userId, UserDto updateUserRequest);
@@ -52,99 +47,8 @@ public interface IUserService {
     void receiveAndConfirmConsultation(Long id, AdditionalInfoDto additionalInfoDto) throws DataNotFoundException;
 
     void cancelBooking(Long bookingId) throws DataNotFoundException;
-    List<User> getAllUser();
-
     Page<UserResponse> getAllUsers(PageRequest pageRequest, Role role);
-
-    ResponseEntity<UserDetailResponse> findUserDetail(Long id);
 }
 
-
-package com.eFurnitureproject.eFurniture.services;
-
-import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
-import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
-import com.eFurnitureproject.eFurniture.Responses.UpdateUserResponse.UpdateUserResponse;
-import com.eFurnitureproject.eFurniture.Responses.UserResponse;
-import com.eFurnitureproject.eFurniture.dtos.AdditionalInfoDto;
-import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
-import com.eFurnitureproject.eFurniture.dtos.UserDto;
-import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
-import com.eFurnitureproject.eFurniture.exceptions.DataNotFoundException;
-import com.eFurnitureproject.eFurniture.models.User;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.List;
-
-@Service
-public interface IUserService {
-    ResponseEntity<ObjectResponse> createUser(UserDto request);
-
-    AuthenticationResponse authenticate(AuthenticationDTO request);
-
-    void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
-
-    User findByEmailForMail(String email);
-
-    User saveUserForMail(User user);
-
-    List<User> findAllUser();
-
-    User getUserById(Long id);
-
-    ResponseEntity<ObjectResponse> deleteUser(String email);
-
-    ResponseEntity<UpdateUserResponse> updateUser(String email, UserDto updateUserRequest);
-
-    UserStatsDTO getUserStats();
-
-    void receiveAndConfirmConsultation(Long id, AdditionalInfoDto additionalInfoDto) throws DataNotFoundException;
-
-    void cancelBooking(Long bookingId) throws DataNotFoundException;
-}
-
-package com.eFurnitureproject.eFurniture.services;
-
-import com.eFurnitureproject.eFurniture.Responses.AuthenticationResponse;
-import com.eFurnitureproject.eFurniture.Responses.ObjectResponse;
-import com.eFurnitureproject.eFurniture.Responses.UpdateUserReponse.UpdateUserResponse;
-import com.eFurnitureproject.eFurniture.Responses.UserResponse;
-import com.eFurnitureproject.eFurniture.dtos.AuthenticationDTO;
-import com.eFurnitureproject.eFurniture.dtos.UserDto;
-import com.eFurnitureproject.eFurniture.dtos.analysis.UserStatsDTO;
-import com.eFurnitureproject.eFurniture.models.User;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.util.List;
-
-@Service
-public interface IUserService {
-    ResponseEntity<ObjectResponse> createUser(UserDto request);
-
-    AuthenticationResponse authenticate(AuthenticationDTO request);
-
-    void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
-
-    User findByEmailForMail(String email);
-
-    User saveUserForMail(User user);
-
-    List<User> findAllUser();
-
-    UserResponse getUserById(Long userId);
-
-    ResponseEntity<ObjectResponse> deleteUser(Long userId);
-
-    ResponseEntity<UpdateUserResponse> updateUser(Long userId, UserDto updateUserRequest);
-    UserStatsDTO getUserStats();
-}
 
 
