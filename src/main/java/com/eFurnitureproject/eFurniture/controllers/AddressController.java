@@ -21,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/address")
 @RequiredArgsConstructor
+@CrossOrigin
 public class AddressController {
 
     private final IAddressService addressService;
@@ -103,4 +104,3 @@ public class AddressController {
     }
 
 }
-

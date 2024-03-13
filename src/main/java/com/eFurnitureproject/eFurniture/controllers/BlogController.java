@@ -25,6 +25,7 @@
     @RestController
     @RequestMapping("api/v1/blogs")
     @RequiredArgsConstructor
+    @CrossOrigin
     public class BlogController {
         private final BlogService blogService;
         private final UserRepository userRepository;

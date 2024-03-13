@@ -97,12 +97,30 @@ public class AddressService implements IAddressService  {
         if (addressDto.getStreetAddress() != null && !addressDto.getStreetAddress().isEmpty()) {
             existingAddress.setStreetAddress(addressDto.getStreetAddress());
         }
-
-
         if (addressDto.getPhoneNumber() != null && !addressDto.getPhoneNumber().isEmpty()) {
             existingAddress.setPhoneNumber(addressDto.getPhoneNumber());
         }
-
+        if (addressDto.getWardCode() != null && !addressDto.getWardCode().isEmpty()) {
+            existingAddress.setWardCode(addressDto.getWardCode());
+        }
+        if (addressDto.getDistrictCode() != null && !addressDto.getDistrictCode().isEmpty()) {
+            existingAddress.setDistrictCode(addressDto.getDistrictCode());
+        }
+        if (addressDto.getProvinceCode() != null && !addressDto.getProvinceCode().isEmpty()) {
+            existingAddress.setProvinceCode(addressDto.getProvinceCode());
+        }
+        if (addressDto.getWardName() != null && !addressDto.getWardName().isEmpty()) {
+            existingAddress.setWardName(addressDto.getWardName());
+        }
+        if (addressDto.getDistrictName() != null && !addressDto.getDistrictName().isEmpty()) {
+            existingAddress.setDistrictName(addressDto.getDistrictName());
+        }
+        if (addressDto.getProvinceName() != null && !addressDto.getProvinceName().isEmpty()) {
+            existingAddress.setProvinceName(addressDto.getProvinceName());
+        }
+        if (addressDto.getStatus() != null && !addressDto.getStatus().isEmpty()) {
+            existingAddress.setStatus(addressDto.getStatus());
+        }
 
         return addressRepository.save(existingAddress);
     }

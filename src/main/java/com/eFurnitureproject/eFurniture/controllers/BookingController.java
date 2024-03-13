@@ -23,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/booking")
 @RequiredArgsConstructor
+@CrossOrigin
 public class BookingController {
     @Autowired
     private BookingService bookingService;

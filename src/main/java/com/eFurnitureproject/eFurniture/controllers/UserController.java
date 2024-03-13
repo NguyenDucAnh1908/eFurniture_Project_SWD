@@ -238,6 +238,8 @@ public class UserController {
 
 
 
+
+
 //    @GetMapping("/user-detail/{id}")
 //    private ResponseEntity<UserDetailResponse> userDetail(@PathVariable Long id){
 //        return userService.findUserDetail(id);
