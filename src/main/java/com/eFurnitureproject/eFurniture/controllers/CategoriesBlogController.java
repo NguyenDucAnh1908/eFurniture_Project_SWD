@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/v1/categories-blog")
 @RequiredArgsConstructor
-@CrossOrigin
 public class CategoriesBlogController {
     private final CategoriesBlogService categoriesBlogService;
 
-    @CrossOrigin
+
     @GetMapping("/{id}")
     public ResponseEntity<CategoryBlog> getCategoryById(@PathVariable Long id){
         CategoryBlog category = categoriesBlogService.getCategoryById(id);
@@ -27,7 +27,7 @@ public class CategoriesBlogController {
         }
     }
 
-    @CrossOrigin
+
     @GetMapping("get-all-categoriesBlog")
     public ResponseEntity<List<CategoryBlog>> getAllCategoriesBlog() {
         List<CategoryBlog> categoriesBlog = categoriesBlogService.getAllCategoriesBlog();

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("api/v1/tags-blog")
 @RequiredArgsConstructor
@@ -18,14 +19,14 @@ public class TagsBlogController {
 
     private final TagsBlogService tagsBlogService;
 
-    @CrossOrigin
+
     @GetMapping("/get-all")
     public ResponseEntity<List<TagsBlog>> getAllTags() {
         List<TagsBlog> tags = tagsBlogService.getAllTags();
         return new ResponseEntity<>(tags, HttpStatus.OK);
     }
 
-    @CrossOrigin
+
     @GetMapping("/{id}")
     public ResponseEntity<TagsBlog> getTagById(@PathVariable Long id) {
         TagsBlog tag = tagsBlogService.getTagById(id);
