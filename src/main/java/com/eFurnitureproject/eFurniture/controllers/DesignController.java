@@ -34,13 +34,13 @@ public class DesignController {
     private final Cloudinary cloudinary;
     private final ProjectBookingRepository projectBookingRepository;
 
-
+    @CrossOrigin
     @GetMapping("/get-designs-by-project/{projectId}")
     public ResponseEntity<List<Design>> getDesignsByProjectBookingId(@PathVariable Long projectId) {
         List<Design> designs = designService.getDesignsByProjectBookingId(projectId);
         return ResponseEntity.ok(designs);
     }
-
+    @CrossOrigin
     @GetMapping("/get-by-id/{id}")
     public ResponseEntity<Design> getDesignById(@PathVariable Long id) {
         Optional<Design> design = designService.getDesignById(id);
@@ -48,7 +48,7 @@ public class DesignController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-
+    @CrossOrigin
     @PostMapping("/create-design")
     public ResponseEntity<DesignResponse> createDesign(@RequestParam("imageUrls") MultipartFile imageUrls,
                                                        @RequestParam("status") String status,
@@ -165,7 +165,7 @@ public class DesignController {
         return ResponseEntity.ok(designResponse);
     }
 
-
+    @CrossOrigin
     @GetMapping("/download-file/{id}")
     public ResponseEntity<?> downloadFile(@PathVariable Long id) {
         Design design = designService.getDesignById(id)
@@ -191,7 +191,7 @@ public class DesignController {
 
 
 
-
+    @CrossOrigin
     @DeleteMapping("/delete-design/{id}")
     public ResponseEntity<String> deleteDesign(@PathVariable Long id) {
         try {
@@ -209,7 +209,7 @@ public class DesignController {
         }
     }
 
-
+@CrossOrigin
     @GetMapping("/download-pdf/{id}")
     public ResponseEntity<byte[]> downloadPdf(@PathVariable Long id) {
 
