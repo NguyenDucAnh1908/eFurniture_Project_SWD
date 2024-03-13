@@ -47,7 +47,7 @@ public class Blog extends BaseEntity{
             inverseJoinColumns = @JoinColumn(name = "tag_blog_id",nullable = true))
     private List<TagsBlog> tagsBlog;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "user_blog_id",nullable = false)
     private User user;
 
