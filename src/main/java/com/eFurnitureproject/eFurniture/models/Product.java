@@ -37,8 +37,8 @@ public class Product extends BaseEntity{
     @Column(name = "quantity")
     private int quantity;
 
-    @Column(name = "material", length = 255)
-    private String material;
+//    @Column(name = "material", length = 255)
+//    private String material;
 
     @Column(name = "size", length = 255)
     private String size;
@@ -53,8 +53,8 @@ public class Product extends BaseEntity{
     @Column(name = "code_product", length = 255)
     private String codeProduct;
 
-    @Column(name = "quantity_sold")
-    private int quantitySold;
+//    @Column(name = "quantity_sold")
+//    private int quantitySold;
 
     @Column(name = "status")
     private int status;

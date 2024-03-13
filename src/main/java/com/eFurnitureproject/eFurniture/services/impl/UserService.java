@@ -98,6 +98,7 @@ public class UserService implements IUserService {
                 .active(user.isActive())
                 .role(user.getRole())
                 .address(user.getAddress())
+                .email(user.getEmail())
                 .build();
     }
 
@@ -325,6 +326,8 @@ public class UserService implements IUserService {
 
         return userPage.map(this::convertToUserResponse);
     }
+
+
 
 
 

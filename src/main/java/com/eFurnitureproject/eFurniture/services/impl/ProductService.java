@@ -52,7 +52,10 @@ public class ProductService implements IProductService {
     @Override
     @Transactional
     public Product createProduct(ProductDto productDto) throws DataNotFoundException {
+        // Tạo mã từ tên sản phẩm
         String generatedCode = generateCodeFromName(productDto.getName());
+
+        // Lấy thông tin về category, brand và tagsProduct từ ID
         Category existingCategory = categoryRepository
                 .findById(productDto.getCategoryId())
                 .orElseThrow(() ->
@@ -69,7 +72,10 @@ public class ProductService implements IProductService {
                         new DataNotFoundException(
                                 "Cannot find category with id: " + productDto.getTagsProductId()));
 
+        // Tạo đối tượng Product từ DTO
         Product product = ProductConverter.toEntity(productDto);
+
+        // Tính giá và mã giảm giá
         double discount = productDto.getDiscount() != null ? productDto.getDiscount() : 0.0;
         double priceSale = product.getPriceSale();
         double price = priceSale * ((100 - discount) / 100);
@@ -78,8 +84,11 @@ public class ProductService implements IProductService {
         product.setCategory(existingCategory);
         product.setBrand(existingBrand);
         product.setTagsProduct(existingProductTag);
+
+        // Lưu thông tin sản phẩm vào cơ sở dữ liệu
         product = productRepository.save(product);
-        // Lưu thông tin ảnh sản phẩm vào cơ sở dữ liệu
+
+        // Lưu thông tin ảnh sản phẩm vào cơ sở dữ liệu và gán ảnh đầu tiên vào thumbnail
         if (productDto.getProductImages() != null && !productDto.getProductImages().isEmpty()) {
             List<ProductImages> productImages = new ArrayList<>();
             List<ProductImageDto> newImages = productDto.getProductImages();
@@ -87,7 +96,7 @@ public class ProductService implements IProductService {
             // Kiểm tra số lượng hình ảnh hiện tại của sản phẩm
             List<ProductImages> existingImages = product.getProductImages();
             int currentImageCount = (existingImages != null) ? existingImages.size() : 0;
-            int maxImageCount = 2;
+            int maxImageCount = 5;
 
             // Kiểm tra xem số lượng hình ảnh mới có vượt quá giới hạn không
             int newImageCount = Math.min(maxImageCount - currentImageCount, newImages.size());
@@ -97,17 +106,28 @@ public class ProductService implements IProductService {
                 throw new DataNotFoundException("Exceeded maximum allowed images");
             }
 
-            // Thêm hình ảnh mới vào sản phẩm
+            // Thêm hình ảnh mới vào sản phẩm và lấy ảnh đầu tiên để làm thumbnail
+            String firstImageUrl = null;
             for (int i = 0; i < newImageCount; i++) {
                 ProductImageDto imageDto = newImages.get(i);
                 ProductImages productImage = new ProductImages();
                 productImage.setProduct(product);
                 productImage.setImageUrl(imageDto.getImageUrl());
                 productImages.add(productImage);
+                // Lấy ảnh đầu tiên để làm thumbnail
+                if (i == 0) {
+                    firstImageUrl = imageDto.getImageUrl();
+                }
             }
 
+            // Gán ảnh đầu tiên vào thumbnail
+            product.setThumbnail(firstImageUrl);
+
+            // Lưu thông tin ảnh sản phẩm và sản phẩm vào cơ sở dữ liệu
             productImageRepository.saveAll(productImages);
+            productRepository.save(product);
         }
+
         return product;
     }
 
@@ -144,25 +164,34 @@ public class ProductService implements IProductService {
             existingProduct = productRepository.save(existingProduct);
 
             if (productDto.getProductImages() != null && !productDto.getProductImages().isEmpty()) {
+                String firstImageUrl = null;
                 for (ProductImageDto imageDto : productDto.getProductImages()) {
                     if (imageDto.getId() != null) {
                         // Nếu có id, cập nhật hình ảnh
                         ProductImages existingImage = productImageRepository.findById(imageDto.getId())
                                 .orElseThrow(() -> new DataNotFoundException("Image not found with id: " + imageDto.getId()));
-                        if (imageDto.getImageUrl() == null || imageDto.getImageUrl().isEmpty()) {
-                            // Nếu ImageUrl rỗng hoặc null, lấy dữ liệu cũ
-                            imageDto.setImageUrl(existingImage.getImageUrl());
-                        } else {
-                            existingImage.setImageUrl(imageDto.getImageUrl());
-                        }
+                        existingImage.setImageUrl(imageDto.getImageUrl());
                         productImageRepository.save(existingImage);
+                        // Cập nhật thumbnail nếu chưa có ảnh thumbnail
+                        if (firstImageUrl == null) {
+                            firstImageUrl = imageDto.getImageUrl();
+                        }
                     } else {
                         // Nếu không có id, thêm hình ảnh mới
                         ProductImages newImage = new ProductImages();
                         newImage.setProduct(existingProduct);
                         newImage.setImageUrl(imageDto.getImageUrl());
                         productImageRepository.save(newImage);
+                        // Cập nhật thumbnail nếu chưa có ảnh thumbnail
+                        if (firstImageUrl == null) {
+                            firstImageUrl = imageDto.getImageUrl();
+                        }
                     }
+                }
+                // Cập nhật thumbnail nếu chưa có ảnh thumbnail
+                if (firstImageUrl != null) {
+                    existingProduct.setThumbnail(firstImageUrl);
+                    existingProduct = productRepository.save(existingProduct);
                 }
             }
 
@@ -286,12 +315,10 @@ public class ProductService implements IProductService {
         productDto.setPrice(product.getPrice());
         productDto.setPriceSale(product.getPriceSale());
         productDto.setQuantity(product.getQuantity());
-        productDto.setMaterial(product.getMaterial());
         productDto.getProductImages();
         productDto.setSize(product.getSize());
         productDto.setColor(product.getColor());
         productDto.setCodeProduct(product.getCodeProduct());
-        productDto.setQuantitySold(product.getQuantitySold());
         productDto.setStatus(product.getStatus());
         productDto.setDiscount(product.getDiscount());
         productDto.setCategoryId(product.getCategory().getId());

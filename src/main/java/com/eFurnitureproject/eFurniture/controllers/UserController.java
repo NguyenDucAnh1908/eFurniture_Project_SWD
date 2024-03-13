@@ -24,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,11 +38,13 @@ public class UserController {
     private final UserService userService;
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
+
     @PostMapping("/createUser")
-    private ResponseEntity<ObjectResponse> createUser(@RequestBody UserDto request){
-        try{
+    @PreAuthorize("hasAuthority('user:create')")
+    private ResponseEntity<ObjectResponse> createUser(@RequestBody UserDto request) {
+        try {
             return userService.createUser(request);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             return ResponseEntity.badRequest().body(ObjectResponse
                     .builder()
                     .status("Fail")
@@ -50,6 +53,7 @@ public class UserController {
                     .build());
         }
     }
+
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationDTO request) {
         try {
@@ -72,15 +76,14 @@ public class UserController {
     public ResponseEntity<?> register(@RequestParam String email) {
         try {
             User user = userService.findByEmailForMail(email);
-            if(user == null){
+            if (user == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("NOT FOUND");
-            }
-            else {
+            } else {
                 String pass = RandomStringUtils.randomAlphanumeric(6);
 
                 user.setPassword(passwordEncoder.encode(pass));
                 user = userService.saveUserForMail(user);
-                emailService.sendSimpleMessage(email,"Reset password","New password is : " + pass);
+                emailService.sendSimpleMessage(email, "Reset password", "New password is : " + pass);
                 return ResponseEntity.ok(user);
             }
         } catch (Exception e) {
@@ -93,28 +96,8 @@ public class UserController {
     }
 
 
-//    @GetMapping("")
-//    public ResponseEntity<UserListResponse> getAllUser(
-//            @RequestParam(value = "page", defaultValue = "0") int page,
-////            @RequestParam(value = "limit", defaultValue = "10") int limit,
-//            @RequestParam(value = "role", required = false) Role role
-//    ) {
-////        PageRequest pageRequest = PageRequest.of(
-////                page, limit,
-////                Sort.by("id").descending()
-////        );
-//        Page<UserResponse> userPage = userService.getAllUsers(pageRequest,role);
-//        int totalPages = userPage.getTotalPages();
-//        Long totalUsers = userPage.getTotalElements();
-//        List<UserResponse> users = userPage.getContent();
-//        return ResponseEntity.ok(UserListResponse.builder()
-//                .userResponses(users)
-//                .totalPages(totalPages)
-//                .totalUser(totalUsers)
-//                .build());
-//    }
-
     @GetMapping("get-all-user")
+    @PreAuthorize("hasAuthority('user:read')")
     public ResponseEntity<UserListResponse> getAllUser(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "limit", defaultValue = "10") int limit
@@ -135,6 +118,7 @@ public class UserController {
     }
 
     @GetMapping("get-all-staff")
+    @PreAuthorize("hasAuthority('user:read')")
     public ResponseEntity<UserListResponse> getAllStaff(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "limit", defaultValue = "10") int limit
@@ -155,6 +139,7 @@ public class UserController {
     }
 
     @GetMapping("get-all-staff-delivery")
+    @PreAuthorize("hasAuthority('user:read')")
     public ResponseEntity<UserListResponse> getAllStaffDelivery(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "limit", defaultValue = "10") int limit
@@ -175,6 +160,7 @@ public class UserController {
     }
 
     @GetMapping("get-all-designer")
+    @PreAuthorize("hasAuthority('user:read')")
     public ResponseEntity<UserListResponse> getAllDesigner(
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "limit", defaultValue = "10") int limit
@@ -195,10 +181,6 @@ public class UserController {
     }
 
 
-
-
-
-
     @GetMapping("")
     private List<User> getAll() {
         return userService.findAllUser();
@@ -206,11 +188,12 @@ public class UserController {
 
 
     @PutMapping("/updateUser/{userId}")
+    @PreAuthorize("hasAuthority('user:update')")
     public ResponseEntity<UpdateUserResponse> updateStaff(
             @PathVariable Long userId,
             @RequestBody UserDto updateUserRequest) {
         try {
-            return userService.updateUser(userId,updateUserRequest);
+            return userService.updateUser(userId, updateUserRequest);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(UpdateUserResponse.builder()
                     .status("Update fail")
@@ -218,12 +201,14 @@ public class UserController {
                     .build());
         }
     }
+
     @GetMapping("{userId}")
-    private UserResponse getUserById(@PathVariable Long userId){
+    private UserResponse getUserById(@PathVariable Long userId) {
         return userService.getUserById(userId);
     }
 
     @DeleteMapping("deleteUser/{userId}")
+    @PreAuthorize("hasAuthority('user:delete')")
     public ResponseEntity<ObjectResponse> deleteUser(@PathVariable Long userId) {
         return userService.deleteUser(userId);
     }
@@ -235,9 +220,6 @@ public class UserController {
         userStatsDTO.setPercentageChange(formattedPercentageChange != null ? Double.valueOf(formattedPercentageChange) : null);
         return ResponseEntity.ok(userStatsDTO);
     }
-
-
-
 
 
 //    @GetMapping("/user-detail/{id}")
