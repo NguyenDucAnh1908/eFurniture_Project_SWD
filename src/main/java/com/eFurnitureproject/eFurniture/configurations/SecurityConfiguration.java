@@ -46,19 +46,21 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authentication -> authentication
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers(POST, "/api/v1/**").permitAll()
-                        .requestMatchers(POST, "/api/v1/product/**").hasRole(ADMIN_CREATE.name())
 
-                        .requestMatchers(GET,"/api/v1/**").hasRole("ADMIN")
+                        .requestMatchers(GET,"/api/v1/get-all-staff").hasRole("ADMIN")
+                        .requestMatchers(GET,"api/v1/{{userId}}").hasRole("ADMIN")
+                        .requestMatchers(GET,"/api/v1/get-all-user").hasRole("ADMIN")
+                        .requestMatchers(GET,"/api/v1/get-all-staff-delivery").hasRole("ADMIN")
+                        .requestMatchers(GET,"/api/v1/get-all-designer").hasRole("ADMIN")
+                        .requestMatchers(GET,"/api/v1/**").permitAll()
                         .requestMatchers(PUT, "/api/v1/updateUser/**").permitAll()
                         .requestMatchers(DELETE, "/api/v1/deleteUser/**").hasRole("ADMIN")
 
                         .requestMatchers(GET,"api/v1/products/**").permitAll()
-                        .requestMatchers(POST, "/api/v1/products/**").hasRole("ADMIN")
-//                        .requestMatchers(POST, "/api/v1/products/**").hasAuthority("ADMIN")
+                        .requestMatchers(POST, "/api/v1/products").hasRole("ADMIN")
                         .requestMatchers(PUT,"/api/v1/products/**").hasRole("ADMIN")
-                        .requestMatchers(PUT,"/api/v1/products/**").hasAuthority("ADMIN")
                         .requestMatchers(DELETE,"/api/v1/products/**").hasRole("ADMIN")
-//                        .requestMatchers(DELETE,"/api/v1/products/**").hasAuthority("ADMIN")
+//
 
 
                         .requestMatchers("api/v1/tags-blog/**").permitAll()
@@ -67,12 +69,26 @@ public class SecurityConfiguration {
                         .requestMatchers(PUT,"api/v1/orders/**" ).hasRole("ADMIN")
                         .requestMatchers(DELETE,"api/v1/orders/**").hasRole("ADMIN")
 
-                        .requestMatchers("/api/v1/brand/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/blogs/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/brand/**").permitAll()
+
+                        .requestMatchers(POST,"/api/v1/blogs/**").hasRole("ADMIN")
+                        .requestMatchers(PUT,"/api/v1/blogs/**").hasRole("ADMIN")
+                        .requestMatchers(DELETE,"/api/v1/blogs/**").hasRole("ADMIN")
+
+
                         .requestMatchers("api/v1/tag_product").permitAll()
                         .requestMatchers("/api/delivery/**").hasAnyRole("ADMIN","STAFF_DELIVERY")
                         .requestMatchers("/api/v1/orders-detail/**").hasRole("ADMIN")
+
+
                         .requestMatchers("/api/v1/booking/**").hasAnyRole("ADMIN","DESIGNER")
+                        .requestMatchers(POST, "/api/v1/register-booking").permitAll()
+                        .requestMatchers(POST, "/api/v1/booking/register-project-booking").hasAnyRole("DESIGNER")
+                        .requestMatchers(PUT,"/api/v1/booking/receive-booking-request/**").hasRole("DESIGNER")
+                        .requestMatchers(PUT,"/api/v1/booking/updateProjectBooking/**").hasAnyRole("DESIGNER")
+                        .requestMatchers(DELETE,"/api/v1/booking/cancel-booking/**").hasAnyRole("DESIGNER","ADMIN")
+
+
                         .requestMatchers("/api/v1/coupons/**").hasRole("ADMIN")
                         .requestMatchers("api/v1/designs/**").hasAnyRole("ADMIN","DESIGNER")
                         .anyRequest().authenticated())
