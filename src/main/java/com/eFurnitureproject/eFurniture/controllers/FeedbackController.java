@@ -178,5 +178,16 @@ public class FeedbackController {
         }
     }
 
+    @GetMapping("/all-by-user-id/{userId}/")
+    public ResponseEntity<Page<FeedbackDto>> getAllFeedbackByUserId(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @PathVariable Long userId
+
+    ) {
+        Page<FeedbackDto> feedbackPage = feedbackService.getAllFeedbackByUserId(PageRequest.of(page, size), userId);
+        return new ResponseEntity<>(feedbackPage, HttpStatus.OK);
+    }
+
 }
     

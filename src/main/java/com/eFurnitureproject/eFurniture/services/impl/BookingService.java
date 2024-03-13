@@ -66,8 +66,11 @@ public class BookingService implements IBookingService {
         return bookingsPage.map(BookingConverter::toDTO);
     }
 
-
-
+    @Override
+    public Page<BookingDto> getAllBookingDtosByUserId(Pageable pageable, Long userId) {
+        Page<Booking> bookingsPage = bookingRepository.findAllByUserId(pageable, userId);
+        return bookingsPage.map(BookingConverter::toDTO);
+    }
 
 
 }

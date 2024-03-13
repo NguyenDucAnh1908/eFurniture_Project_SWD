@@ -31,4 +31,5 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
      List<FeedbackDto> findByParent(@Param("parent_id") Long parent_id);
 
 
+    Page<Feedback> findAllByUserId(Pageable pageable, Long userId);
 }

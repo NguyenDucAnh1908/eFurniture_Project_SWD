@@ -4,6 +4,7 @@ import com.eFurnitureproject.eFurniture.dtos.FeedbackDto;
 import com.eFurnitureproject.eFurniture.dtos.ReplyDto;
 import com.eFurnitureproject.eFurniture.dtos.chartDto.FeedbackRatingCountDto;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -30,4 +31,6 @@ public interface IFeedbackService {
     List<FeedbackDto> getAllFeedback();
 
     List<FeedbackDto> getByParentId(Long parentId);
+
+    Page<FeedbackDto> getAllFeedbackByUserId(Pageable pageable, Long userId);
 }
