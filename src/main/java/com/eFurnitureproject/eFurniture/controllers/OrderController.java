@@ -139,6 +139,10 @@ public class OrderController {
     @GetMapping("/total-revenue-day")
     public ResponseEntity<RevenueDayDTO> getTotalSales() {
         RevenueDayDTO totalSalesDTO = orderService.getTotalSales();
+        String formattedTotalSalesToday = totalSalesDTO.getFormattedTotalSalesToday();
+        String formattedTotalSalesYesterday = totalSalesDTO.getFormattedTotalSalesYesterday();
+        totalSalesDTO.setTotalSalesToday(formattedTotalSalesToday != null ? Double.valueOf(formattedTotalSalesToday) : null);
+        totalSalesDTO.setTotalSalesYesterday(formattedTotalSalesYesterday != null ? Double.valueOf(formattedTotalSalesYesterday) : null);
         return ResponseEntity.ok(totalSalesDTO);
     }
 
