@@ -17,6 +17,7 @@ public class TagsBlogController {
 
     private final TagsBlogService tagsBlogService;
 
+    @CrossOrigin
     @GetMapping("/get-all")
     public ResponseEntity<List<TagsBlog>> getAllTags() {
         List<TagsBlog> tags = tagsBlogService.getAllTags();
