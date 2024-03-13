@@ -23,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("${api.prefix}/orders-detail")
 @RequiredArgsConstructor
+@CrossOrigin
 public class OrderDetailController {
     private final IOrderDetailService orderDetailService;
     private final LocalizationUtils localizationUtils;

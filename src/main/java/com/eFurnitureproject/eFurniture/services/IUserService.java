@@ -48,6 +48,7 @@ public interface IUserService {
 
     void cancelBooking(Long bookingId) throws DataNotFoundException;
     Page<UserResponse> getAllUsers(PageRequest pageRequest, Role role);
+
 }
 
 

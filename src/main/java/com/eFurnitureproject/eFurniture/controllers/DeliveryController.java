@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/delivery")
 @RequiredArgsConstructor
+@CrossOrigin
 public class DeliveryController {
     private final IDeliveryService deliveryService;
 

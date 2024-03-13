@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/tags-blog")
 @RequiredArgsConstructor
+@CrossOrigin
 public class TagsBlogController {
 
     private final TagsBlogService tagsBlogService;

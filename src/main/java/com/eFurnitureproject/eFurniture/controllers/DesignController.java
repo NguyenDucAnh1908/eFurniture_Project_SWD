@@ -28,6 +28,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("api/v1/designs")
 @RequiredArgsConstructor
+@CrossOrigin
 public class DesignController {
 
     private final IDesignService designService;
