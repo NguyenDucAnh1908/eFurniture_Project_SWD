@@ -164,25 +164,34 @@ public class ProductService implements IProductService {
             existingProduct = productRepository.save(existingProduct);
 
             if (productDto.getProductImages() != null && !productDto.getProductImages().isEmpty()) {
+                String firstImageUrl = null;
                 for (ProductImageDto imageDto : productDto.getProductImages()) {
                     if (imageDto.getId() != null) {
                         // Nếu có id, cập nhật hình ảnh
                         ProductImages existingImage = productImageRepository.findById(imageDto.getId())
                                 .orElseThrow(() -> new DataNotFoundException("Image not found with id: " + imageDto.getId()));
-                        if (imageDto.getImageUrl() == null || imageDto.getImageUrl().isEmpty()) {
-                            // Nếu ImageUrl rỗng hoặc null, lấy dữ liệu cũ
-                            imageDto.setImageUrl(existingImage.getImageUrl());
-                        } else {
-                            existingImage.setImageUrl(imageDto.getImageUrl());
-                        }
+                        existingImage.setImageUrl(imageDto.getImageUrl());
                         productImageRepository.save(existingImage);
+                        // Cập nhật thumbnail nếu chưa có ảnh thumbnail
+                        if (firstImageUrl == null) {
+                            firstImageUrl = imageDto.getImageUrl();
+                        }
                     } else {
                         // Nếu không có id, thêm hình ảnh mới
                         ProductImages newImage = new ProductImages();
                         newImage.setProduct(existingProduct);
                         newImage.setImageUrl(imageDto.getImageUrl());
                         productImageRepository.save(newImage);
+                        // Cập nhật thumbnail nếu chưa có ảnh thumbnail
+                        if (firstImageUrl == null) {
+                            firstImageUrl = imageDto.getImageUrl();
+                        }
                     }
+                }
+                // Cập nhật thumbnail nếu chưa có ảnh thumbnail
+                if (firstImageUrl != null) {
+                    existingProduct.setThumbnail(firstImageUrl);
+                    existingProduct = productRepository.save(existingProduct);
                 }
             }
 
