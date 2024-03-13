@@ -38,6 +38,7 @@ public class BlogService implements IBlogService {
     private  final CategoryBlogRepository categoryBlogRepository;
     private final UserRepository userRepository;
     private final TagsBlogRepository tagsBlogRepository;
+    private final BlogConverter blogConverter;
 
     private final Cloudinary cloudinary;
 
@@ -60,6 +61,16 @@ public class BlogService implements IBlogService {
         } else {
             throw new Exception("Can not find Blog with id= " + blogId);
         }
+    }
+
+    @Override
+    public List<BlogResponse> getLatestThreeBlogs() {
+        List<Blog> latestBlogs = blogRepository.findTop3ByOrderByCreatedAtDesc();
+        List<BlogResponse> blogResponses = new ArrayList<>();
+        for (Blog blog : latestBlogs) {
+            blogResponses.add(blogConverter.toResponse(blog));
+        }
+        return blogResponses;
     }
 
 

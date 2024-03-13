@@ -15,6 +15,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AddressService implements IAddressService  {
@@ -112,5 +115,16 @@ public class AddressService implements IAddressService  {
                 .orElseThrow(() -> new EntityNotFoundException("Address not found with id: " + addressId));
 
         addressRepository.delete(existingAddress);
+    }
+
+    @Override
+    public Address getAddressById(Long addressId) throws Exception {
+        Optional<Address> addressOptional = addressRepository.findById(addressId);
+
+        if (addressOptional.isPresent()) {
+            return addressOptional.get();
+        } else {
+            throw new Exception("Can not find Blog with id= " + addressId);
+        }
     }
 }

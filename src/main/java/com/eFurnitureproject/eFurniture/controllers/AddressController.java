@@ -2,6 +2,7 @@ package com.eFurnitureproject.eFurniture.controllers;
 
 import com.eFurnitureproject.eFurniture.Responses.AddressListResponse;
 import com.eFurnitureproject.eFurniture.Responses.AddressResponse;
+import com.eFurnitureproject.eFurniture.converter.AddressConverter;
 import com.eFurnitureproject.eFurniture.dtos.AddressDto;
 import com.eFurnitureproject.eFurniture.models.Address;
 import com.eFurnitureproject.eFurniture.services.IAddressService;
@@ -23,6 +24,21 @@ import java.util.List;
 public class AddressController {
 
     private final IAddressService addressService;
+
+
+    @CrossOrigin
+    @GetMapping("/get-address-by-id/{addressId}")
+    public ResponseEntity<?> getAddressById(@PathVariable("addressId") Long addressId)
+    {
+        try {
+            Address address = addressService.getAddressById(addressId);
+            AddressResponse addressResponse = AddressConverter.toResponse(address);
+            return new ResponseEntity<>(addressResponse, HttpStatus.OK);
+        }catch (Exception e)
+        {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 
     @CrossOrigin
     @GetMapping("/get_all_address_by_id/{userId}")
