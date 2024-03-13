@@ -19,4 +19,6 @@ public interface IBookingService {
     BookingDto registerBooking(BookingDto bookingDto) throws DataNotFoundException;
 
     Page<BookingDto> getAllBookingDtos(Pageable pageable);
+
+    Page<BookingDto> getAllBookingDtosByUserId(Pageable pageable, Long userId);
 }

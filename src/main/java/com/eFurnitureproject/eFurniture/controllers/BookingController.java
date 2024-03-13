@@ -23,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/booking")
 @RequiredArgsConstructor
+@CrossOrigin
 public class BookingController {
     @Autowired
     private BookingService bookingService;
@@ -66,7 +67,9 @@ public class BookingController {
     public ResponseEntity<Page<BookingDto>> getAllBookings(Pageable pageable) {
         Page<BookingDto> bookingDtos = bookingService.getAllBookingDtos(pageable);
         return new ResponseEntity<>(bookingDtos, HttpStatus.OK);
-    }@PostMapping("/design")
+    }
+
+    @PostMapping("/design")
     public ResponseEntity<Design> createDesign(@RequestBody Design design) {
         Design createdDesign = bookingService.createDesign(design);
         return new ResponseEntity<>(createdDesign, HttpStatus.CREATED);
@@ -174,6 +177,11 @@ public ResponseEntity<ProjectBookingDto> getProjectBookingById(@PathVariable Lon
         }
     }
 
-
+    @GetMapping("/all-by-user-id/{userId}/")
+    public ResponseEntity<Page<BookingDto>> getAllBookingsByUserId(Pageable pageable,
+     @PathVariable Long userId) {
+        Page<BookingDto> bookingDtos = bookingService.getAllBookingDtosByUserId(pageable, userId);
+        return new ResponseEntity<>(bookingDtos, HttpStatus.OK);
+    }
 
 }

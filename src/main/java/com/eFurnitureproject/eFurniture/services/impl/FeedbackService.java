@@ -190,6 +190,12 @@ public class FeedbackService implements IFeedbackService {
         return feedbackRepository.findByParent(parentId);
     }
 
+    @Override
+    public Page<FeedbackDto> getAllFeedbackByUserId(Pageable pageable, Long userId) {
+            Page<Feedback> feedbackPage = feedbackRepository.findAllByUserId(pageable,userId);
+            return feedbackPage.map(FeedbackConverter::toDto);
+        }
+
 
     @Transactional(readOnly = true)
     public Page<FeedbackDto> getAllFeedbacksForProduct(Long productId, int page, int size, Integer rating, boolean hasImage, boolean hasComment) {
