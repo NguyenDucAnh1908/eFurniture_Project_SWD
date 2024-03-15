@@ -4,7 +4,10 @@ import com.eFurnitureproject.eFurniture.models.Brand;
 import com.eFurnitureproject.eFurniture.models.Category;
 import com.eFurnitureproject.eFurniture.models.ProductImages;
 import com.eFurnitureproject.eFurniture.models.TagsProduct;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -24,6 +27,7 @@ public class ProductResponse extends BaseResponse{
     private String name;
     private String description;
     private String thumbnail;
+    @JsonSerialize(using = ToStringSerializer.class)
     private double price;
     @JsonProperty("price_sale")
     private double priceSale;
@@ -46,4 +50,5 @@ public class ProductResponse extends BaseResponse{
     private TagsProduct tagsProductId; // Field to represent TagsProduct ID
     @JsonProperty("product_images")
     private List<ProductImages> productImages = new ArrayList<>();
+
 }

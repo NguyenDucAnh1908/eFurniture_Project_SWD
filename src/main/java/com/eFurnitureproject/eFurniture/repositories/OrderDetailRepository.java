@@ -22,11 +22,12 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
             "ORDER BY totalSold DESC")
     List<Object[]> findMostSoldProductsByDate();
 
-    @Query("SELECT od.product, SUM(od.quantity) AS totalQuantitySold, SUM(od.totalAmount) AS totalAmountSold " +
+    @Query("SELECT od.product, SUM(od.quantity) AS totalQuantitySold, SUM(od.orders.totalAmount) AS totalAmountSold " +
             "FROM OrderDetail od " +
             "GROUP BY od.product " +
             "ORDER BY totalQuantitySold DESC")
     List<Object[]> findTop5BestSellingProducts();
+
 
     @Query("SELECT COUNT(od) FROM OrderDetail od WHERE od.product.id = :productId")
     Integer countOrderByProductId(@Param("productId") Long productId);
