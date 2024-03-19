@@ -32,15 +32,24 @@ public class ProjectBookingService implements IProjectBookingService {
                     .orElseThrow(() ->
                             new DataNotFoundException(
                                     "Cannot find user with id: " + projectBookingDto.getUserId()));
-            Booking booking = bookingRepository.findById(projectBookingDto.getBookingId())
+
+            // Lấy bookingId từ projectBookingDto
+            Long bookingId = projectBookingDto.getBookingId();
+            if (bookingId == null) {
+                throw new IllegalArgumentException("Booking ID is required.");
+            }
+
+            // Không cần truy vấn bookingRepository, sử dụng trực tiếp bookingId để thiết lập booking
+            Booking booking = bookingRepository.findById(bookingId)
                     .orElseThrow(() ->
                             new DataNotFoundException(
-                                    "Cannot find booking with id: " + projectBookingDto.getBookingId()));
+                                    "Cannot find booking with id: " + bookingId));
 
             ProjectBooking projectBooking = ProjectBookingConverter.toEntity(projectBookingDto, userRepository, bookingRepository);
             projectBooking.setUser(user);
             projectBooking.setBooking(booking);
-            String code =createCodeForProjectBooking();
+
+            String code = createCodeForProjectBooking();
             projectBooking.setCode(code);
 
             projectBooking = projectBookingRepository.save(projectBooking);
@@ -50,6 +59,7 @@ public class ProjectBookingService implements IProjectBookingService {
             throw new RuntimeException("Error registering project booking: " + e.getMessage());
         }
     }
+
     private String createCodeForProjectBooking() {
         // Lấy tổng số lượng ProjectBooking hiện có và cộng thêm 1 để tạo mã tiếp theo
         long count = projectBookingRepository.count();
@@ -142,11 +152,11 @@ public class ProjectBookingService implements IProjectBookingService {
         }
         return ProjectBookingConverter.toDTO(projectBooking);
     }
-    public ProjectBookingDto getProjectBookingById(Long projectBookingId) {
-        ProjectBooking projectBooking = projectBookingRepository.findById(projectBookingId)
-                .orElseThrow(() -> new EntityNotFoundException("ProjectBooking with id: " + projectBookingId + " not found"));
-        return ProjectBookingConverter.toDTO(projectBooking);
-    }
+        public ProjectBookingDto getProjectBookingById(Long projectBookingId) {
+            ProjectBooking projectBooking = projectBookingRepository.findById(projectBookingId)
+                    .orElseThrow(() -> new EntityNotFoundException("ProjectBooking with id: " + projectBookingId + " not found"));
+            return ProjectBookingConverter.toDTO(projectBooking);
+        }
 
 
 }

@@ -224,12 +224,7 @@ public class ProductService implements IProductService {
                     return response;
                 })
                 .collect(Collectors.toList());
-//        return products.map(product -> {
-//            ProductResponse response = ProductConverter.toResponse(product);
-//            Double averageRating = feedbackRepository.findAverageRatingByProductId(product.getId());
-//            response.setRating(averageRating);
-//            return response;
-//        });
+
     }
     public List<ProductResponse> getProductByCategory(Long id){
         List<Product> products = productRepository.findByCategoryId(id);

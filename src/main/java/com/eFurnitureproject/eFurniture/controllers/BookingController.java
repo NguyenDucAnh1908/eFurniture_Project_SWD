@@ -42,11 +42,22 @@ public class BookingController {
             return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PostMapping("/register-project-booking")
-    public ResponseEntity<?> registerProjectBooking(@RequestBody ProjectBookingDto projectBookingDto) {
+    @PostMapping("/register-project-booking/{bookingId}")
+    public ResponseEntity<?> registerProjectBooking(@RequestBody ProjectBookingDto projectBookingDto, @PathVariable("bookingId") Long bookingId) {
         try {
+            // Kiểm tra xem bookingId đã được truyền vào hay chưa
+            if (bookingId == null) {
+                return new ResponseEntity<>("BookingId is required.", HttpStatus.BAD_REQUEST);
+            }
+
+            // Gán bookingId từ đường dẫn vào projectBookingDto
+            projectBookingDto.setBookingId(bookingId);
+
+            // Gọi service để tạo projectBooking
             ProjectBookingDto createdProjectBooking = projectBookingService.createProjectBooking(projectBookingDto);
             return new ResponseEntity<>(createdProjectBooking, HttpStatus.CREATED);
+//        } catch (DataNotFoDaundException e) {
+//            return new ResponseEntity<>("Data not found: " + e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
