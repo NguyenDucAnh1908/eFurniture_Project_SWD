@@ -165,12 +165,19 @@ public class ProductService implements IProductService {
 
             if (productDto.getProductImages() != null && !productDto.getProductImages().isEmpty()) {
                 String firstImageUrl = null;
+                // Lưu trữ ảnh cũ
+                List<ProductImages> existingImages = existingProduct.getProductImages();
                 for (ProductImageDto imageDto : productDto.getProductImages()) {
                     if (imageDto.getId() != null) {
                         // Nếu có id, cập nhật hình ảnh
                         ProductImages existingImage = productImageRepository.findById(imageDto.getId())
                                 .orElseThrow(() -> new DataNotFoundException("Image not found with id: " + imageDto.getId()));
-                        existingImage.setImageUrl(imageDto.getImageUrl());
+                        // Kiểm tra nếu ảnh mới là null hoặc rỗng, sử dụng ảnh cũ
+                        if (imageDto.getImageUrl() == null || imageDto.getImageUrl().isEmpty()) {
+                            imageDto.setImageUrl(existingImage.getImageUrl());
+                        } else {
+                            existingImage.setImageUrl(imageDto.getImageUrl());
+                        }
                         productImageRepository.save(existingImage);
                         // Cập nhật thumbnail nếu chưa có ảnh thumbnail
                         if (firstImageUrl == null) {
@@ -180,11 +187,23 @@ public class ProductService implements IProductService {
                         // Nếu không có id, thêm hình ảnh mới
                         ProductImages newImage = new ProductImages();
                         newImage.setProduct(existingProduct);
-                        newImage.setImageUrl(imageDto.getImageUrl());
+                        // Kiểm tra nếu ảnh mới là null hoặc rỗng, sử dụng ảnh cũ
+                        if (imageDto.getImageUrl() == null || imageDto.getImageUrl().isEmpty()) {
+                            // Kiểm tra xem có ảnh cũ không
+                            if (existingImages != null && !existingImages.isEmpty()) {
+                                // Sử dụng ảnh cũ
+                                newImage.setImageUrl(existingImages.get(0).getImageUrl());
+                            } else {
+                                // Không có ảnh cũ, không thay đổi
+                                continue;
+                            }
+                        } else {
+                            newImage.setImageUrl(imageDto.getImageUrl());
+                        }
                         productImageRepository.save(newImage);
                         // Cập nhật thumbnail nếu chưa có ảnh thumbnail
                         if (firstImageUrl == null) {
-                            firstImageUrl = imageDto.getImageUrl();
+                            firstImageUrl = newImage.getImageUrl();
                         }
                     }
                 }
@@ -199,6 +218,7 @@ public class ProductService implements IProductService {
         }
         return null;
     }
+
 
     public Page<ProductResponse> getAllProducts(String keyword, PageRequest pageRequest,
                                            Double minPrice, Double maxPrice,

@@ -242,6 +242,7 @@ public class UserService implements IUserService {
         }
 
         user.setActive(updateUserRequest.isActive());
+        user = repository.save(user);
         return ResponseEntity.ok(UpdateUserResponse.builder()
                 .status("Success")
                 .message("Update User Success")
