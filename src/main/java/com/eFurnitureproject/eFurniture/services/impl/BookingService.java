@@ -24,7 +24,8 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class BookingService implements IBookingService {
+public class
+BookingService implements IBookingService {
 
     private final BookingRepository bookingRepository;
     private final DesignRepository designRepository;

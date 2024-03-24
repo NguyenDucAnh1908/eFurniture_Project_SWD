@@ -18,7 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderResponse {
+public class OrderResponse extends BaseResponse {
     private Long id;
     //private LocalDateTime orderDate;
 
