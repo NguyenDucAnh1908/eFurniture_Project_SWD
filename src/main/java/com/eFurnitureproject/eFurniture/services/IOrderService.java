@@ -14,16 +14,24 @@ import java.util.Optional;
 
 public interface IOrderService {
     Order createOrder(OrderDto orderDto) throws Exception;
-    Page<Order> getOrdersByKeyword(String keyword, Long paymentStatusId,Pageable pageable);
+
+    Page<Order> getOrdersByKeyword(String keyword, Long paymentStatusId, Pageable pageable);
+
     Order updateOrder(Long id, OrderDto orderDTO) throws DataNotFoundException;
+
     Order getOrder(Long id);
+
     void deleteOrder(Long id);
+
     List<Order> findByUserId(Long userId);
 
     OrderStatsDTO getOrderStats();
 
     RevenueDTO getRevenueStatistics();
+
     RevenueDayDTO getTotalSales();
+
     Integer countOrdersByProductId(Long productId);
+
     Optional<Double> getProductRevenue(Long productId);
 }

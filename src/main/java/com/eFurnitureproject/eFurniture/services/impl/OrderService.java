@@ -39,9 +39,9 @@ public class OrderService implements IOrderService {
         User user = userRepository.findById(orderDto.getUserId())
                 .orElseThrow(() -> new DataNotFoundException("Cannot find user with id: " + orderDto.getUserId()));
         OrderStatus orderStatus = orderStatusRepository.findById(orderDto.getOrderStatus())
-                .orElseThrow(() -> new DataNotFoundException("Cannot find order status with id: " + orderDto.getUserId()));
+                .orElseThrow(() -> new DataNotFoundException("Cannot find order status with id: " + orderDto.getOrderStatus()));
         PaymentStatus paymentStatus = paymentStatusRepository.findById(orderDto.getPaymentStatus())
-                .orElseThrow(() -> new DataNotFoundException("Cannot find payment status with id: " + orderDto.getUserId()));
+                .orElseThrow(() -> new DataNotFoundException("Cannot find payment status with id: " + orderDto.getPaymentStatus()));
         modelMapper.typeMap(OrderDto.class, Order.class)
                 .addMappings(mappers -> mappers.skip(Order::setId));
         Order order = new Order();
